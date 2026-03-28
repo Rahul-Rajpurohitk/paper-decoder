@@ -214,8 +214,8 @@ export default function MSAPaper() {
           {ARROW(367, 314, 367, 345, ORANGE)}
 
           {/* Compressed outputs */}
-          {BOX(235, 410, 75, 34, 'K\u0304_ij', '#0e7490', '#fff', 12)}
-          {BOX(320, 410, 75, 34, 'K\u0304^R_ij', '#c2410c', '#fff', 12)}
+          {BOX(235, 410, 75, 34, 'K̄_ij', '#0e7490', '#fff', 12)}
+          {BOX(320, 410, 75, 34, 'K̄^R_ij', '#c2410c', '#fff', 12)}
           {ARROW(282, 385, 272, 410, CYAN)}
           {ARROW(357, 385, 357, 410, ORANGE)}
 
@@ -231,16 +231,16 @@ export default function MSAPaper() {
 
           {/* Scoring */}
           {ARROW(520, 116, 520, 145, ORANGE)}
-          {BOX(445, 150, 150, 50, 'Relevance Score', '#431407', '#fb923c', 13)}
-          <text x="520" y="180" textAnchor="middle" fill="#fdba74" fontSize="9" fontFamily="Inter, system-ui, sans-serif">cos(Q^R, K\u0304^R_ij) per chunk</text>
+          {BOX(445, 145, 150, 40, 'Relevance Score', '#431407', '#fb923c', 13)}
+          <text x="520" y="205" textAnchor="middle" fill="#fdba74" fontSize="9" fontFamily="Inter, system-ui, sans-serif">cos(Q^R, K̄^R_ij) per chunk</text>
 
           {/* Routing key input */}
           {ARROW(395, 427, 445, 175, ORANGE, true)}
 
           {/* Top-k */}
           {ARROW(520, 200, 520, 230, ORANGE)}
-          {BOX(445, 235, 150, 40, 'Top-k Selection', '#7c2d12', '#fff', 13)}
-          <text x="520" y="296" textAnchor="middle" fill="#94a3b8" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Select k most relevant chunks</text>
+          {BOX(445, 230, 150, 36, 'Top-k Selection', '#7c2d12', '#fff', 13)}
+          <text x="520" y="285" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Select k most relevant chunks</text>
 
           {/* Selected chunk indices */}
           {ARROW(520, 275, 520, 310, GREEN)}
@@ -251,7 +251,7 @@ export default function MSAPaper() {
           {ARROW(310, 330, 455, 380, CYAN, true)}
           {BOX(455, 375, 130, 36, 'Fetch Full K_i, V_i', '#164e63', CYAN, 12)}
 
-          <text x="380" y="365" textAnchor="middle" fill="#64748b" fontSize="9" fontStyle="italic" fontFamily="Inter, system-ui, sans-serif">only selected chunks</text>
+          <text x="380" y="420" textAnchor="middle" fill="#64748b" fontSize="9" fontStyle="italic" fontFamily="Inter, system-ui, sans-serif">only selected chunks</text>
 
           {/* ── Right: Sparse Attention ── */}
           <rect x="635" y="30" width="200" height="460" rx="12" fill="#1e293b" stroke="#334155" strokeWidth="1" />
@@ -277,7 +277,7 @@ export default function MSAPaper() {
           <text x="735" y="378" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Complexity</text>
           <text x="735" y="398" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Route: O(N/P)</text>
           <text x="735" y="415" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Attend: O(k · P)</text>
-          <text x="735" y="432" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">vs Dense: O(N\u00b2)</text>
+          <text x="735" y="432" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">vs Dense: O(N²)</text>
         </svg>
       </Diagram>
 
@@ -616,7 +616,7 @@ export default function MSAPaper() {
           {BOX(40, 155, 210, 32, 'Forward pass (all layers)', '#0e7490', '#fff', 11)}
           {ARROW(145, 187, 145, 205, CYAN)}
           {BOX(40, 210, 100, 32, 'K_i, V_i cache', '#164e63', CYAN, 11)}
-          {BOX(150, 210, 100, 32, 'K\u0304^R_ij pool', '#7c2d12', ORANGE, 11)}
+          {BOX(150, 210, 100, 32, 'K̄^R_ij pool', '#7c2d12', ORANGE, 11)}
           {ARROW(90, 242, 90, 265, CYAN)}
           {ARROW(200, 242, 200, 265, ORANGE)}
           {BOX(40, 270, 210, 40, 'Store to Memory', '#1e3a5f', '#7dd3fc', 12)}
@@ -625,7 +625,7 @@ export default function MSAPaper() {
 
           {/* Arrow S1 → S2 */}
           {ARROW(270, 200, 305, 200, '#64748b')}
-          <text x="288" y="192" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif" transform="rotate(-90, 288, 192)">KV + K\u0304^R</text>
+          <text x="288" y="220" textAnchor="middle" fill="#64748b" fontSize="8" fontFamily="Inter, system-ui, sans-serif">KV + K̄^R</text>
 
           {/* ── S2: Online Route ── */}
           <rect x="310" y="25" width="240" height="330" rx="12" fill="#1e293b" stroke="#7c2d12" strokeWidth="1.5" />
@@ -638,7 +638,7 @@ export default function MSAPaper() {
           {ARROW(430, 132, 430, 150, ORANGE)}
           {BOX(330, 155, 200, 32, 'Compute Q^R', '#7c2d12', ORANGE, 12)}
           {ARROW(430, 187, 430, 210, ORANGE)}
-          {BOX(330, 215, 200, 32, 'Score all K\u0304^R_ij chunks', '#431407', '#fb923c', 11)}
+          {BOX(330, 215, 200, 32, 'Score all K̄^R_ij chunks', '#431407', '#fb923c', 11)}
           {ARROW(430, 247, 430, 270, GREEN)}
           {BOX(330, 275, 200, 32, 'Top-k chunk indices', '#14532d', GREEN, 12)}
           <text x="430" y="328" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Cost: O(N/P) cosine sims</text>
@@ -914,7 +914,7 @@ export default function MSAPaper() {
         <ComparisonTable
           headers={['Metric', 'Dense (128K)', 'RAG', 'MSA (100M)']}
           rows={[
-            ['Encoding cost', 'O(N\u00b2)', 'Chunking + embedding', 'O(N·d) one-time'],
+            ['Encoding cost', 'O(N²)', 'Chunking + embedding', 'O(N·d) one-time'],
             ['Per-query routing', 'N/A (attend all)', 'Vector search', 'O(N/P) cosine sims'],
             ['Per-token generation', 'O(N·d)', 'O(k·d)', 'O(k·P·d)'],
             ['Memory footprint', 'O(N·d)', 'Embedding DB + LLM', 'KV cache + routing keys'],
