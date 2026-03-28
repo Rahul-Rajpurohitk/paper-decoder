@@ -201,7 +201,7 @@ export default function TurboQuantPaper() {
           </p>
         </Prose>
         <FormulaBlock
-          math="y_i^2 \sim \text{Beta}\\!\left(\\tfrac{1}{2},\\, \\tfrac{d-1}{2}\right) \quad \\Longrightarrow \quad y_i \approx \mathcal{N}\\!\left(0,\\, \\tfrac{1}{d}\right) \text{ as } d \to \infty"
+          math="y_i^2 \sim \text{Beta}\!\left(\tfrac{1}{2},\, \tfrac{d-1}{2}\right) \quad \Longrightarrow \quad y_i \approx \mathcal{N}\!\left(0,\, \tfrac{1}{d}\right) \text{ as } d \to \infty"
           label="Lemma 1 — Coordinate Distribution"
           color={A}
           symbols={[
@@ -384,7 +384,7 @@ export default function TurboQuantPaper() {
       />
 
       <FormulaBlock
-        math="D_{\text{mse}}(b, d) \\;=\\; \mathbb{E}\\!\left[\\, \left\\| x - \\hat{x} \right\\|^2 \\,\right] \\;\leq\\; \frac{\\|x\\|^2}{d} \cdot \alpha_b"
+        math="D_{\text{mse}}(b, d) \;=\; \mathbb{E}\!\left[\, \left\| x - \hat{x} \right\|^2 \,\right] \;\leq\; \frac{\|x\|^2}{d} \cdot \alpha_b"
         label="Theorem 1 — MSE Distortion Bound"
         color={A}
         symbols={[
@@ -398,9 +398,9 @@ export default function TurboQuantPaper() {
         ]}
       />
 
-      <ConceptCard title="Concrete Numbers: What does \u03B1_b look like?" color={A} defaultOpen={true}>
+      <ConceptCard title="Concrete Numbers: What does α_b look like?" color={A} defaultOpen={true}>
         <ComparisonTable
-          headers={['Bits (b)', '\u03B1_b (approx)', 'Compression ratio', 'Relative MSE']}
+          headers={['Bits (b)', 'α_b (approx)', 'Compression ratio', 'Relative MSE']}
           rows={[
             ['1', '0.3634', '32x', '36.3% of ||x||\u00b2/d'],
             ['2', '0.1175', '16x', '11.8% of ||x||\u00b2/d'],
@@ -680,7 +680,7 @@ export default function TurboQuantPaper() {
       />
 
       <FormulaBlock
-        math="\\widehat{\\langle x, y \\rangle}_{\text{prod}} \\;=\\; \\|x\\|\\,\\|y\\|\\!\left(\\langle \\hat{u}, \\hat{v}\\rangle + \sqrt{\\tfrac{\pi}{2d}}\\,\\langle r_u,\\, \text{sign}(S\\, r_v)\\rangle\right)"
+        math="\widehat{\langle x, y \rangle}_{\text{prod}} \;=\; \|x\|\,\|y\|\!\left(\langle \hat{u}, \hat{v}\rangle + \sqrt{\tfrac{\pi}{2d}}\,\langle r_u,\, \text{sign}(S\, r_v)\rangle\right)"
         label="Theorem 2 — Unbiased Inner Product Estimator"
         color={PURPLE}
         symbols={[
@@ -727,7 +727,7 @@ export default function TurboQuantPaper() {
       </Prose>
 
       <FormulaBlock
-        math="D^{\\star}(b) \\;\geq\\; \frac{1}{d} \cdot \frac{1}{2\pi e} \cdot 2^{-2b}"
+        math="D^{\star}(b) \;\geq\; \frac{1}{d} \cdot \frac{1}{2\pi e} \cdot 2^{-2b}"
         label="Lemma 2 — Shannon Lower Bound"
         color={A}
         symbols={[
@@ -765,7 +765,7 @@ export default function TurboQuantPaper() {
       </ConceptCard>
 
       <FormulaBlock
-        math="D_{\text{mse}}^{\text{TQ}}(b) \\;\leq\\; \frac{\alpha_b}{d} \\;\leq\\; \frac{2.7}{2\pi e} \cdot \frac{2^{-2b}}{d} \\;=\\; 2.7 \cdot D^{\\star}(b)"
+        math="D_{\text{mse}}^{\text{TQ}}(b) \;\leq\; \frac{\alpha_b}{d} \;\leq\; \frac{2.7}{2\pi e} \cdot \frac{2^{-2b}}{d} \;=\; 2.7 \cdot D^{\star}(b)"
         label="Theorem 3 — TurboQuant is within 2.7x of the Shannon bound"
         color={A}
         symbols={[
