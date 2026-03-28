@@ -304,7 +304,7 @@ export default function MSAPaper() {
       </ConceptCard>
 
       <FormulaBlock
-        math="K_i = H_i \\cdot W_K, \\quad V_i = H_i \\cdot W_V"
+        math="K_i = H_i \cdot W_K, \quad V_i = H_i \cdot W_V"
         label="Content Projections"
         color={CYAN}
         symbols={[
@@ -317,7 +317,7 @@ export default function MSAPaper() {
       />
 
       <FormulaBlock
-        math="K^R_i = H_i \\cdot W_{KR}"
+        math="K^R_i = H_i \cdot W_{KR}"
         label="Routing Projection"
         color={ORANGE}
         symbols={[
@@ -344,7 +344,7 @@ export default function MSAPaper() {
         </Prose>
 
         <FormulaBlock
-          math="\\text{Score}_{ij} = \\max_{t \\in \\text{tokens}} \\left( \\text{mean}_{h \\in \\text{heads}} \\cos(Q^R_t, \\bar{K}^R_{ij}) \\right)"
+          math="\text{Score}_{ij} = \max_{t \in \text{tokens}} \left( \text{mean}_{h \in \text{heads}} \cos(Q^R_t, \bar{K}^R_{ij}) \right)"
           label="Chunk Relevance Score"
           color={ORANGE}
           symbols={[
@@ -352,10 +352,10 @@ export default function MSAPaper() {
             { symbol: 't', meaning: 'Token index in the current query sequence' },
             { symbol: 'h', meaning: 'Attention head index' },
             { symbol: 'Q^R_t', meaning: 'Routing query vector at token position t' },
-            { symbol: '\\bar{K}^R_{ij}', meaning: 'Mean-pooled routing key for chunk j of document i (compressed)' },
-            { symbol: '\\cos', meaning: 'Cosine similarity — measures directional alignment in embedding space' },
-            { symbol: '\\max_t', meaning: 'Take the maximum across all query tokens — if ANY token needs this chunk, select it' },
-            { symbol: '\\text{mean}_h', meaning: 'Average across attention heads — consensus across different attention patterns' },
+            { symbol: '\bar{K}^R_{ij}', meaning: 'Mean-pooled routing key for chunk j of document i (compressed)' },
+            { symbol: '\cos', meaning: 'Cosine similarity — measures directional alignment in embedding space' },
+            { symbol: '\max_t', meaning: 'Take the maximum across all query tokens — if ANY token needs this chunk, select it' },
+            { symbol: '\text{mean}_h', meaning: 'Average across attention heads — consensus across different attention patterns' },
           ]}
         />
 
@@ -388,11 +388,11 @@ export default function MSAPaper() {
         </Prose>
 
         <FormulaBlock
-          math="\\bar{K}^R_{ij} = \\frac{1}{P} \\sum_{p=1}^{P} K^R_{i, (j-1)P+p}"
+          math="\bar{K}^R_{ij} = \frac{1}{P} \sum_{p=1}^{P} K^R_{i, (j-1)P+p}"
           label="Chunk Mean Pooling"
           color={CYAN}
           symbols={[
-            { symbol: '\\bar{K}^R_{ij}', meaning: 'Mean-pooled routing key for chunk j of document i' },
+            { symbol: '\bar{K}^R_{ij}', meaning: 'Mean-pooled routing key for chunk j of document i' },
             { symbol: 'P', meaning: 'Chunk size — set to 64 tokens' },
             { symbol: 'K^R_{i, (j-1)P+p}', meaning: 'Individual routing key at position p within chunk j of document i' },
           ]}
@@ -517,16 +517,16 @@ export default function MSAPaper() {
         </Prose>
 
         <FormulaBlock
-          math="L_{\\text{aux}} = -\\log \\frac{\\exp(\\cos(Q^R, \\bar{K}^R_{+}) / \\tau)}{\\sum_{j} \\exp(\\cos(Q^R, \\bar{K}^R_{j}) / \\tau)}"
+          math="L_{\text{aux}} = -\log \frac{\exp(\cos(Q^R, \bar{K}^R_{+}) / \tau)}{\sum_{j} \exp(\cos(Q^R, \bar{K}^R_{j}) / \tau)}"
           label="Auxiliary Contrastive Loss"
           color={ORANGE}
           symbols={[
-            { symbol: 'L_{\\text{aux}}', meaning: 'Contrastive loss — pushes relevant chunk routing keys closer to query' },
+            { symbol: 'L_{\text{aux}}', meaning: 'Contrastive loss — pushes relevant chunk routing keys closer to query' },
             { symbol: 'Q^R', meaning: 'Routing query from the current input' },
-            { symbol: '\\bar{K}^R_{+}', meaning: 'Routing key of the positive (correct/relevant) chunk' },
-            { symbol: '\\bar{K}^R_{j}', meaning: 'Routing keys of all chunks (positive + negatives)' },
-            { symbol: '\\tau', meaning: 'Temperature parameter — controls the sharpness of the distribution' },
-            { symbol: '\\cos', meaning: 'Cosine similarity in routing embedding space' },
+            { symbol: '\bar{K}^R_{+}', meaning: 'Routing key of the positive (correct/relevant) chunk' },
+            { symbol: '\bar{K}^R_{j}', meaning: 'Routing keys of all chunks (positive + negatives)' },
+            { symbol: '\tau', meaning: 'Temperature parameter — controls the sharpness of the distribution' },
+            { symbol: '\cos', meaning: 'Cosine similarity in routing embedding space' },
           ]}
         />
 
@@ -539,13 +539,13 @@ export default function MSAPaper() {
       </ConceptCard>
 
       <FormulaBlock
-        math="L_{\\text{total}} = L_{\\text{LM}} + \\lambda \\cdot L_{\\text{aux}}"
+        math="L_{\text{total}} = L_{\text{LM}} + \lambda \cdot L_{\text{aux}}"
         label="Total Training Objective"
         color={CYAN}
         symbols={[
-          { symbol: 'L_{\\text{LM}}', meaning: 'Standard next-token prediction (language modeling) loss' },
-          { symbol: 'L_{\\text{aux}}', meaning: 'Auxiliary contrastive loss for routing supervision' },
-          { symbol: '\\lambda', meaning: 'Balancing weight — 1.0 during CPT warmup, reduced to 0.1 during main training' },
+          { symbol: 'L_{\text{LM}}', meaning: 'Standard next-token prediction (language modeling) loss' },
+          { symbol: 'L_{\text{aux}}', meaning: 'Auxiliary contrastive loss for routing supervision' },
+          { symbol: '\lambda', meaning: 'Balancing weight — 1.0 during CPT warmup, reduced to 0.1 during main training' },
         ]}
       />
 
@@ -669,7 +669,7 @@ export default function MSAPaper() {
 
       <ConceptCard title="Stage Complexities" color={CYAN} defaultOpen={true}>
         <FormulaBlock
-          math="C_{S1} = O(N \\cdot d \\cdot L)"
+          math="C_{S1} = O(N \cdot d \cdot L)"
           label="S1 — Offline Encoding Cost"
           color={CYAN}
           symbols={[
@@ -680,18 +680,18 @@ export default function MSAPaper() {
         />
 
         <FormulaBlock
-          math="C_{S2} = O\\left(\\frac{N_{\\text{mem}}}{P} \\cdot d\\right)"
+          math="C_{S2} = O\left(\frac{N_{\text{mem}}}{P} \cdot d\right)"
           label="S2 — Online Routing Cost"
           color={ORANGE}
           symbols={[
-            { symbol: 'N_{\\text{mem}}', meaning: 'Total tokens across ALL documents in memory' },
+            { symbol: 'N_{\text{mem}}', meaning: 'Total tokens across ALL documents in memory' },
             { symbol: 'P', meaning: 'Chunk size (64) — routing operates on compressed representations' },
             { symbol: 'd', meaning: 'Routing embedding dimension' },
           ]}
         />
 
         <FormulaBlock
-          math="C_{S3} = O(k \\cdot P \\cdot d \\cdot L)"
+          math="C_{S3} = O(k \cdot P \cdot d \cdot L)"
           label="S3 — Online Generation Cost"
           color={GREEN}
           symbols={[

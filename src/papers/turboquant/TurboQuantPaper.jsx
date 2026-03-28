@@ -201,7 +201,7 @@ export default function TurboQuantPaper() {
           </p>
         </Prose>
         <FormulaBlock
-          math="y_i^2 \\sim \\text{Beta}\\!\\left(\\tfrac{1}{2},\\, \\tfrac{d-1}{2}\\right) \\quad \\Longrightarrow \\quad y_i \\approx \\mathcal{N}\\!\\left(0,\\, \\tfrac{1}{d}\\right) \\text{ as } d \\to \\infty"
+          math="y_i^2 \sim \text{Beta}\\!\left(\\tfrac{1}{2},\\, \\tfrac{d-1}{2}\right) \quad \\Longrightarrow \quad y_i \approx \mathcal{N}\\!\left(0,\\, \\tfrac{1}{d}\right) \text{ as } d \to \infty"
           label="Lemma 1 \u2014 Coordinate Distribution"
           color={A}
           symbols={[
@@ -384,7 +384,7 @@ export default function TurboQuantPaper() {
       />
 
       <FormulaBlock
-        math="D_{\\text{mse}}(b, d) \\;=\\; \\mathbb{E}\\!\\left[\\, \\left\\| x - \\hat{x} \\right\\|^2 \\,\\right] \\;\\leq\\; \\frac{\\|x\\|^2}{d} \\cdot \\alpha_b"
+        math="D_{\text{mse}}(b, d) \\;=\\; \mathbb{E}\\!\left[\\, \left\\| x - \\hat{x} \right\\|^2 \\,\right] \\;\leq\\; \frac{\\|x\\|^2}{d} \cdot \alpha_b"
         label="Theorem 1 \u2014 MSE Distortion Bound"
         color={A}
         symbols={[
@@ -393,7 +393,7 @@ export default function TurboQuantPaper() {
           { symbol: '\\hat{x}', meaning: 'Reconstructed vector after quantize + dequantize' },
           { symbol: '||x||\u00b2', meaning: 'Squared Euclidean norm of the original vector' },
           { symbol: 'd', meaning: 'Dimension of the vector' },
-          { symbol: '\\alpha_b', meaning: 'Distortion coefficient of b-bit Lloyd-Max quantizer for Beta(1/2,(d-1)/2) distribution' },
+          { symbol: '\alpha_b', meaning: 'Distortion coefficient of b-bit Lloyd-Max quantizer for Beta(1/2,(d-1)/2) distribution' },
           { symbol: 'b', meaning: 'Number of bits per coordinate' },
         ]}
       />
@@ -680,7 +680,7 @@ export default function TurboQuantPaper() {
       />
 
       <FormulaBlock
-        math="\\widehat{\\langle x, y \\rangle}_{\\text{prod}} \\;=\\; \\|x\\|\\,\\|y\\|\\!\\left(\\langle \\hat{u}, \\hat{v}\\rangle + \\sqrt{\\tfrac{\\pi}{2d}}\\,\\langle r_u,\\, \\text{sign}(S\\, r_v)\\rangle\\right)"
+        math="\\widehat{\\langle x, y \\rangle}_{\text{prod}} \\;=\\; \\|x\\|\\,\\|y\\|\\!\left(\\langle \\hat{u}, \\hat{v}\\rangle + \sqrt{\\tfrac{\pi}{2d}}\\,\\langle r_u,\\, \text{sign}(S\\, r_v)\\rangle\right)"
         label="Theorem 2 \u2014 Unbiased Inner Product Estimator"
         color={PURPLE}
         symbols={[
@@ -690,7 +690,7 @@ export default function TurboQuantPaper() {
           { symbol: 'r_u, r_v', meaning: 'Residual vectors: r_u = \u03A0\u00b7(x/||x||) - \u00fb, etc.' },
           { symbol: 'S', meaning: 'Random sign matrix for QJL projection (shared, seeded)' },
           { symbol: 'sign(S\u00b7r_v)', meaning: '1-bit QJL codes of the residual' },
-          { symbol: '\\sqrt{\\pi/(2d)}', meaning: 'Scaling factor from QJL theory (the \u221a(\u03c0/2d) correction)' },
+          { symbol: '\sqrt{\pi/(2d)}', meaning: 'Scaling factor from QJL theory (the \u221a(\u03c0/2d) correction)' },
           { symbol: 'd', meaning: 'Vector dimension' },
         ]}
       />
@@ -727,14 +727,14 @@ export default function TurboQuantPaper() {
       </Prose>
 
       <FormulaBlock
-        math="D^{\\star}(b) \\;\\geq\\; \\frac{1}{d} \\cdot \\frac{1}{2\\pi e} \\cdot 2^{-2b}"
+        math="D^{\\star}(b) \\;\geq\\; \frac{1}{d} \cdot \frac{1}{2\pi e} \cdot 2^{-2b}"
         label="Lemma 2 \u2014 Shannon Lower Bound"
         color={A}
         symbols={[
           { symbol: 'D^\\star(b)', meaning: 'Minimum achievable MSE distortion at b bits per coordinate' },
           { symbol: 'd', meaning: 'Vector dimension' },
           { symbol: 'b', meaning: 'Bits per coordinate (rate)' },
-          { symbol: '2\\pi e', meaning: 'Constant from Gaussian rate-distortion theory (about 17.08)' },
+          { symbol: '2\pi e', meaning: 'Constant from Gaussian rate-distortion theory (about 17.08)' },
           { symbol: '2^{-2b}', meaning: 'Exponential decay: each extra bit halves the distortion twice' },
         ]}
       />
@@ -765,12 +765,12 @@ export default function TurboQuantPaper() {
       </ConceptCard>
 
       <FormulaBlock
-        math="D_{\\text{mse}}^{\\text{TQ}}(b) \\;\\leq\\; \\frac{\\alpha_b}{d} \\;\\leq\\; \\frac{2.7}{2\\pi e} \\cdot \\frac{2^{-2b}}{d} \\;=\\; 2.7 \\cdot D^{\\star}(b)"
+        math="D_{\text{mse}}^{\text{TQ}}(b) \\;\leq\\; \frac{\alpha_b}{d} \\;\leq\\; \frac{2.7}{2\pi e} \cdot \frac{2^{-2b}}{d} \\;=\\; 2.7 \cdot D^{\\star}(b)"
         label="Theorem 3 \u2014 TurboQuant is within 2.7x of the Shannon bound"
         color={A}
         symbols={[
           { symbol: 'D_{mse}^{TQ}(b)', meaning: 'TurboQuant MSE distortion at b bits per coordinate' },
-          { symbol: '\\alpha_b', meaning: 'Lloyd-Max distortion coefficient (precomputed per b)' },
+          { symbol: '\alpha_b', meaning: 'Lloyd-Max distortion coefficient (precomputed per b)' },
           { symbol: 'D^\\star(b)', meaning: 'Shannon lower bound (information-theoretic minimum)' },
           { symbol: '2.7', meaning: 'Multiplicative gap \u2014 worst-case over all b values' },
           { symbol: 'd', meaning: 'Vector dimension (cancels in the ratio)' },
