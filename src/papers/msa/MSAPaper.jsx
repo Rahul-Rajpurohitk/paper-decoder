@@ -1,5 +1,6 @@
 import SectionHeader from '../../components/SectionHeader';
 import FormulaBlock from '../../components/FormulaBlock';
+import FormulaSteps from '../../components/FormulaSteps';
 import Callout from '../../components/Callout';
 import StatBar from '../../components/StatBar';
 import ConceptCard from '../../components/ConceptCard';
@@ -8,6 +9,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
+import H from '../../components/HoverTerm';
 
 const CYAN = '#06b6d4';
 const ORANGE = '#f97316';
@@ -91,10 +93,10 @@ export default function MSAPaper() {
           the relevant ones instantly.
         </p>
         <p>
-          Now look at the best LLMs available today. Even frontier models cap out around
+          Now look at the best <H tip="Large Language Model — a neural network trained on massive text corpora to predict the next token. Examples: GPT-4, Claude, Llama. The 'context window' is the maximum number of tokens it can process at once." color={CYAN}>LLMs</H> available today. Even frontier models cap out around
           <strong> 1 million tokens</strong> of context. That is 0.3% of what a human can hold.
-          And it gets worse: standard self-attention has <code>O(N&sup2;)</code> complexity, so
-          doubling the context length quadruples the compute. At 100M tokens, dense attention
+          And it gets worse: standard <H tip="Self-attention = the core operation in Transformers. Every token computes a weighted sum over all other tokens. The weight matrix is N×N (where N = sequence length), so memory and compute grow quadratically. This is why long contexts are so expensive." color={ORANGE}>self-attention</H> has <code>O(N²)</code> complexity, so
+          doubling the context length quadruples the compute. At 100M tokens, <H tip="Dense attention = the standard approach where every token attends to every other token. No tokens are skipped. This gives perfect information flow but O(N²) cost. MSA replaces this with sparse attention — attending only to the most relevant chunks." color={ORANGE}>dense attention</H>{' '}
           would need <strong>10,000 times</strong> the compute of a 1M context — completely infeasible.
         </p>
         <p>
@@ -327,14 +329,15 @@ export default function MSAPaper() {
         <Prose>
           <p>
             Here is the central design question: why have <strong>two separate</strong> sets of
-            projections? Why not just use the same K vectors for both routing and attention?
+            <H tip="Projection = multiplying a vector by a learned weight matrix to transform it into a new representation optimized for a specific purpose." color={CYAN}> projections</H>?
+            Why not just use the same K vectors for both routing and attention?
           </p>
           <p>
-            Think of it like this: routing asks <em>"Is this document about the right topic?"</em>
-            while content attention asks <em>"What specific information does this token contain?"</em>
+            Think of it like this: <H tip="Routing = deciding WHICH documents are relevant to the query. It's a coarse-grained selection problem — like choosing which books to pull off the shelf." color={ORANGE}>routing</H> asks <em>"Is this document about the right topic?"</em>{' '}
+            while <H tip="Content attention = the fine-grained computation over selected tokens. Once you've pulled the right books, this is actually reading them word-by-word." color={CYAN}>content attention</H> asks <em>"What specific information does this token contain?"</em>{' '}
             These are fundamentally different questions. The routing projector needs to capture
-            high-level semantic similarity — broad strokes about document relevance. The content
-            projector needs fine-grained token-level detail for actual computation.
+            high-level <H tip="Semantic similarity = how close two pieces of text are in meaning, regardless of the exact words used. 'Happy' and 'joyful' are semantically similar even though they share no characters." color={ORANGE}>semantic similarity</H> — broad strokes about document relevance.
+            The content projector needs <H tip="Token-level detail = information about individual words/subwords. While routing cares about 'this document is about biology', content attention cares about 'this specific token says the protein folds at position 42'." color={CYAN}>fine-grained token-level detail</H> for actual computation.
           </p>
           <p>
             If you forced a single set of K vectors to serve both purposes, you would get a
@@ -344,34 +347,44 @@ export default function MSAPaper() {
         </Prose>
       </ConceptCard>
 
-      <FormulaBlock
-        math="K_i = H_i \cdot W_K, \quad V_i = H_i \cdot W_V"
-        label="Content Projections"
+      <FormulaSteps
+        label="Dual Projectors — Building Up Step by Step"
         color={CYAN}
-        symbols={[
-          { symbol: 'H_i', meaning: 'Hidden states of document i from the Transformer backbone' },
-          { symbol: 'W_K', meaning: 'Learned key projection matrix (content branch)' },
-          { symbol: 'W_V', meaning: 'Learned value projection matrix (content branch)' },
-          { symbol: 'K_i', meaning: 'Key vectors for document i — used in final attention computation' },
-          { symbol: 'V_i', meaning: 'Value vectors for document i — carry the actual information to read' },
+        steps={[
+          {
+            note: 'Start with the hidden states H_i — the raw token representations for all tokens in document i, produced by the Transformer backbone. These contain rich information but are not specialized for any task.',
+            math: 'H_i \\in \\mathbb{R}^{G \\times d} \\quad \\text{(G tokens per doc, d = model dimension)}',
+          },
+          {
+            note: 'Project into Content space: multiply by learned matrices W_K and W_V to create Key and Value vectors. These are optimized for the final attention computation — they carry the actual information the model will read.',
+            math: 'K_i = H_i \\cdot W_K, \\quad V_i = H_i \\cdot W_V \\quad \\text{(content branch)}',
+          },
+          {
+            note: 'Separately project into Routing space: a different learned matrix W_KR creates routing keys. These are optimized ONLY for deciding which documents are relevant — they never participate in the final attention.',
+            math: 'K^R_i = H_i \\cdot W_{KR} \\quad \\text{(routing branch — separate parameters)}',
+          },
+          {
+            note: 'The query also gets a routing projection. When a new query arrives, its routing query Q^R is compared against all routing keys K^R to find relevant documents. Its content query Q is used only for the final attention over selected documents.',
+            math: 'Q^R_q = H_q \\cdot W_{QR} \\quad \\text{(routing query)}, \\quad Q_q = H_q \\cdot W_Q \\quad \\text{(content query)}',
+          },
         ]}
-      />
-
-      <FormulaBlock
-        math="K^R_i = H_i \cdot W_{KR}"
-        label="Routing Projection"
-        color={ORANGE}
         symbols={[
-          { symbol: 'W_{KR}', meaning: 'Learned routing key projection — separate from content W_K' },
-          { symbol: 'K^R_i', meaning: 'Routing key vectors for document i — used ONLY for relevance scoring, never in final attention' },
+          { symbol: 'H_i', meaning: 'Hidden states of document i — raw Transformer output for all G tokens' },
+          { symbol: 'W_K, W_V', meaning: 'Content projection matrices — learned for fine-grained attention' },
+          { symbol: 'W_KR, W_QR', meaning: 'Routing projection matrices — learned for document relevance scoring' },
+          { symbol: 'K_i, V_i', meaning: 'Content Key/Value vectors — used in final sparse attention' },
+          { symbol: 'K^R_i', meaning: 'Routing keys — used ONLY for relevance scoring, never in attention' },
+          { symbol: 'G', meaning: 'Tokens per document (up to 64K in training)' },
+          { symbol: 'd', meaning: 'Model dimension (embedding size)' },
         ]}
       />
 
       <Callout type="insight">
-        The routing projection W_KR has the same dimensions as W_K, but learns completely different
-        features. During training, W_KR is optimized via an auxiliary contrastive loss that
-        specifically teaches it to distinguish relevant from irrelevant documents. This separation
-        is what lets MSA achieve near-perfect recall on needle-in-a-haystack tests.
+        Why does separation matter mathematically? The routing loss (L_aux) and the language modeling
+        loss (L_LM) push weights in <strong>different directions</strong>. L_aux wants W_KR to learn
+        coarse document-level features. L_LM wants W_K to learn fine token-level features. Sharing
+        parameters would create a tug-of-war. Separation lets each optimize freely — and the paper shows
+        this is the difference between 95% and 76% NIAH accuracy.
       </Callout>
 
       {/* ── Relevance Scoring ── */}
@@ -384,31 +397,44 @@ export default function MSAPaper() {
           </p>
         </Prose>
 
-        <FormulaBlock
-          math="\text{Score}_{ij} = \max_{t \in \text{tokens}} \left( \text{mean}_{h \in \text{heads}} \cos(Q^R_t, \bar{K}^R_{ij}) \right)"
-          label="Chunk Relevance Score"
+        <FormulaSteps
+          label="Relevance Scoring — Building Up Step by Step"
           color={ORANGE}
+          steps={[
+            {
+              note: 'For each query token t and each stored chunk (j of document i), compute cosine similarity between the routing query and the chunk\'s mean-pooled routing key. This measures "does this query token care about this chunk?"',
+              math: '\\text{sim}_{t,h,ij} = \\cos(Q^R_{t,h}, \\bar{K}^R_{ij,h})',
+            },
+            {
+              note: 'Average across all attention heads h. This creates consensus — ALL heads must agree a chunk is relevant, preventing any single head from dominating the routing decision.',
+              math: '\\text{HeadAvg}_{t,ij} = \\text{mean}_{h \\in \\text{heads}} \\; \\text{sim}_{t,h,ij}',
+            },
+            {
+              note: 'Take the maximum across all query tokens t. The logic: if ANY single token in your query needs information from this chunk, it should be selected. This makes routing inclusive — you\'d rather fetch one extra chunk than miss a critical one.',
+              math: '\\text{Score}_{ij} = \\max_{t \\in \\text{tokens}} \\; \\text{HeadAvg}_{t,ij}',
+            },
+            {
+              note: 'Finally, rank all chunks by their scores and keep only the top-k (default k=8). These are the chunks that will be decompressed and used in the final attention computation.',
+              math: 'I = \\text{Top-}k(\\{\\text{Score}_{ij}\\}_{i,j}, \\; k=8)',
+            },
+          ]}
           symbols={[
-            { symbol: 'Score_{ij}', meaning: 'Relevance score for chunk j of document i' },
-            { symbol: 't', meaning: 'Token index in the current query sequence' },
-            { symbol: 'h', meaning: 'Attention head index' },
-            { symbol: 'Q^R_t', meaning: 'Routing query vector at token position t' },
-            { symbol: 'K̄^R_ij', meaning: 'Mean-pooled routing key for chunk j of document i (compressed)' },
-            { symbol: '\cos', meaning: 'Cosine similarity — measures directional alignment in embedding space' },
-            { symbol: '\max_t', meaning: 'Take the maximum across all query tokens — if ANY token needs this chunk, select it' },
-            { symbol: 'mean_h', meaning: 'Average across attention heads — consensus across different attention patterns' },
+            { symbol: 'Q^R_t', meaning: 'Routing query vector at token position t — "what am I looking for?"' },
+            { symbol: 'K̄^R_ij', meaning: 'Mean-pooled routing key for chunk j of document i — "what does this chunk contain?"' },
+            { symbol: 'cos(·,·)', meaning: 'Cosine similarity — measures directional alignment, ignoring magnitude' },
+            { symbol: 'mean_h', meaning: 'Average across heads = consensus (conservative — all heads must agree)' },
+            { symbol: 'max_t', meaning: 'Maximum across tokens = inclusion (liberal — any token\'s need is enough)' },
+            { symbol: 'k = 8', meaning: 'Number of chunks selected per layer — balances quality vs compute' },
           ]}
         />
 
-        <Prose>
-          <p>
-            Notice the two aggregation steps: <strong>mean across heads</strong> (consensus — all
-            heads should agree a chunk is relevant) then <strong>max across query tokens</strong>
-            (any single token that needs this chunk is enough reason to fetch it). This asymmetry
-            is deliberate. You want to be <em>inclusive</em> about which tokens might need a chunk
-            (max) but <em>conservative</em> about whether the chunk is truly relevant (mean).
-          </p>
-        </Prose>
+        <Callout type="insight">
+          The <strong>mean-then-max asymmetry</strong> is psychologically intuitive. Imagine you are assembling a team for a project.
+          <strong> Mean across heads</strong> is like requiring consensus from multiple evaluators — reduces noise, prevents a single
+          biased evaluator from including irrelevant candidates. <strong>Max across tokens</strong> is like saying "if any department
+          needs this person, hire them" — you would rather have one extra team member than miss someone critical. The formula encodes
+          this cautious-selection + generous-inclusion philosophy in pure math.
+        </Callout>
       </ConceptCard>
 
       {/* ── Chunk Compression ── */}
@@ -416,26 +442,38 @@ export default function MSAPaper() {
         <Prose>
           <p>
             Here is the trick that makes routing over 100M tokens feasible. Instead of computing
-            cosine similarity against every single token's routing key (which would be O(N) per
-            query token), MSA groups tokens into <strong>chunks of P=64</strong> and mean-pools
-            the routing keys within each chunk.
+            <H tip="Cosine similarity = dot product of two unit vectors. Measures how aligned they are in direction (1 = identical direction, 0 = orthogonal, -1 = opposite). Ignores magnitude, only cares about angle." color={CYAN}>cosine similarity</H> against every single token's routing key (which would be <H tip="O(N) means the computation scales linearly with N. For 100M tokens, that's 100M cosine similarity computations PER query token — about 10^8 operations." color={ORANGE}>O(N)</H> per
+            query token), MSA groups tokens into <strong>chunks of P=64</strong> and <H tip="Mean-pooling = averaging a group of vectors into a single representative vector. Like summarizing a paragraph into one sentence — you lose detail but capture the gist." color={CYAN}>mean-pools</H> the routing keys within each chunk.
           </p>
           <p>
             This reduces the routing computation by <strong>64x</strong>. For 100M tokens, that
-            means routing over ~1.56M chunk representations instead of 100M token representations.
-            The content K and V vectors are NOT pooled — they are stored at full resolution and
+            means routing over ~1.56M <H tip="Each chunk representation is a single d-dimensional vector that summarizes the content of 64 consecutive tokens. Think of it as a zip code for a neighborhood — doesn't tell you every address, but tells you the general area." color={CYAN}>chunk representations</H> instead of 100M token representations.
+            The content K and V vectors are <strong>NOT pooled</strong> — they are stored at full resolution and
             only fetched for the selected chunks.
           </p>
         </Prose>
 
-        <FormulaBlock
-          math="\bar{K}^R_{ij} = \frac{1}{P} \sum_{p=1}^{P} K^R_{i, (j-1)P+p}"
-          label="Chunk Mean Pooling"
+        <FormulaSteps
+          label="Chunk Compression — Building Up Step by Step"
           color={CYAN}
+          steps={[
+            {
+              note: 'Take all routing key vectors K^R for document i and divide them into consecutive chunks of P=64 tokens each.',
+              math: '\\text{Chunk}_j = \\{K^R_{i,(j-1)P+1}, \\; K^R_{i,(j-1)P+2}, \\; \\ldots, \\; K^R_{i,jP}\\} \\quad \\text{(64 vectors per chunk)}',
+            },
+            {
+              note: 'Average the 64 routing keys within each chunk into a single representative vector. This is the "summary" of what that chunk of 64 tokens contains.',
+              math: '\\bar{K}^R_{ij} = \\frac{1}{P} \\sum_{p=1}^{P} K^R_{i,(j-1)P+p}',
+            },
+            {
+              note: 'Result: 100M tokens → ~1.56M chunk vectors. Routing now compares against 1.56M vectors instead of 100M — a 64x reduction that makes the entire system feasible.',
+              math: '\\text{100M tokens} \\xrightarrow{\\div 64} \\text{1.56M chunks} \\quad \\text{(GPU-resident for fast routing)}',
+            },
+          ]}
           symbols={[
-            { symbol: 'K̄^R_ij', meaning: 'Mean-pooled routing key for chunk j of document i' },
-            { symbol: 'P', meaning: 'Chunk size — set to 64 tokens' },
-            { symbol: 'K^R_{i, (j-1)P+p}', meaning: 'Individual routing key at position p within chunk j of document i' },
+            { symbol: 'K̄^R_ij', meaning: 'Mean-pooled routing key for chunk j of document i — one vector per 64 tokens' },
+            { symbol: 'P = 64', meaning: 'Chunk size — sweet spot between accuracy (smaller) and speed (larger)' },
+            { symbol: '1.56M', meaning: '100M tokens / 64 tokens per chunk ≈ 1.56M chunk representations' },
           ]}
         />
 
@@ -543,31 +581,47 @@ export default function MSAPaper() {
       <ConceptCard title="The Auxiliary Contrastive Loss (L_aux)" color={ORANGE} defaultOpen={true}>
         <Prose>
           <p>
-            The primary training signal (next-token prediction loss) tells the model <em>what</em>
+            The primary training signal (<H tip="Next-token prediction = standard language model training. Given a sequence of tokens, predict the next one. The loss is cross-entropy between the predicted distribution and the actual next token." color={CYAN}>next-token prediction loss</H>) tells the model <em>what</em>{' '}
             to output but gives only indirect signal about <em>which chunks to select</em>. If the
-            model selects a wrong chunk, it generates a bad token, but the gradient signal about
+            model selects a wrong chunk, it generates a bad token, but the <H tip="Gradient signal = the information flowing backward through the network during backpropagation. A 'diffuse' gradient means the signal is spread thinly across many parameters, making it hard for any single component to learn from it." color={ORANGE}>gradient signal</H> about
             which chunk <em>should</em> have been selected is very diffuse — it has to propagate
             back through the full attention computation.
           </p>
           <p>
             L_aux provides a direct, dense training signal for the routing mechanism. It is a
-            contrastive loss that explicitly tells the routing projector: "this chunk's routing key
+            <H tip="Contrastive loss = a loss function that pushes similar items closer and dissimilar items apart in the embedding space. Think of it like organizing a library: books on the same topic should be on nearby shelves, books on different topics should be far apart." color={ORANGE}> contrastive loss</H> that explicitly tells the routing projector: "this chunk's routing key
             should be similar to the query's routing key, and that chunk's routing key should be
-            dissimilar."
+            dissimilar." This is the same idea as <H tip="InfoNCE = Noise-Contrastive Estimation for information maximization. Originally from the CPC paper (van den Oord 2018). The denominator acts as a normalizing partition function, making this a softmax over positive/negative similarities." color={ORANGE}>InfoNCE</H> from contrastive learning.
           </p>
         </Prose>
 
-        <FormulaBlock
-          math="L_{\text{aux}} = -\log \frac{\exp(\cos(Q^R, \bar{K}^R_{+}) / \tau)}{\sum_{j} \exp(\cos(Q^R, \bar{K}^R_{j}) / \tau)}"
-          label="Auxiliary Contrastive Loss"
+        <FormulaSteps
+          label="Auxiliary Contrastive Loss — Building Up Step by Step"
           color={ORANGE}
+          steps={[
+            {
+              note: 'Compute the cosine similarity between the routing query Q^R and the routing key of the POSITIVE (relevant) chunk. This should be HIGH — the model should recognize relevant documents.',
+              math: 's^+ = \\cos(Q^R, \\bar{K}^R_{+}) \\quad \\text{(similarity to the correct chunk)}',
+            },
+            {
+              note: 'Also compute cosine similarity against ALL other chunks (the negatives). These should be LOW — the model should be able to distinguish relevant from irrelevant.',
+              math: 's_j = \\cos(Q^R, \\bar{K}^R_{j}) \\quad \\forall j \\in \\text{all chunks}',
+            },
+            {
+              note: 'Apply temperature scaling τ (typically 0.07) and softmax. Temperature controls "sharpness" — low τ makes the distribution peaked, forcing the model to be very confident about its selection.',
+              math: 'p_j = \\frac{\\exp(s_j / \\tau)}{\\sum_k \\exp(s_k / \\tau)} \\quad \\text{(softmax over all chunks)}',
+            },
+            {
+              note: 'The loss is the negative log-probability of the positive chunk. Minimizing this = maximizing the probability that the routing system ranks the correct chunk highest. It\'s InfoNCE — the gold standard of contrastive learning.',
+              math: 'L_{\\text{aux}} = -\\log \\frac{\\exp(\\cos(Q^R, \\bar{K}^R_{+}) / \\tau)}{\\sum_{j} \\exp(\\cos(Q^R, \\bar{K}^R_{j}) / \\tau)}',
+            },
+          ]}
           symbols={[
-            { symbol: 'L_aux', meaning: 'Contrastive loss — pushes relevant chunk routing keys closer to query' },
-            { symbol: 'Q^R', meaning: 'Routing query from the current input' },
-            { symbol: 'K̄^R_+', meaning: 'Routing key of the positive (correct/relevant) chunk' },
-            { symbol: 'K̄^R_j', meaning: 'Routing keys of all chunks (positive + negatives)' },
-            { symbol: '\tau', meaning: 'Temperature parameter — controls the sharpness of the distribution' },
-            { symbol: '\cos', meaning: 'Cosine similarity in routing embedding space' },
+            { symbol: 'Q^R', meaning: 'Routing query — what the current input is "looking for" in memory' },
+            { symbol: 'K̄^R_+', meaning: 'Routing key of the positive chunk — the one that actually contains the answer' },
+            { symbol: 'K̄^R_j', meaning: 'Routing keys of all chunks — both relevant and irrelevant' },
+            { symbol: 'τ = 0.07', meaning: 'Temperature — lower = sharper distribution = model must be more confident' },
+            { symbol: 'cos(·,·)', meaning: 'Cosine similarity — direction-only comparison in routing space' },
           ]}
         />
 

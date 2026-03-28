@@ -513,6 +513,58 @@
   letter-spacing: 0.5px;
 }
 
+/* ── Hover Term Tooltip ── */
+.hover-term {
+  position: relative;
+  display: inline;
+  color: var(--ht-color, var(--cyan));
+  font-weight: 600;
+  cursor: help;
+  border-bottom: 1.5px dotted color-mix(in srgb, var(--ht-color, var(--cyan)) 50%, transparent);
+  transition: all 0.15s ease;
+}
+.hover-term:hover {
+  border-bottom-style: solid;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--ht-color, var(--cyan)) 30%, transparent);
+}
+.hover-term-tip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 340px;
+  padding: 10px 14px;
+  background: #111827;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.65;
+  z-index: 1000;
+  pointer-events: none;
+  animation: tipFadeIn 0.15s ease;
+  white-space: normal;
+}
+.hover-term-tip-arrow {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: #111827;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+@keyframes tipFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
 /* ── Smooth Animations ── */
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(12px); }
