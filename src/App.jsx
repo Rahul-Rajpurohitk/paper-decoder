@@ -5,10 +5,12 @@ import './styles/reader.css';
 import PaperLibrary from './components/PaperLibrary';
 import MSAPaper from './papers/msa/MSAPaper';
 import TurboQuantPaper from './papers/turboquant/TurboQuantPaper';
+import DINOv3Paper from './papers/dinov3/DINOv3Paper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
+import dinov3Config from './papers/dinov3/config';
 
-const PAPERS = [msaConfig, tqConfig, {
+const PAPERS = [msaConfig, tqConfig, dinov3Config, {
   id: 'placeholder_1',
   title: 'Next Paper',
   subtitle: 'Coming soon — suggest a paper!',
@@ -21,6 +23,7 @@ const PAPERS = [msaConfig, tqConfig, {
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
   turboquant: TurboQuantPaper,
+  dinov3: DINOv3Paper,
 };
 
 export default function App() {
