@@ -179,9 +179,9 @@ export default function TurboQuantPaper() {
           ))}
           <text x="560" y="360" fill={FG} fontSize="10" textAnchor="middle" opacity="0.7">Energy spread uniformly</text>
 
-          {/* Bottom insight */}
-          <rect x="200" y="300" width="200" height="30" rx="8" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1" />
-          <text x="300" y="320" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">{'Each y_i ~ Beta(\u00bd, (d-1)/2)'}</text>
+          {/* Bottom insight — centered below both charts */}
+          <rect x="270" y="348" width="260" height="26" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1" />
+          <text x="400" y="366" fill={A} fontSize="11" fontWeight="700" textAnchor="middle">Each y_i ~ Beta(½, (d-1)/2)</text>
         </svg>
       </Diagram>
 
