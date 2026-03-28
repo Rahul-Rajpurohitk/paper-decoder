@@ -279,7 +279,7 @@ export default function MSAPaper() {
           <text x="555" y="324" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Selected Indices</text>
 
           {/* Fetch full KV from zone 2 */}
-          <path d="M295,291 C295,370 450,370 480,395" fill="none" stroke={CYAN} strokeWidth="1.5" strokeDasharray="5 3" markerEnd="url(#ah-c)" />
+          <path d="M250,291 L250,460 C250,475 350,475 480,400" fill="none" stroke={CYAN} strokeWidth="1.5" strokeDasharray="5 3" markerEnd="url(#ah-c)" />
           <rect x="480" y="380" width="150" height="38" rx="8" fill="#164e63" stroke={CYAN} strokeWidth="1" />
           <text x="555" y="404" textAnchor="middle" fill="#7dd3fc" fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Fetch Full K_i, V_i</text>
           <text x="555" y="436" textAnchor="middle" fill="#475569" fontSize="9" fontStyle="italic" fontFamily="Inter, system-ui, sans-serif">only selected chunks</text>
