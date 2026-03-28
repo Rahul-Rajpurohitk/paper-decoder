@@ -1087,6 +1087,44 @@ export default function DINOv3Paper() {
         </p>
       </Prose>
 
+      {/* Training Pipeline Timeline SVG */}
+      <Diagram caption={<><strong>Training Timeline</strong> — Three phases with distinct objectives. Phase 2 (Gram) starts after 1M iterations when dense features begin degrading.</>}>
+        <svg viewBox="0 0 880 180" style={{ width: '100%', height: 'auto' }}>
+          <rect width="880" height="180" rx="12" fill="#0a0f1a" />
+
+          {/* Timeline axis */}
+          <line x1="40" y1="90" x2="840" y2="90" stroke="#334155" strokeWidth="2" />
+
+          {/* Phase 1: Pre-training */}
+          <rect x="40" y="55" width="450" height="70" rx="10" fill={P} fillOpacity="0.15" stroke={P} strokeWidth="1.5" />
+          <text x="265" y="82" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Phase 1: Pre-training</text>
+          <text x="265" y="100" textAnchor="middle" fill={P2} fontSize="10" fontFamily="Inter, system-ui, sans-serif">L_DINO + L_iBOT + 0.1·L_Koleo</text>
+          <text x="265" y="115" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">1M iterations · 256 GPUs · constant LR</text>
+
+          {/* Phase 2: Gram Refinement */}
+          <rect x="500" y="55" width="180" height="70" rx="10" fill="#f59e0b" fillOpacity="0.15" stroke="#f59e0b" strokeWidth="1.5" />
+          <text x="590" y="82" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Phase 2: Gram</text>
+          <text x="590" y="100" textAnchor="middle" fill="#fbbf24" fontSize="10" fontFamily="Inter, system-ui, sans-serif">+ L_Gram anchoring</text>
+          <text x="590" y="115" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">50k iterations</text>
+
+          {/* Phase 3: High-res */}
+          <rect x="690" y="55" width="150" height="70" rx="10" fill="#22c55e" fillOpacity="0.15" stroke="#22c55e" strokeWidth="1.5" />
+          <text x="765" y="82" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Phase 3: Hi-Res</text>
+          <text x="765" y="100" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">518×518 adaptation</text>
+          <text x="765" y="115" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Resolution tuning</text>
+
+          {/* Tick marks */}
+          <text x="40" y="148" textAnchor="start" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">0</text>
+          <text x="490" y="148" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">1M iter</text>
+          <text x="680" y="148" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">1.05M</text>
+          <text x="840" y="148" textAnchor="end" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Final</text>
+
+          {/* Annotation: dense features degrade here */}
+          <line x1="300" y1="40" x2="300" y2="55" stroke="#ef4444" strokeWidth="1" strokeDasharray="3 2" />
+          <text x="300" y="35" textAnchor="middle" fill="#ef4444" fontSize="8" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">~200k: dense features start degrading</text>
+        </svg>
+      </Diagram>
+
       <StepFlow
         color={P}
         steps={[
@@ -1180,6 +1218,43 @@ export default function DINOv3Paper() {
           teacher's performance at a fraction of the compute.
         </p>
       </Prose>
+
+      {/* Distillation Tree Diagram */}
+      <Diagram caption={<><strong>Knowledge Distillation</strong> — One 7B teacher distills into a full family of models for every compute budget.</>}>
+        <svg viewBox="0 0 800 220" style={{ width: '100%', height: 'auto' }}>
+          <rect width="800" height="220" rx="12" fill="#0a0f1a" />
+
+          {/* Teacher */}
+          <rect x="310" y="20" width="180" height="50" rx="10" fill={P} fillOpacity="0.3" stroke={P} strokeWidth="2" />
+          <text x="400" y="43" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">ViT-7B Teacher</text>
+          <text x="400" y="60" textAnchor="middle" fill={P2} fontSize="10" fontFamily="Inter, system-ui, sans-serif">6.7B params · frozen</text>
+
+          {/* Distillation arrows */}
+          {[
+            { x: 100, label: 'ViT-S', params: '22M', color: '#22c55e' },
+            { x: 230, label: 'ViT-B', params: '86M', color: '#06b6d4' },
+            { x: 360, label: 'ViT-L', params: '300M', color: '#f59e0b' },
+            { x: 500, label: 'ViT-g', params: '1.1B', color: '#a78bfa' },
+            { x: 650, label: 'ConvNeXt', params: 'Various', color: '#f87171' },
+          ].map((m, i) => (
+            <g key={i}>
+              <line x1="400" y1="70" x2={m.x + 40} y2="120" stroke={m.color} strokeWidth="1.5" strokeDasharray="4 2" />
+              <rect x={m.x} y="125" width="80" height="50" rx="8" fill={m.color} fillOpacity="0.12" stroke={m.color} strokeWidth="1.5" />
+              <text x={m.x + 40} y="148" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">{m.label}</text>
+              <text x={m.x + 40} y="165" textAnchor="middle" fill={m.color} fontSize="9" fontFamily="Inter, system-ui, sans-serif">{m.params}</text>
+            </g>
+          ))}
+
+          {/* Arrow label */}
+          <text x="400" y="100" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">distill features via matching teacher distributions</text>
+
+          {/* Scale arrow at bottom */}
+          <line x1="100" y1="200" x2="730" y2="200" stroke="#334155" strokeWidth="1" markerEnd="url(#mc-ap)" />
+          <text x="100" y="195" fill="#64748b" fontSize="8" fontFamily="Inter, system-ui, sans-serif">Mobile</text>
+          <text x="730" y="195" textAnchor="end" fill="#64748b" fontSize="8" fontFamily="Inter, system-ui, sans-serif">Datacenter</text>
+          <text x="415" y="195" textAnchor="middle" fill="#475569" fontSize="8" fontFamily="Inter, system-ui, sans-serif">← compute budget →</text>
+        </svg>
+      </Diagram>
 
       <ComparisonTable
         headers={['Model', 'Parameters', 'Embed Dim', 'Layers', 'IN-1k (linear)', 'ADE20k (mIoU)', 'Use Case']}
