@@ -158,126 +158,167 @@ export default function MSAPaper() {
       </Prose>
 
       {/* ── MSA Architecture Overview SVG ── */}
-      <Diagram caption="MSA Architecture: from raw documents to sparse attention output">
-        <svg viewBox="0 0 860 520" style={{ width: '100%', height: 'auto' }}>
-          {/* Background zones */}
-          <rect x="10" y="10" width="840" height="500" rx="16" fill="#0f172a" opacity="0.5" />
+      <Diagram caption={<><strong>MSA Architecture</strong> — Full pipeline from document corpus to sparse attention output. Cyan = content path, Orange = routing path, Green = output path.</>}>
+        <svg viewBox="0 0 960 600" style={{ width: '100%', height: 'auto' }}>
+          <defs>
+            <linearGradient id="g-cyan" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#0e7490" /><stop offset="100%" stopColor="#164e63" /></linearGradient>
+            <linearGradient id="g-orange" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#c2410c" /><stop offset="100%" stopColor="#7c2d12" /></linearGradient>
+            <linearGradient id="g-green" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#15803d" /><stop offset="100%" stopColor="#14532d" /></linearGradient>
+            <linearGradient id="g-dark" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#1e293b" /><stop offset="100%" stopColor="#0f172a" /></linearGradient>
+            <filter id="glow-c"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+            <filter id="glow-o"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+            <marker id="ah-c" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill={CYAN} /></marker>
+            <marker id="ah-o" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill={ORANGE} /></marker>
+            <marker id="ah-g" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill={GREEN} /></marker>
+            <marker id="ah-gray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#64748b" /></marker>
+          </defs>
 
-          {/* ── Left: Document Ingestion ── */}
-          <rect x="25" y="30" width="160" height="460" rx="12" fill="#1e293b" stroke="#334155" strokeWidth="1" />
-          {LABEL(105, 55, 'DOCUMENT STORE', '#64748b', 12)}
+          {/* ── ZONE 1: Document Store ── */}
+          <rect x="15" y="15" width="170" height="570" rx="14" fill="url(#g-dark)" stroke="#334155" strokeWidth="1" />
+          <text x="100" y="42" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="700" letterSpacing="2" fontFamily="Inter, system-ui, sans-serif">DOCUMENT STORE</text>
 
-          {BOX(40, 75, 130, 38, 'Doc 1', '#1e3a5f', CYAN, 12)}
-          {BOX(40, 123, 130, 38, 'Doc 2', '#1e3a5f', CYAN, 12)}
-          {BOX(40, 171, 130, 38, 'Doc 3', '#1e3a5f', CYAN, 12)}
-          {LABEL(105, 228, '...', '#64748b', 16)}
-          {BOX(40, 245, 130, 38, 'Doc N', '#1e3a5f', CYAN, 12)}
+          {[['Doc 1', 60], ['Doc 2', 108], ['Doc 3', 156], ['...', 200], ['Doc N', 228]].map(([t, y]) => (
+            <g key={t}>
+              <rect x="32" y={y} width="136" height={t === '...' ? 20 : 38} rx="8" fill={t === '...' ? 'none' : '#0c4a6e'} stroke={t === '...' ? 'none' : '#155e75'} strokeWidth="1" />
+              <text x="100" y={y + (t === '...' ? 14 : 24)} textAnchor="middle" fill={t === '...' ? '#475569' : '#7dd3fc'} fontSize={t === '...' ? 16 : 12} fontWeight="600" fontFamily="Inter, system-ui, sans-serif">{t}</text>
+            </g>
+          ))}
 
-          {/* Doc-wise RoPE annotation */}
-          <rect x="35" y="305" width="140" height="60" rx="8" fill="#0c4a6e" opacity="0.6" />
-          <text x="105" y="328" textAnchor="middle" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Doc-wise RoPE</text>
-          <text x="105" y="348" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Each doc starts at pos 0</text>
-          <text x="105" y="360" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontFamily="Inter, system-ui, sans-serif">No cross-doc position leak</text>
+          {/* Doc-wise RoPE badge */}
+          <rect x="28" y="290" width="144" height="72" rx="10" fill="#0c4a6e" stroke={CYAN} strokeWidth="1" strokeDasharray="4 2" opacity="0.8" />
+          <text x="100" y="312" textAnchor="middle" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Doc-wise RoPE</text>
+          <text x="100" y="330" textAnchor="middle" fill="#67e8f9" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Each doc: position 0 → G</text>
+          <text x="100" y="346" textAnchor="middle" fill="#67e8f9" fontSize="9" fontFamily="Inter, system-ui, sans-serif">No cross-doc leakage</text>
 
-          {/* Arrow from docs to encoder */}
-          {ARROW(170, 160, 215, 160, CYAN)}
+          {/* Flow arrow docs → projectors */}
+          <line x1="185" y1="180" x2="220" y2="180" stroke={CYAN} strokeWidth="2" markerEnd="url(#ah-c)" />
 
-          {/* ── Middle-Left: Encoder / Projectors ── */}
-          <rect x="220" y="30" width="190" height="460" rx="12" fill="#1e293b" stroke="#334155" strokeWidth="1" />
-          {LABEL(315, 55, 'DUAL PROJECTORS', '#64748b', 12)}
+          {/* ── ZONE 2: Dual Projectors ── */}
+          <rect x="225" y="15" width="210" height="570" rx="14" fill="url(#g-dark)" stroke="#334155" strokeWidth="1" />
+          <text x="330" y="42" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="700" letterSpacing="2" fontFamily="Inter, system-ui, sans-serif">DUAL PROJECTORS</text>
 
-          {/* Hidden states */}
-          {BOX(235, 80, 160, 36, 'H_i (hidden states)', '#374151', '#e2e8f0', 12)}
+          {/* H_i */}
+          <rect x="245" y="60" width="170" height="40" rx="8" fill="#374151" stroke="#4b5563" strokeWidth="1" />
+          <text x="330" y="85" textAnchor="middle" fill="#e2e8f0" fontSize="13" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">H_i (hidden states)</text>
 
-          {/* Content branch */}
-          {ARROW(315, 116, 280, 155, CYAN)}
-          {BOX(235, 160, 95, 34, 'W_K  (Key)', '#164e63', CYAN, 11)}
-          {BOX(235, 204, 95, 34, 'W_V  (Value)', '#164e63', CYAN, 11)}
-          {LABEL(282, 258, 'Content', CYAN, 10)}
+          {/* Split arrows */}
+          <line x1="295" y1="100" x2="295" y2="125" stroke={CYAN} strokeWidth="1.5" markerEnd="url(#ah-c)" />
+          <line x1="375" y1="100" x2="375" y2="125" stroke={ORANGE} strokeWidth="1.5" markerEnd="url(#ah-o)" />
 
-          {/* Routing branch */}
-          {ARROW(315, 116, 355, 155, ORANGE)}
-          {BOX(340, 160, 55, 34, 'W_KR', '#7c2d12', ORANGE, 11)}
-          {LABEL(367, 258, 'Routing', ORANGE, 10)}
+          {/* Content projectors */}
+          <rect x="245" y="130" width="100" height="36" rx="8" fill="url(#g-cyan)" stroke="#0e7490" strokeWidth="1" />
+          <text x="295" y="153" textAnchor="middle" fill="#e0f2fe" fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">W_K (Key)</text>
+          <rect x="245" y="178" width="100" height="36" rx="8" fill="url(#g-cyan)" stroke="#0e7490" strokeWidth="1" />
+          <text x="295" y="201" textAnchor="middle" fill="#e0f2fe" fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">W_V (Value)</text>
+          <text x="295" y="232" textAnchor="middle" fill={CYAN} fontSize="10" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">CONTENT</text>
 
-          {/* Content KV outputs */}
-          {BOX(235, 280, 95, 34, 'K_i, V_i', '#0e7490', '#fff', 12)}
-          {ARROW(282, 248, 282, 280, CYAN)}
+          {/* Routing projector */}
+          <rect x="355" y="130" width="70" height="36" rx="8" fill="url(#g-orange)" stroke="#c2410c" strokeWidth="1" />
+          <text x="390" y="153" textAnchor="middle" fill="#fed7aa" fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">W_KR</text>
+          <text x="390" y="184" textAnchor="middle" fill={ORANGE} fontSize="10" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">ROUTING</text>
 
-          {/* Routing key output */}
-          {BOX(340, 280, 55, 34, 'K^R_i', '#c2410c', '#fff', 12)}
-          {ARROW(367, 194, 367, 280, ORANGE)}
+          {/* Output vectors */}
+          <line x1="295" y1="214" x2="295" y2="250" stroke={CYAN} strokeWidth="1.5" markerEnd="url(#ah-c)" />
+          <rect x="250" y="255" width="90" height="36" rx="8" fill="#0e7490" stroke="#06b6d4" strokeWidth="1.5" filter="url(#glow-c)" />
+          <text x="295" y="278" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">K_i , V_i</text>
+
+          <line x1="390" y1="166" x2="390" y2="250" stroke={ORANGE} strokeWidth="1.5" markerEnd="url(#ah-o)" />
+          <rect x="358" y="255" width="64" height="36" rx="8" fill="#c2410c" stroke="#fb923c" strokeWidth="1.5" filter="url(#glow-o)" />
+          <text x="390" y="278" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">K^R_i</text>
 
           {/* Chunk Pooling */}
-          {BOX(235, 345, 160, 40, 'Chunk Mean Pool (P=64)', '#1e3a5f', '#7dd3fc', 11)}
-          {ARROW(282, 314, 282, 345, CYAN)}
-          {ARROW(367, 314, 367, 345, ORANGE)}
+          <line x1="295" y1="291" x2="295" y2="320" stroke={CYAN} strokeWidth="1.5" markerEnd="url(#ah-c)" />
+          <line x1="390" y1="291" x2="390" y2="320" stroke={ORANGE} strokeWidth="1.5" markerEnd="url(#ah-o)" />
+          <rect x="250" y="325" width="175" height="44" rx="10" fill="#1e3a5f" stroke="#38bdf8" strokeWidth="1" strokeDasharray="4 2" />
+          <text x="337" y="347" textAnchor="middle" fill="#7dd3fc" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Chunk Mean Pool</text>
+          <text x="337" y="363" textAnchor="middle" fill="#38bdf8" fontSize="10" fontFamily="Inter, system-ui, sans-serif">P = 64 tokens per chunk</text>
 
-          {/* Compressed outputs */}
-          {BOX(235, 410, 75, 34, 'K̄_ij', '#0e7490', '#fff', 12)}
-          {BOX(320, 410, 75, 34, 'K̄^R_ij', '#c2410c', '#fff', 12)}
-          {ARROW(282, 385, 272, 410, CYAN)}
-          {ARROW(357, 385, 357, 410, ORANGE)}
+          {/* Compressed KV */}
+          <line x1="295" y1="369" x2="280" y2="400" stroke={CYAN} strokeWidth="1.5" markerEnd="url(#ah-c)" />
+          <line x1="370" y1="369" x2="385" y2="400" stroke={ORANGE} strokeWidth="1.5" markerEnd="url(#ah-o)" />
+          <rect x="245" y="405" width="80" height="34" rx="8" fill="#0e7490" stroke="#06b6d4" strokeWidth="1" />
+          <text x="285" y="426" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">K̄_ij</text>
+          <rect x="340" y="405" width="80" height="34" rx="8" fill="#c2410c" stroke="#fb923c" strokeWidth="1" />
+          <text x="380" y="426" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">K̄^R_ij</text>
 
-          {/* 64x label */}
-          <text x="315" y="470" textAnchor="middle" fill="#94a3b8" fontSize="10" fontFamily="Inter, system-ui, sans-serif">64x compression per chunk</text>
+          <rect x="265" y="455" width="130" height="24" rx="6" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+          <text x="330" y="471" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">64× compression</text>
 
-          {/* ── Middle-Right: Routing & Selection ── */}
-          <rect x="425" y="30" width="190" height="460" rx="12" fill="#1e293b" stroke="#334155" strokeWidth="1" />
-          {LABEL(520, 55, 'ROUTE & SELECT', '#64748b', 12)}
+          {/* ── ZONE 3: Route & Select ── */}
+          <rect x="450" y="15" width="210" height="570" rx="14" fill="url(#g-dark)" stroke="#334155" strokeWidth="1" />
+          <text x="555" y="42" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="700" letterSpacing="2" fontFamily="Inter, system-ui, sans-serif">ROUTE & SELECT</text>
 
-          {/* Query arrives */}
-          {BOX(445, 80, 150, 36, 'Q^R (query routing)', '#7c2d12', ORANGE, 11)}
+          {/* Query routing key */}
+          <rect x="475" y="65" width="160" height="38" rx="8" fill="url(#g-orange)" stroke="#fb923c" strokeWidth="1.5" />
+          <text x="555" y="89" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Q^R (routing query)</text>
 
-          {/* Scoring */}
-          {ARROW(520, 116, 520, 145, ORANGE)}
-          {BOX(445, 145, 150, 40, 'Relevance Score', '#431407', '#fb923c', 13)}
-          <text x="520" y="205" textAnchor="middle" fill="#fdba74" fontSize="9" fontFamily="Inter, system-ui, sans-serif">cos(Q^R, K̄^R_ij) per chunk</text>
+          {/* Arrow down to scoring */}
+          <line x1="555" y1="103" x2="555" y2="130" stroke={ORANGE} strokeWidth="1.5" markerEnd="url(#ah-o)" />
 
-          {/* Routing key input */}
-          {ARROW(395, 427, 445, 175, ORANGE, true)}
+          {/* Relevance scoring */}
+          <rect x="475" y="135" width="160" height="50" rx="10" fill="#431407" stroke="#fb923c" strokeWidth="1.5" />
+          <text x="555" y="157" textAnchor="middle" fill="#fb923c" fontSize="13" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Relevance Score</text>
+          <text x="555" y="176" textAnchor="middle" fill="#fdba74" fontSize="9" fontFamily="Inter, system-ui, sans-serif">cos(Q^R, K̄^R_ij) per chunk</text>
 
-          {/* Top-k */}
-          {ARROW(520, 200, 520, 230, ORANGE)}
-          {BOX(445, 230, 150, 36, 'Top-k Selection', '#7c2d12', '#fff', 13)}
-          <text x="520" y="285" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Select k most relevant chunks</text>
+          {/* Routing key feed-in from zone 2 */}
+          <path d="M420,422 C445,422 450,200 475,165" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeDasharray="5 3" markerEnd="url(#ah-o)" />
 
-          {/* Selected chunk indices */}
-          {ARROW(520, 275, 520, 310, GREEN)}
-          {BOX(455, 315, 130, 36, 'Selected Indices', '#14532d', GREEN, 12)}
+          {/* Arrow to top-k */}
+          <line x1="555" y1="185" x2="555" y2="215" stroke={ORANGE} strokeWidth="1.5" markerEnd="url(#ah-o)" />
 
-          {/* Fetch full KV */}
-          {ARROW(310, 297, 310, 330, CYAN, true)}
-          {ARROW(310, 330, 455, 380, CYAN, true)}
-          {BOX(455, 375, 130, 36, 'Fetch Full K_i, V_i', '#164e63', CYAN, 12)}
+          {/* Top-k selection */}
+          <rect x="475" y="220" width="160" height="40" rx="8" fill="url(#g-orange)" stroke="#c2410c" strokeWidth="1" />
+          <text x="555" y="245" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Top-k Selection</text>
+          <text x="555" y="278" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Keep k=8 most relevant chunks</text>
 
-          <text x="380" y="420" textAnchor="middle" fill="#64748b" fontSize="9" fontStyle="italic" fontFamily="Inter, system-ui, sans-serif">only selected chunks</text>
+          {/* Arrow to selected indices */}
+          <line x1="555" y1="260" x2="555" y2="295" stroke={GREEN} strokeWidth="2" markerEnd="url(#ah-g)" />
 
-          {/* ── Right: Sparse Attention ── */}
-          <rect x="635" y="30" width="200" height="460" rx="12" fill="#1e293b" stroke="#334155" strokeWidth="1" />
-          {LABEL(735, 55, 'SPARSE ATTENTION', '#64748b', 12)}
+          {/* Selected indices */}
+          <rect x="480" y="300" width="150" height="38" rx="8" fill="url(#g-green)" stroke="#22c55e" strokeWidth="1.5" filter="url(#glow-c)" />
+          <text x="555" y="324" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Selected Indices</text>
+
+          {/* Fetch full KV from zone 2 */}
+          <path d="M295,291 C295,370 450,370 480,395" fill="none" stroke={CYAN} strokeWidth="1.5" strokeDasharray="5 3" markerEnd="url(#ah-c)" />
+          <rect x="480" y="380" width="150" height="38" rx="8" fill="#164e63" stroke={CYAN} strokeWidth="1" />
+          <text x="555" y="404" textAnchor="middle" fill="#7dd3fc" fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Fetch Full K_i, V_i</text>
+          <text x="555" y="436" textAnchor="middle" fill="#475569" fontSize="9" fontStyle="italic" fontFamily="Inter, system-ui, sans-serif">only selected chunks</text>
+
+          {/* ── ZONE 4: Sparse Attention ── */}
+          <rect x="680" y="15" width="265" height="570" rx="14" fill="url(#g-dark)" stroke="#334155" strokeWidth="1" />
+          <text x="812" y="42" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="700" letterSpacing="2" fontFamily="Inter, system-ui, sans-serif">SPARSE ATTENTION</text>
 
           {/* Query content */}
-          {BOX(660, 85, 150, 36, 'Q (query content)', '#164e63', CYAN, 12)}
+          <rect x="710" y="65" width="205" height="38" rx="8" fill="url(#g-cyan)" stroke={CYAN} strokeWidth="1.5" />
+          <text x="812" y="89" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Q (query content vectors)</text>
 
-          {/* Attention computation */}
-          {ARROW(585, 393, 635, 200, CYAN)}
-          {ARROW(735, 121, 735, 160, CYAN)}
-          {BOX(660, 165, 150, 65, '', '#0c4a6e', '#fff', 12)}
-          <text x="735" y="188" textAnchor="middle" fill="#7dd3fc" fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Attention</text>
-          <text x="735" y="206" textAnchor="middle" fill="#bae6fd" fontSize="10" fontFamily="Inter, system-ui, sans-serif">softmax(Q · Kᵀ / √d) · V</text>
-          <text x="735" y="220" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">over selected chunks only</text>
+          {/* Feed selected KV into attention */}
+          <line x1="630" y1="399" x2="710" y2="200" stroke={CYAN} strokeWidth="1.5" markerEnd="url(#ah-c)" />
+          <line x1="812" y1="103" x2="812" y2="145" stroke={CYAN} strokeWidth="1.5" markerEnd="url(#ah-c)" />
+
+          {/* Attention block */}
+          <rect x="710" y="150" width="205" height="80" rx="12" fill="#0c4a6e" stroke="#06b6d4" strokeWidth="2" />
+          <text x="812" y="178" textAnchor="middle" fill="#e0f2fe" fontSize="15" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Attention</text>
+          <text x="812" y="198" textAnchor="middle" fill="#bae6fd" fontSize="11" fontFamily="Inter, system-ui, sans-serif">softmax(Q · Kᵀ / √d) · V</text>
+          <text x="812" y="218" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontFamily="Inter, system-ui, sans-serif">over selected chunks only</text>
 
           {/* Output */}
-          {ARROW(735, 230, 735, 280, GREEN)}
-          {BOX(660, 285, 150, 42, 'Output', '#14532d', GREEN, 15, 10)}
+          <line x1="812" y1="230" x2="812" y2="270" stroke={GREEN} strokeWidth="2" markerEnd="url(#ah-g)" />
+          <rect x="735" y="275" width="155" height="50" rx="10" fill="url(#g-green)" stroke="#22c55e" strokeWidth="2" />
+          <text x="812" y="305" textAnchor="middle" fill="#fff" fontSize="16" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Output</text>
 
-          {/* Complexity annotation */}
-          <rect x="660" y="355" width="150" height="80" rx="8" fill="#0f172a" stroke="#334155" strokeWidth="1" />
-          <text x="735" y="378" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Complexity</text>
-          <text x="735" y="398" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Route: O(N/P)</text>
-          <text x="735" y="415" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Attend: O(k · P)</text>
-          <text x="735" y="432" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">vs Dense: O(N²)</text>
+          {/* Complexity card */}
+          <rect x="710" y="365" width="205" height="105" rx="10" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+          <text x="812" y="390" textAnchor="middle" fill={GREEN} fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Complexity</text>
+          <line x1="730" y1="400" x2="895" y2="400" stroke="#1e293b" strokeWidth="1" />
+          <text x="812" y="420" textAnchor="middle" fill="#86efac" fontSize="11" fontFamily="Inter, system-ui, sans-serif">Route:  O(N / P)</text>
+          <text x="812" y="440" textAnchor="middle" fill="#86efac" fontSize="11" fontFamily="Inter, system-ui, sans-serif">Attend: O(k · P)</text>
+          <text x="812" y="460" textAnchor="middle" fill="#94a3b8" fontSize="10" fontFamily="Inter, system-ui, sans-serif">vs Dense: O(N²)</text>
+
+          {/* ── Flow labels between zones ── */}
+          <text x="206" y="172" textAnchor="middle" fill="#475569" fontSize="8" fontFamily="Inter, system-ui, sans-serif">encode</text>
+          <text x="440" y="170" textAnchor="middle" fill="#475569" fontSize="8" fontFamily="Inter, system-ui, sans-serif" transform="rotate(-70, 440, 170)">K̄^R feed</text>
+          <text x="665" y="290" textAnchor="middle" fill="#475569" fontSize="8" fontFamily="Inter, system-ui, sans-serif" transform="rotate(-60, 665, 290)">selected KV</text>
         </svg>
       </Diagram>
 
