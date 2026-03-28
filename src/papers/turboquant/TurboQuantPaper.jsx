@@ -208,7 +208,7 @@ export default function TurboQuantPaper() {
             { symbol: 'y_i', meaning: 'i-th coordinate of the rotated vector Π · x' },
             { symbol: 'd', meaning: 'Ambient dimension of the vectors' },
             { symbol: 'Beta(a,b)', meaning: 'Beta distribution with shape parameters a, b' },
-            { symbol: '\u2115(0, 1/d)', meaning: 'Gaussian with zero mean and variance 1/d' },
+            { symbol: 'N(0, 1/d)', meaning: 'Gaussian with zero mean and variance 1/d' },
             { symbol: 'Π', meaning: 'Random rotation matrix (uniform over orthogonal group O(d))' },
           ]}
         />
@@ -390,10 +390,10 @@ export default function TurboQuantPaper() {
         symbols={[
           { symbol: 'D_{mse}(b,d)', meaning: 'Expected mean squared error of reconstruction' },
           { symbol: 'x', meaning: 'Original d-dimensional vector' },
-          { symbol: '\\hat{x}', meaning: 'Reconstructed vector after quantize + dequantize' },
-          { symbol: '||x||\u00b2', meaning: 'Squared Euclidean norm of the original vector' },
+          { symbol: 'x̂', meaning: 'Reconstructed vector after quantize + dequantize' },
+          { symbol: '||x||²', meaning: 'Squared Euclidean norm of the original vector' },
           { symbol: 'd', meaning: 'Dimension of the vector' },
-          { symbol: '\alpha_b', meaning: 'Distortion coefficient of b-bit Lloyd-Max quantizer for Beta(1/2,(d-1)/2) distribution' },
+          { symbol: 'α_b', meaning: 'Distortion coefficient of b-bit Lloyd-Max quantizer for Beta(1/2,(d-1)/2) distribution' },
           { symbol: 'b', meaning: 'Number of bits per coordinate' },
         ]}
       />
@@ -686,11 +686,11 @@ export default function TurboQuantPaper() {
         symbols={[
           { symbol: 'x, y', meaning: 'Original d-dimensional vectors' },
           { symbol: '||x||, ||y||', meaning: 'Stored norms (32-bit each)' },
-          { symbol: '\\hat{u}, \\hat{v}', meaning: '(b-1)-bit Lloyd-Max reconstructions of the rotated unit vectors' },
-          { symbol: 'r_u, r_v', meaning: 'Residual vectors: r_u = Π·(x/||x||) - \u00fb, etc.' },
+          { symbol: 'û, v̂', meaning: '(b-1)-bit Lloyd-Max reconstructions of the rotated unit vectors' },
+          { symbol: 'r_u, r_v', meaning: 'Residual vectors: r_u = Π·(x/||x||) - û, etc.' },
           { symbol: 'S', meaning: 'Random sign matrix for QJL projection (shared, seeded)' },
           { symbol: 'sign(S·r_v)', meaning: '1-bit QJL codes of the residual' },
-          { symbol: '\sqrt{\pi/(2d)}', meaning: 'Scaling factor from QJL theory (the √(π/2d) correction)' },
+          { symbol: '√(π/2d)', meaning: 'Scaling factor from QJL theory (the √(π/2d) correction)' },
           { symbol: 'd', meaning: 'Vector dimension' },
         ]}
       />
@@ -731,10 +731,10 @@ export default function TurboQuantPaper() {
         label="Lemma 2 — Shannon Lower Bound"
         color={A}
         symbols={[
-          { symbol: 'D^\\star(b)', meaning: 'Minimum achievable MSE distortion at b bits per coordinate' },
+          { symbol: 'D*(b)', meaning: 'Minimum achievable MSE distortion at b bits per coordinate' },
           { symbol: 'd', meaning: 'Vector dimension' },
           { symbol: 'b', meaning: 'Bits per coordinate (rate)' },
-          { symbol: '2\pi e', meaning: 'Constant from Gaussian rate-distortion theory (about 17.08)' },
+          { symbol: '2πe', meaning: 'Constant from Gaussian rate-distortion theory (about 17.08)' },
           { symbol: '2^{-2b}', meaning: 'Exponential decay: each extra bit halves the distortion twice' },
         ]}
       />
@@ -770,8 +770,8 @@ export default function TurboQuantPaper() {
         color={A}
         symbols={[
           { symbol: 'D_{mse}^{TQ}(b)', meaning: 'TurboQuant MSE distortion at b bits per coordinate' },
-          { symbol: '\alpha_b', meaning: 'Lloyd-Max distortion coefficient (precomputed per b)' },
-          { symbol: 'D^\\star(b)', meaning: 'Shannon lower bound (information-theoretic minimum)' },
+          { symbol: 'α_b', meaning: 'Lloyd-Max distortion coefficient (precomputed per b)' },
+          { symbol: 'D*(b)', meaning: 'Shannon lower bound (information-theoretic minimum)' },
           { symbol: '2.7', meaning: 'Multiplicative gap — worst-case over all b values' },
           { symbol: 'd', meaning: 'Vector dimension (cancels in the ratio)' },
         ]}
