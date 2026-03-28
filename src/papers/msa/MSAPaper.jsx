@@ -106,9 +106,9 @@ export default function MSAPaper() {
         headers={['Approach', 'Storage', 'Complexity', 'Limitation']}
         rows={[
           ['Parameter-Based (fine-tuning)', 'In weights', 'O(1) inference', 'Catastrophic forgetting; can\'t add new memories without retraining'],
-          ['External Storage (RAG)', 'Vector DB', 'O(L \u00d7 G)', 'Retriever is separate from the model — no end-to-end gradient flow'],
+          ['External Storage (RAG)', 'Vector DB', 'O(L × G)', 'Retriever is separate from the model — no end-to-end gradient flow'],
           ['Latent State (MemoryFormer)', 'Hidden state', 'O(N)', 'Compresses aggressively — loses fine-grained details'],
-          ['MSA (this paper)', 'K/V cache', 'O(N/P \u00d7 k)', 'End-to-end attention with learned routing — scales to 100M tokens'],
+          ['MSA (this paper)', 'K/V cache', 'O(N/P × k)', 'End-to-end attention with learned routing — scales to 100M tokens'],
         ]}
         caption="Four paradigms for giving LLMs long-term memory"
       />
@@ -118,7 +118,7 @@ export default function MSAPaper() {
           { value: '~300M', unit: ' tok', label: 'Human lifetime memory', color: ORANGE },
           { value: '1M', unit: ' tok', label: 'Best LLM context (2025)', color: '#ef4444' },
           { value: '100M', unit: ' tok', label: 'MSA achieved context', color: CYAN },
-          { value: '300\u00d7', unit: '', label: 'Gap closed vs dense', color: GREEN },
+          { value: '300×', unit: '', label: 'Gap closed vs dense', color: GREEN },
         ]}
       />
 
@@ -265,7 +265,7 @@ export default function MSAPaper() {
           {ARROW(735, 121, 735, 160, CYAN)}
           {BOX(660, 165, 150, 65, '', '#0c4a6e', '#fff', 12)}
           <text x="735" y="188" textAnchor="middle" fill="#7dd3fc" fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Attention</text>
-          <text x="735" y="206" textAnchor="middle" fill="#bae6fd" fontSize="10" fontFamily="Inter, system-ui, sans-serif">softmax(Q \u00b7 K\u1d40 / \u221ad) \u00b7 V</text>
+          <text x="735" y="206" textAnchor="middle" fill="#bae6fd" fontSize="10" fontFamily="Inter, system-ui, sans-serif">softmax(Q · Kᵀ / √d) · V</text>
           <text x="735" y="220" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">over selected chunks only</text>
 
           {/* Output */}
@@ -276,7 +276,7 @@ export default function MSAPaper() {
           <rect x="660" y="355" width="150" height="80" rx="8" fill="#0f172a" stroke="#334155" strokeWidth="1" />
           <text x="735" y="378" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Complexity</text>
           <text x="735" y="398" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Route: O(N/P)</text>
-          <text x="735" y="415" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Attend: O(k \u00b7 P)</text>
+          <text x="735" y="415" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Attend: O(k · P)</text>
           <text x="735" y="432" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">vs Dense: O(N\u00b2)</text>
         </svg>
       </Diagram>
@@ -620,7 +620,7 @@ export default function MSAPaper() {
           {ARROW(90, 242, 90, 265, CYAN)}
           {ARROW(200, 242, 200, 265, ORANGE)}
           {BOX(40, 270, 210, 40, 'Store to Memory', '#1e3a5f', '#7dd3fc', 12)}
-          <text x="145" y="328" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Cost: O(N \u00b7 d) per doc</text>
+          <text x="145" y="328" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Cost: O(N · d) per doc</text>
           <text x="145" y="344" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Done once, cached forever</text>
 
           {/* Arrow S1 → S2 */}
@@ -662,7 +662,7 @@ export default function MSAPaper() {
           {BOX(610, 220, 220, 32, 'Generate next token', '#14532d', GREEN, 12)}
           {ARROW(715, 252, 715, 275, GREEN)}
           {BOX(610, 280, 220, 32, 'Output sequence', '#14532d', '#86efac', 13)}
-          <text x="715" y="328" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Cost: O(k \u00b7 P \u00b7 d) per token</text>
+          <text x="715" y="328" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Cost: O(k · P · d) per token</text>
           <text x="715" y="344" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Same as attending to ~512 tokens</text>
         </svg>
       </Diagram>
@@ -914,10 +914,10 @@ export default function MSAPaper() {
         <ComparisonTable
           headers={['Metric', 'Dense (128K)', 'RAG', 'MSA (100M)']}
           rows={[
-            ['Encoding cost', 'O(N\u00b2)', 'Chunking + embedding', 'O(N\u00b7d) one-time'],
+            ['Encoding cost', 'O(N\u00b2)', 'Chunking + embedding', 'O(N·d) one-time'],
             ['Per-query routing', 'N/A (attend all)', 'Vector search', 'O(N/P) cosine sims'],
-            ['Per-token generation', 'O(N\u00b7d)', 'O(k\u00b7d)', 'O(k\u00b7P\u00b7d)'],
-            ['Memory footprint', 'O(N\u00b7d)', 'Embedding DB + LLM', 'KV cache + routing keys'],
+            ['Per-token generation', 'O(N·d)', 'O(k·d)', 'O(k·P·d)'],
+            ['Memory footprint', 'O(N·d)', 'Embedding DB + LLM', 'KV cache + routing keys'],
             ['Gradient flow', 'End-to-end', 'Retriever separate', 'End-to-end'],
           ]}
           caption="MSA combines the quality of dense attention with the efficiency of retrieval"

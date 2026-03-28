@@ -54,7 +54,7 @@ export default function TurboQuantPaper() {
 
       <StatBar
         stats={[
-          { value: '\u22482.7\u00d7', unit: '', label: 'Of info-theoretic bound', color: A },
+          { value: '≈2.7×', unit: '', label: 'Of info-theoretic bound', color: A },
           { value: '3.5', unit: ' bits', label: 'Quality-neutral KV cache', color: A2 },
           { value: '0', unit: ' sec', label: 'Indexing time', color: GREEN },
           { value: '128d', unit: '', label: 'Typical vector dim', color: BLUE },
@@ -96,7 +96,7 @@ export default function TurboQuantPaper() {
           ═══════════════════════════════════════════════════════════ */}
       <SectionHeader
         num="02"
-        title="The Core Insight \u2014 Random Rotation"
+        title="The Core Insight — Random Rotation"
         subtitle="Turning vector quantization into independent scalar quantization"
       />
 
@@ -155,7 +155,7 @@ export default function TurboQuantPaper() {
           {/* Arrow: rotation */}
           <line x1="290" y1="170" x2="390" y2="170" stroke={A} strokeWidth="2" markerEnd="url(#tq-arrow-amber)" />
           <rect x="305" y="147" width="70" height="24" rx="6" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1" />
-          <text x="340" y="163" fill={A} fontSize="12" fontWeight="700" textAnchor="middle">{'\u03A0 \u00b7 x'}</text>
+          <text x="340" y="163" fill={A} fontSize="12" fontWeight="700" textAnchor="middle">{'Π · x'}</text>
           <text x="340" y="135" fill={FG} fontSize="10" textAnchor="middle" opacity="0.6">Random rotation</text>
 
           {/* RIGHT: After rotation */}
@@ -167,7 +167,7 @@ export default function TurboQuantPaper() {
 
           {/* Rotated vector -- more spread */}
           <line x1="560" y1="170" x2="630" y2="105" stroke={GREEN} strokeWidth="2.5" markerEnd="url(#tq-arrow-amber)" />
-          <text x="637" y="100" fill={GREEN} fontSize="12" fontWeight="600">{'\u03A0x'}</text>
+          <text x="637" y="100" fill={GREEN} fontSize="12" fontWeight="600">{'Πx'}</text>
 
           {/* Coordinate bars (uniform-ish) */}
           <text x="470" y="322" fill={GRAY} fontSize="10">Coordinates:</text>
@@ -194,7 +194,7 @@ export default function TurboQuantPaper() {
             distribution: a scaled Beta distribution.
           </p>
           <p>
-            More precisely, if <code>y = \u03A0 \u00b7 x</code> where \u03A0 is a random rotation and x is on the
+            More precisely, if <code>y = Π · x</code> where Π is a random rotation and x is on the
             unit sphere, then the squared coordinate <code>y_i^2</code> follows a
             <strong> Beta(1/2, (d-1)/2)</strong> distribution. As the dimension d grows, this
             converges to a Gaussian with mean 0 and variance 1/d.
@@ -202,14 +202,14 @@ export default function TurboQuantPaper() {
         </Prose>
         <FormulaBlock
           math="y_i^2 \sim \text{Beta}\\!\left(\\tfrac{1}{2},\\, \\tfrac{d-1}{2}\right) \quad \\Longrightarrow \quad y_i \approx \mathcal{N}\\!\left(0,\\, \\tfrac{1}{d}\right) \text{ as } d \to \infty"
-          label="Lemma 1 \u2014 Coordinate Distribution"
+          label="Lemma 1 — Coordinate Distribution"
           color={A}
           symbols={[
-            { symbol: 'y_i', meaning: 'i-th coordinate of the rotated vector \u03A0 \u00b7 x' },
+            { symbol: 'y_i', meaning: 'i-th coordinate of the rotated vector Π · x' },
             { symbol: 'd', meaning: 'Ambient dimension of the vectors' },
             { symbol: 'Beta(a,b)', meaning: 'Beta distribution with shape parameters a, b' },
             { symbol: '\u2115(0, 1/d)', meaning: 'Gaussian with zero mean and variance 1/d' },
-            { symbol: '\u03A0', meaning: 'Random rotation matrix (uniform over orthogonal group O(d))' },
+            { symbol: 'Π', meaning: 'Random rotation matrix (uniform over orthogonal group O(d))' },
           ]}
         />
       </ConceptCard>
@@ -256,7 +256,7 @@ export default function TurboQuantPaper() {
           ═══════════════════════════════════════════════════════════ */}
       <SectionHeader
         num="03"
-        title="Algorithm 1 \u2014 TurboQuant_mse"
+        title="Algorithm 1 — TurboQuant_mse"
         subtitle="The simplest version: rotate, quantize each coordinate, done"
       />
 
@@ -295,7 +295,7 @@ export default function TurboQuantPaper() {
           {/* Random rotation */}
           <rect x="310" y="55" width="120" height="50" rx="8" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="2" />
           <text x="370" y="76" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle">Random Rotate</text>
-          <text x="370" y="92" fill={GRAY} fontSize="10" textAnchor="middle">{'y = \u03A0 \u00b7 (x/||x||)'}</text>
+          <text x="370" y="92" fill={GRAY} fontSize="10" textAnchor="middle">{'y = Π · (x/||x||)'}</text>
 
           {/* Arrow */}
           <line x1="435" y1="80" x2="465" y2="80" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
@@ -311,7 +311,7 @@ export default function TurboQuantPaper() {
           {/* Output code */}
           <rect x="640" y="55" width="140" height="50" rx="8" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="2" />
           <text x="710" y="76" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">b-bit indices</text>
-          <text x="710" y="92" fill={GRAY} fontSize="10" textAnchor="middle">{'d indices + ||x|| = b\u00b7d+32 bits'}</text>
+          <text x="710" y="92" fill={GRAY} fontSize="10" textAnchor="middle">{'d indices + ||x|| = b·d+32 bits'}</text>
 
           {/* DEQUANTIZATION path */}
           <text x="400" y="155" fill={BLUE} fontSize="14" fontWeight="700" textAnchor="middle">DEQUANTIZATION (Decode)</text>
@@ -334,14 +334,14 @@ export default function TurboQuantPaper() {
           {/* Inverse rotation */}
           <rect x="310" y="175" width="120" height="50" rx="8" fill={BLUE} fillOpacity="0.2" stroke={BLUE} strokeWidth="2" />
           <text x="370" y="196" fill="#60a5fa" fontSize="12" fontWeight="700" textAnchor="middle">Inverse Rotate</text>
-          <text x="370" y="212" fill={GRAY} fontSize="10" textAnchor="middle">{'\u03A0\u1d40 \u00b7 \u0177'}</text>
+          <text x="370" y="212" fill={GRAY} fontSize="10" textAnchor="middle">{'Πᵀ · ŷ'}</text>
 
           <line x1="305" y1="200" x2="275" y2="200" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
 
           {/* Rescale */}
           <rect x="160" y="175" width="110" height="50" rx="8" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1.5" />
           <text x="215" y="196" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Rescale</text>
-          <text x="215" y="212" fill={GRAY} fontSize="10" textAnchor="middle">{'||x|| \u00b7 \u0177'}</text>
+          <text x="215" y="212" fill={GRAY} fontSize="10" textAnchor="middle">{'||x|| · ŷ'}</text>
 
           <line x1="155" y1="200" x2="125" y2="200" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
 
@@ -353,10 +353,10 @@ export default function TurboQuantPaper() {
           {/* Bottom note */}
           <rect x="100" y="265" width="600" height="55" rx="10" fill={A} fillOpacity="0.06" stroke={A} strokeWidth="1" strokeDasharray="4 3" />
           <text x="400" y="285" fill={FG} fontSize="12" textAnchor="middle">
-            Key property: the random rotation matrix \u03A0 is shared (seeded), not stored per-vector.
+            Key property: the random rotation matrix Π is shared (seeded), not stored per-vector.
           </text>
           <text x="400" y="305" fill={GRAY} fontSize="11" textAnchor="middle">
-            {'Total storage per vector: b \u00b7 d bits (indices) + 32 bits (norm) = b \u00b7 d + 32 bits'}
+            {'Total storage per vector: b · d bits (indices) + 32 bits (norm) = b · d + 32 bits'}
           </text>
         </svg>
       </Diagram>
@@ -370,11 +370,11 @@ export default function TurboQuantPaper() {
           },
           {
             title: 'Random Rotation',
-            desc: 'Multiply the unit vector by a random orthogonal matrix \u03A0, sampled once (via a shared seed) and reused for all vectors. This spreads energy uniformly across coordinates. In practice, \u03A0 is implemented as a product of random Hadamard transforms for O(d log d) speed.',
+            desc: 'Multiply the unit vector by a random orthogonal matrix Π, sampled once (via a shared seed) and reused for all vectors. This spreads energy uniformly across coordinates. In practice, Π is implemented as a product of random Hadamard transforms for O(d log d) speed.',
           },
           {
             title: 'Scalar Quantization',
-            desc: 'Each coordinate of the rotated vector y = \u03A0 \u00b7 (x/||x||) is independently quantized using a precomputed Lloyd-Max quantizer for the Beta(1/2, (d-1)/2) distribution. Each coordinate maps to a b-bit index.',
+            desc: 'Each coordinate of the rotated vector y = Π · (x/||x||) is independently quantized using a precomputed Lloyd-Max quantizer for the Beta(1/2, (d-1)/2) distribution. Each coordinate maps to a b-bit index.',
           },
           {
             title: 'Store',
@@ -385,7 +385,7 @@ export default function TurboQuantPaper() {
 
       <FormulaBlock
         math="D_{\text{mse}}(b, d) \\;=\\; \mathbb{E}\\!\left[\\, \left\\| x - \\hat{x} \right\\|^2 \\,\right] \\;\leq\\; \frac{\\|x\\|^2}{d} \cdot \alpha_b"
-        label="Theorem 1 \u2014 MSE Distortion Bound"
+        label="Theorem 1 — MSE Distortion Bound"
         color={A}
         symbols={[
           { symbol: 'D_{mse}(b,d)', meaning: 'Expected mean squared error of reconstruction' },
@@ -432,7 +432,7 @@ export default function TurboQuantPaper() {
           ═══════════════════════════════════════════════════════════ */}
       <SectionHeader
         num="04"
-        title="Algorithm 2 \u2014 TurboQuant_prod"
+        title="Algorithm 2 — TurboQuant_prod"
         subtitle="Unbiased inner-product estimation via residual correction with QJL"
       />
 
@@ -453,12 +453,12 @@ export default function TurboQuantPaper() {
         </p>
       </Prose>
 
-      <ConceptCard title="The Bias Problem \u2014 Why MSE-optimal is not Product-optimal" color={RED} defaultOpen={true}>
+      <ConceptCard title="The Bias Problem — Why MSE-optimal is not Product-optimal" color={RED} defaultOpen={true}>
         <Prose>
           <p>
             Consider two unit vectors x and y with true inner product 0.8. When you quantize
             both with TurboQuant_mse at b bits, the reconstructed inner product
-            <code>{' <\u0078\u0302, \u0177>'}</code> will systematically underestimate the true value.
+            <code>{' <\u0078\u0302, ŷ>'}</code> will systematically underestimate the true value.
             Why? Because quantization &ldquo;rounds&rdquo; each coordinate to the nearest reconstruction
             point, and this rounding shrinks the effective magnitude. It is like measuring two
             objects with a slightly short ruler -- both measurements are too small, and their
@@ -468,7 +468,7 @@ export default function TurboQuantPaper() {
             Formally, if <code>\u0072\u0302</code> is the quantized version of a coordinate r, then
             <code>{'E[\u0072\u0302] \u2260 r'}</code> in general. The Lloyd-Max quantizer minimizes
             <code>{'E[(r - \u0072\u0302)\u00b2]'}</code>, which does NOT guarantee <code>{'E[\u0072\u0302] = r'}</code>.
-            This means <code>{'E[<\u0078\u0302, \u0177>] \u2260 <x, y>'}</code>.
+            This means <code>{'E[<\u0078\u0302, ŷ>] \u2260 <x, y>'}</code>.
           </p>
         </Prose>
       </ConceptCard>
@@ -499,7 +499,7 @@ export default function TurboQuantPaper() {
           <line x1="200" y1="102" x2="200" y2="120" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-a3)" />
 
           <rect x="105" y="122" width="190" height="38" rx="7" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1.5" />
-          <text x="200" y="146" fill={A3} fontSize="12" fontWeight="600" textAnchor="middle">{'Rotate: y = \u03A0 \u00b7 (x/||x||)'}</text>
+          <text x="200" y="146" fill={A3} fontSize="12" fontWeight="600" textAnchor="middle">{'Rotate: y = Π · (x/||x||)'}</text>
 
           <line x1="200" y1="162" x2="200" y2="180" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-a3)" />
 
@@ -509,7 +509,7 @@ export default function TurboQuantPaper() {
           <line x1="200" y1="222" x2="200" y2="240" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-a3)" />
 
           <rect x="115" y="242" width="170" height="38" rx="7" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="2" />
-          <text x="200" y="266" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">{'b\u00b7d bit code'}</text>
+          <text x="200" y="266" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">{'b·d bit code'}</text>
 
           <line x1="200" y1="282" x2="200" y2="300" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-a3)" />
 
@@ -530,7 +530,7 @@ export default function TurboQuantPaper() {
           <line x1="600" y1="102" x2="600" y2="120" stroke={PURPLE} strokeWidth="1.2" markerEnd="url(#tq-a3-p)" />
 
           <rect x="505" y="122" width="190" height="38" rx="7" fill={PURPLE} fillOpacity="0.15" stroke={PURPLE} strokeWidth="1.5" />
-          <text x="600" y="146" fill="#c084fc" fontSize="12" fontWeight="600" textAnchor="middle">{'Rotate: y = \u03A0 \u00b7 (x/||x||)'}</text>
+          <text x="600" y="146" fill="#c084fc" fontSize="12" fontWeight="600" textAnchor="middle">{'Rotate: y = Π · (x/||x||)'}</text>
 
           {/* Split into two paths */}
           <line x1="600" y1="162" x2="600" y2="175" stroke={PURPLE} strokeWidth="1.2" />
@@ -543,15 +543,15 @@ export default function TurboQuantPaper() {
           {/* Right branch: residual -> QJL 1-bit */}
           <line x1="600" y1="175" x2="660" y2="190" stroke={GREEN} strokeWidth="1.2" markerEnd="url(#tq-a3-g)" />
           <rect x="625" y="192" width="150" height="38" rx="7" fill={GREEN} fillOpacity="0.12" stroke={GREEN} strokeWidth="1.2" />
-          <text x="700" y="210" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">{'Residual r = y - \u0177'}</text>
-          <text x="700" y="224" fill={GRAY} fontSize="10" textAnchor="middle">{'1-bit QJL: sign(S\u00b7r)'}</text>
+          <text x="700" y="210" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">{'Residual r = y - ŷ'}</text>
+          <text x="700" y="224" fill={GRAY} fontSize="10" textAnchor="middle">{'1-bit QJL: sign(S·r)'}</text>
 
           {/* Merge */}
           <line x1="540" y1="232" x2="600" y2="260" stroke={PURPLE} strokeWidth="1.2" />
           <line x1="700" y1="232" x2="600" y2="260" stroke={PURPLE} strokeWidth="1.2" />
 
           <rect x="515" y="262" width="170" height="38" rx="7" fill={PURPLE} fillOpacity="0.2" stroke={PURPLE} strokeWidth="2" />
-          <text x="600" y="286" fill="#c084fc" fontSize="13" fontWeight="700" textAnchor="middle">{'b\u00b7d bit code'}</text>
+          <text x="600" y="286" fill="#c084fc" fontSize="13" fontWeight="700" textAnchor="middle">{'b·d bit code'}</text>
 
           <line x1="600" y1="302" x2="600" y2="318" stroke={PURPLE} strokeWidth="1.2" markerEnd="url(#tq-a3-p)" />
 
@@ -599,7 +599,7 @@ export default function TurboQuantPaper() {
             <text x="390" y="24" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">QJL: Asymmetric Inner Product Estimation</text>
 
             {/* KEY side (quantized) */}
-            <text x="200" y="55" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">Key k (stored \u2014 quantized)</text>
+            <text x="200" y="55" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">Key k (stored — quantized)</text>
 
             <rect x="55" y="70" width="100" height="35" rx="6" fill={GREEN} fillOpacity="0.1" stroke={GREEN} strokeWidth="1.2" />
             <text x="105" y="92" fill={FG} fontSize="11" textAnchor="middle">key k</text>
@@ -607,12 +607,12 @@ export default function TurboQuantPaper() {
             <line x1="160" y1="87" x2="188" y2="87" stroke={GREEN} strokeWidth="1.2" markerEnd="url(#tq-a4)" />
 
             <rect x="192" y="70" width="120" height="35" rx="6" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.5" />
-            <text x="252" y="92" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">{'S \u00b7 k (project)'}</text>
+            <text x="252" y="92" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">{'S · k (project)'}</text>
 
             <line x1="316" y1="87" x2="344" y2="87" stroke={GREEN} strokeWidth="1.2" markerEnd="url(#tq-a4)" />
 
             <rect x="348" y="70" width="100" height="35" rx="6" fill={GREEN} fillOpacity="0.2" stroke={GREEN} strokeWidth="2" />
-            <text x="398" y="92" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">{'sign(S\u00b7k)'}</text>
+            <text x="398" y="92" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">{'sign(S·k)'}</text>
 
             <line x1="452" y1="87" x2="480" y2="87" stroke={GREEN} strokeWidth="1.2" markerEnd="url(#tq-a4)" />
 
@@ -621,7 +621,7 @@ export default function TurboQuantPaper() {
             <text x="549" y="100" fill={GRAY} fontSize="9" textAnchor="middle">d bits total</text>
 
             {/* QUERY side (unquantized) */}
-            <text x="200" y="150" fill={BLUE} fontSize="13" fontWeight="700" textAnchor="middle">Query q (online \u2014 full precision)</text>
+            <text x="200" y="150" fill={BLUE} fontSize="13" fontWeight="700" textAnchor="middle">Query q (online — full precision)</text>
 
             <rect x="55" y="165" width="100" height="35" rx="6" fill={BLUE} fillOpacity="0.1" stroke={BLUE} strokeWidth="1.2" />
             <text x="105" y="187" fill={FG} fontSize="11" textAnchor="middle">query q</text>
@@ -629,12 +629,12 @@ export default function TurboQuantPaper() {
             <line x1="160" y1="182" x2="188" y2="182" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-a4b)" />
 
             <rect x="192" y="165" width="120" height="35" rx="6" fill={BLUE} fillOpacity="0.15" stroke={BLUE} strokeWidth="1.5" />
-            <text x="252" y="187" fill={BLUE} fontSize="11" fontWeight="600" textAnchor="middle">{'S \u00b7 q (project)'}</text>
+            <text x="252" y="187" fill={BLUE} fontSize="11" fontWeight="600" textAnchor="middle">{'S · q (project)'}</text>
 
             <line x1="316" y1="182" x2="344" y2="182" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-a4b)" />
 
             <rect x="348" y="165" width="100" height="35" rx="6" fill={BLUE} fillOpacity="0.15" stroke={BLUE} strokeWidth="1.5" />
-            <text x="398" y="187" fill={BLUE} fontSize="11" fontWeight="600" textAnchor="middle">{'Keep full S\u00b7q'}</text>
+            <text x="398" y="187" fill={BLUE} fontSize="11" fontWeight="600" textAnchor="middle">{'Keep full S·q'}</text>
 
             {/* Merge for estimation */}
             <line x1="549" y1="108" x2="549" y2="230" stroke={GRAY} strokeWidth="1" strokeDasharray="4 3" />
@@ -642,8 +642,8 @@ export default function TurboQuantPaper() {
             <line x1="398" y1="230" x2="549" y2="230" stroke={GRAY} strokeWidth="1" strokeDasharray="4 3" />
 
             <rect x="395" y="240" width="230" height="45" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
-            <text x="510" y="258" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">{'Estimate: (S\u00b7q) \u00b7 sign(S\u00b7k) / d'}</text>
-            <text x="510" y="274" fill={GRAY} fontSize="10" textAnchor="middle">{'Unbiased: E[est] = <q, k> \u00b7 \u221a(2/\u03c0d)'}</text>
+            <text x="510" y="258" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">{'Estimate: (S·q) · sign(S·k) / d'}</text>
+            <text x="510" y="274" fill={GRAY} fontSize="10" textAnchor="middle">{'Unbiased: E[est] = <q, k> · √(2/πd)'}</text>
 
             {/* Asymmetric label */}
             <rect x="30" y="240" width="180" height="45" rx="8" fill={PURPLE} fillOpacity="0.08" stroke={PURPLE} strokeWidth="1" />
@@ -658,19 +658,19 @@ export default function TurboQuantPaper() {
         steps={[
           {
             title: 'Normalize & Rotate',
-            desc: 'Same as TurboQuant_mse: compute ||x||, normalize, apply random rotation \u03A0 to get y = \u03A0 \u00b7 (x/||x||).',
+            desc: 'Same as TurboQuant_mse: compute ||x||, normalize, apply random rotation Π to get y = Π · (x/||x||).',
           },
           {
             title: 'Quantize at (b-1) bits',
-            desc: 'Apply the Lloyd-Max quantizer with (b-1) bits per coordinate to get \u0177. This uses one fewer bit than the total budget.',
+            desc: 'Apply the Lloyd-Max quantizer with (b-1) bits per coordinate to get ŷ. This uses one fewer bit than the total budget.',
           },
           {
             title: 'Compute Residual',
-            desc: 'The residual r = y - \u0177 captures what the (b-1)-bit quantizer missed. This residual has small norm (bounded by the quantizer distortion).',
+            desc: 'The residual r = y - ŷ captures what the (b-1)-bit quantizer missed. This residual has small norm (bounded by the quantizer distortion).',
           },
           {
             title: 'QJL on Residual',
-            desc: 'Apply a random projection S to the residual, take the sign: c = sign(S \u00b7 r). This gives a 1-bit code per coordinate \u2014 exactly the remaining 1 bit from our budget.',
+            desc: 'Apply a random projection S to the residual, take the sign: c = sign(S · r). This gives a 1-bit code per coordinate — exactly the remaining 1 bit from our budget.',
           },
           {
             title: 'Combine',
@@ -681,16 +681,16 @@ export default function TurboQuantPaper() {
 
       <FormulaBlock
         math="\\widehat{\\langle x, y \\rangle}_{\text{prod}} \\;=\\; \\|x\\|\\,\\|y\\|\\!\left(\\langle \\hat{u}, \\hat{v}\\rangle + \sqrt{\\tfrac{\pi}{2d}}\\,\\langle r_u,\\, \text{sign}(S\\, r_v)\\rangle\right)"
-        label="Theorem 2 \u2014 Unbiased Inner Product Estimator"
+        label="Theorem 2 — Unbiased Inner Product Estimator"
         color={PURPLE}
         symbols={[
           { symbol: 'x, y', meaning: 'Original d-dimensional vectors' },
           { symbol: '||x||, ||y||', meaning: 'Stored norms (32-bit each)' },
           { symbol: '\\hat{u}, \\hat{v}', meaning: '(b-1)-bit Lloyd-Max reconstructions of the rotated unit vectors' },
-          { symbol: 'r_u, r_v', meaning: 'Residual vectors: r_u = \u03A0\u00b7(x/||x||) - \u00fb, etc.' },
+          { symbol: 'r_u, r_v', meaning: 'Residual vectors: r_u = Π·(x/||x||) - \u00fb, etc.' },
           { symbol: 'S', meaning: 'Random sign matrix for QJL projection (shared, seeded)' },
-          { symbol: 'sign(S\u00b7r_v)', meaning: '1-bit QJL codes of the residual' },
-          { symbol: '\sqrt{\pi/(2d)}', meaning: 'Scaling factor from QJL theory (the \u221a(\u03c0/2d) correction)' },
+          { symbol: 'sign(S·r_v)', meaning: '1-bit QJL codes of the residual' },
+          { symbol: '\sqrt{\pi/(2d)}', meaning: 'Scaling factor from QJL theory (the √(π/2d) correction)' },
           { symbol: 'd', meaning: 'Vector dimension' },
         ]}
       />
@@ -728,7 +728,7 @@ export default function TurboQuantPaper() {
 
       <FormulaBlock
         math="D^{\\star}(b) \\;\geq\\; \frac{1}{d} \cdot \frac{1}{2\pi e} \cdot 2^{-2b}"
-        label="Lemma 2 \u2014 Shannon Lower Bound"
+        label="Lemma 2 — Shannon Lower Bound"
         color={A}
         symbols={[
           { symbol: 'D^\\star(b)', meaning: 'Minimum achievable MSE distortion at b bits per coordinate' },
@@ -747,11 +747,11 @@ export default function TurboQuantPaper() {
             Shannon&apos;s rate-distortion function says the minimum distortion at rate R bits is:
           </p>
           <p>
-            <code>{'D(R) = \u03C3\u00b2 \u00b7 2^(-2R)'}</code>
+            <code>{'D(R) = \u03C3\u00b2 · 2^(-2R)'}</code>
           </p>
           <p>
             With \u03C3\u00b2 = 1/d and R = b bits per coordinate, this gives
-            <code>{'D(b) = (1/d) \u00b7 2^(-2b)'}</code>. The extra factor of 1/(2\u03c0e) comes from the
+            <code>{'D(b) = (1/d) · 2^(-2b)'}</code>. The extra factor of 1/(2πe) comes from the
             fact that we are quantizing to a discrete set (not a continuous one), which introduces
             an additional overhead.
           </p>
@@ -766,13 +766,13 @@ export default function TurboQuantPaper() {
 
       <FormulaBlock
         math="D_{\text{mse}}^{\text{TQ}}(b) \\;\leq\\; \frac{\alpha_b}{d} \\;\leq\\; \frac{2.7}{2\pi e} \cdot \frac{2^{-2b}}{d} \\;=\\; 2.7 \cdot D^{\\star}(b)"
-        label="Theorem 3 \u2014 TurboQuant is within 2.7x of the Shannon bound"
+        label="Theorem 3 — TurboQuant is within 2.7x of the Shannon bound"
         color={A}
         symbols={[
           { symbol: 'D_{mse}^{TQ}(b)', meaning: 'TurboQuant MSE distortion at b bits per coordinate' },
           { symbol: '\alpha_b', meaning: 'Lloyd-Max distortion coefficient (precomputed per b)' },
           { symbol: 'D^\\star(b)', meaning: 'Shannon lower bound (information-theoretic minimum)' },
-          { symbol: '2.7', meaning: 'Multiplicative gap \u2014 worst-case over all b values' },
+          { symbol: '2.7', meaning: 'Multiplicative gap — worst-case over all b values' },
           { symbol: 'd', meaning: 'Vector dimension (cancels in the ratio)' },
         ]}
       />
