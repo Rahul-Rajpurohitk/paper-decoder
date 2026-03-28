@@ -8,6 +8,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
+import FormulaSteps from '../../components/FormulaSteps';
 
 /* ─── colour tokens ─── */
 const P = '#8b5cf6';   // primary purple
@@ -384,15 +385,32 @@ export default function DINOv3Paper() {
         />
       </ConceptCard>
 
-      <FormulaBlock
-        math="\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V"
-        label="Self-Attention — The Communication Step"
+      <FormulaSteps
+        label="Self-Attention — Building Up Step by Step"
         color={P}
+        steps={[
+          {
+            note: 'Each of the 261 tokens gets projected into three vectors: a Query (what am I looking for?), a Key (what do I contain?), and a Value (what information can I share?).',
+            math: 'Q = X W_Q, \\quad K = X W_K, \\quad V = X W_V \\quad \\text{each } \\in \\mathbb{R}^{261 \\times 128}',
+          },
+          {
+            note: 'Compute attention scores: every token\'s Query is compared against every token\'s Key. This creates a 261×261 "who should talk to whom" matrix. Divide by √128 to prevent extreme values.',
+            math: '\\text{scores} = \\frac{Q \\cdot K^\\top}{\\sqrt{d_k}} \\in \\mathbb{R}^{261 \\times 261}',
+          },
+          {
+            note: 'Convert scores to probabilities with softmax. Each row sums to 1 — it\'s a weighted vote on which tokens to pay attention to.',
+            math: '\\text{weights} = \\text{softmax}(\\text{scores}) \\quad \\text{(each row is a probability distribution)}',
+          },
+          {
+            note: 'Final output: weighted sum of Value vectors. Each token\'s output is a blend of all other tokens\' information, weighted by relevance. This is repeated across 32 heads in parallel.',
+            math: '\\text{Attention}(Q, K, V) = \\text{softmax}\\!\\left(\\frac{Q K^\\top}{\\sqrt{d_k}}\\right) V',
+          },
+        ]}
         symbols={[
-          { symbol: 'Q, K, V', meaning: 'Query, Key, Value matrices — projected from input token embeddings' },
-          { symbol: 'd_k', meaning: 'Head dimension = 128 (scaling prevents dot products from getting too large)' },
-          { symbol: 'softmax', meaning: 'Converts raw scores to probabilities — each token decides which others to attend to' },
-          { symbol: 'QK^T', meaning: 'Dot product between all query-key pairs — measures pairwise token similarity' },
+          { symbol: 'X', meaning: 'Input tokens (261 × 4096 after LayerNorm)' },
+          { symbol: 'W_Q, W_K, W_V', meaning: 'Learned projection matrices (4096 → 128 per head)' },
+          { symbol: 'd_k = 128', meaning: 'Per-head dimension — scaling factor prevents softmax saturation' },
+          { symbol: '32 heads', meaning: 'Computation repeated 32 times in parallel, each learning different relationships' },
         ]}
       />
 
@@ -725,15 +743,33 @@ export default function DINOv3Paper() {
           </p>
         </Prose>
 
-        <FormulaBlock
-          math="\mathcal{L}_{\text{DINO}} = - \sum_x P_t(x) \log P_s(x)"
-          label="DINO Loss — CLS Token Cross-Entropy"
+        <FormulaSteps
+          label="DINO Loss — Building Up Step by Step"
           color={RED}
+          steps={[
+            {
+              note: 'Start with raw outputs: both teacher and student produce a vector z from the CLS token through their projection heads.',
+              math: 'z_t = \\text{ProjHead}_t(\\text{CLS}_t), \\quad z_s = \\text{ProjHead}_s(\\text{CLS}_s)',
+            },
+            {
+              note: 'Convert to probability distributions using softmax with temperature. Teacher uses low temp (0.04) for sharp peaks, student uses higher temp (0.1) for softer output.',
+              math: 'P_t(x) = \\frac{\\exp(z_t^{(x)} / \\tau_t)}{\\sum_k \\exp(z_t^{(k)} / \\tau_t)}, \\quad P_s(x) = \\frac{\\exp(z_s^{(x)} / \\tau_s)}{\\sum_k \\exp(z_s^{(k)} / \\tau_s)}',
+            },
+            {
+              note: 'Apply centering to the teacher to prevent mode collapse — subtract a running mean c so no single dimension dominates.',
+              math: 'P_t(x) = \\frac{\\exp((z_t^{(x)} - c^{(x)}) / \\tau_t)}{\\sum_k \\exp((z_t^{(k)} - c^{(k)}) / \\tau_t)}',
+            },
+            {
+              note: 'The final DINO loss: cross-entropy between teacher and student distributions. The student must match the teacher\'s sharp peaks from ANY crop — even small local patches.',
+              math: '\\mathcal{L}_{\\text{DINO}} = - \\sum_x P_t(x) \\log P_s(x)',
+            },
+          ]}
           symbols={[
-            { symbol: 'L_DINO', meaning: 'DINO loss — measures how well student CLS matches teacher CLS distribution' },
-            { symbol: 'P_t(x)', meaning: 'Teacher softmax distribution: softmax(z_t / 0.04) — sharp, peaked' },
-            { symbol: 'P_s(x)', meaning: 'Student softmax distribution: softmax(z_s / 0.1) — softer' },
-            { symbol: 'x', meaning: 'Index over the K-dimensional projection head vocabulary (K = 65536)' },
+            { symbol: 'z_t, z_s', meaning: 'Raw logit vectors from teacher/student projection heads' },
+            { symbol: 'τ_t = 0.04', meaning: 'Teacher temperature — low = sharp, peaked distribution' },
+            { symbol: 'τ_s = 0.1', meaning: 'Student temperature — higher = softer, more exploratory' },
+            { symbol: 'c', meaning: 'Centering vector — running mean of teacher outputs, prevents collapse' },
+            { symbol: 'K = 65536', meaning: 'Projection head vocabulary size (number of prototypes)' },
           ]}
         />
       </ConceptCard>
@@ -753,15 +789,28 @@ export default function DINOv3Paper() {
           </p>
         </Prose>
 
-        <FormulaBlock
-          math="\mathcal{L}_{\text{iBOT}} = - \sum_{m \in \text{masked}} P_t(x_m) \log P_s(x_m)"
-          label="iBOT Loss — Masked Patch Prediction"
+        <FormulaSteps
+          label="iBOT Loss — Building Up Step by Step"
           color={AMBER}
+          steps={[
+            {
+              note: 'Randomly mask ~50% of the student\'s input patch tokens. The teacher sees ALL patches (no masking).',
+              math: 'M = \\{m_1, m_2, \\ldots\\} \\subset \\{1, \\ldots, 1024\\} \\quad \\text{(random mask set)}',
+            },
+            {
+              note: 'Both teacher and student produce per-patch output distributions through their patch projection heads. Teacher has the "answer" since it saw everything.',
+              math: 'P_t(x_m) = \\text{softmax}(\\text{PatchHead}_t(\\text{patch}_m) / \\tau_t)',
+            },
+            {
+              note: 'The student must predict the correct distribution for each masked patch from surrounding context only — like filling in a puzzle with missing pieces.',
+              math: '\\mathcal{L}_{\\text{iBOT}} = - \\sum_{m \\in M} P_t(x_m) \\log P_s(x_m)',
+            },
+          ]}
           symbols={[
-            { symbol: 'L_iBOT', meaning: 'iBOT loss — drives dense feature quality by masked patch prediction' },
-            { symbol: 'm', meaning: 'Index over masked patch positions (randomly selected)' },
-            { symbol: 'P_t(x_m)', meaning: 'Teacher output distribution for patch position m (computed on unmasked input)' },
-            { symbol: 'P_s(x_m)', meaning: 'Student output distribution for masked position m (must predict from context)' },
+            { symbol: 'M', meaning: 'Set of randomly masked patch positions (~50% of 1024 patches)' },
+            { symbol: 'P_t(x_m)', meaning: 'Teacher distribution for patch m — sees all patches, provides the "answer"' },
+            { symbol: 'P_s(x_m)', meaning: 'Student distribution for patch m — must predict from context only' },
+            { symbol: 'PatchHead', meaning: 'Per-patch MLP projection head (separate from CLS head)' },
           ]}
         />
       </ConceptCard>
@@ -973,39 +1022,38 @@ export default function DINOv3Paper() {
         </p>
       </Prose>
 
-      <FormulaBlock
-        math="G = X_S \cdot X_S^\top \in \mathbb{R}^{P \times P}"
-        label="Gram Matrix — Capturing Patch Structure"
-        color={P}
-        symbols={[
-          { symbol: 'G', meaning: 'Gram matrix — encodes ALL pairwise similarities between patch tokens' },
-          { symbol: 'X_S', meaning: 'Student L2-normalized patch features, shape P x d (P patches, d dimensions)' },
-          { symbol: 'P', meaning: 'Number of patches (e.g. 256 for 256x256 crop with 16x16 patches)' },
-          { symbol: 'd', meaning: 'Feature dimension (4096 for ViT-7B)' },
-        ]}
-      />
-
-      <FormulaBlock
-        math="\mathcal{L}_{\text{Gram}} = \left\| X_S \cdot X_S^\top - X_G \cdot X_G^\top \right\|_F^2"
-        label="Gram Anchoring Loss — The Key Innovation"
+      <FormulaSteps
+        label="Gram Anchoring — Building the Loss Step by Step"
         color={RED}
-        symbols={[
-          { symbol: 'L_Gram', meaning: 'Gram Anchoring loss — penalizes divergence of patch structure from a good checkpoint' },
-          { symbol: 'X_S', meaning: 'Student L2-normalized patch features (current model)' },
-          { symbol: 'X_G', meaning: 'Gram teacher L2-normalized patch features (from earlier checkpoint with good dense features)' },
-          { symbol: '||.||_F^2', meaning: 'Squared Frobenius norm — sum of squared element-wise differences' },
+        steps={[
+          {
+            note: 'Start with the student\'s patch output features. Each image has P patches, each producing a d-dimensional feature vector. Stack them into a matrix and L2-normalize each row.',
+            math: 'X_S \\in \\mathbb{R}^{P \\times d}, \\quad \\text{each row } \\|x_i\\| = 1',
+          },
+          {
+            note: 'Compute the Gram matrix — the matrix of ALL pairwise cosine similarities between patches. This is the "structural fingerprint" of how the model sees the image.',
+            math: 'G_S = X_S \\cdot X_S^\\top \\in \\mathbb{R}^{P \\times P}, \\quad G_S[i,j] = \\cos(\\text{patch}_i, \\text{patch}_j)',
+          },
+          {
+            note: 'Get the Gram teacher\'s structural fingerprint from an earlier checkpoint (when dense features were still good). This is the "ground truth" structure we want to preserve.',
+            math: 'G_G = X_G \\cdot X_G^\\top \\quad \\text{(Gram teacher — snapshot every 10k iterations)}',
+          },
+          {
+            note: 'The Gram Anchoring loss: measure how much the student\'s patch structure has drifted from the Gram teacher using the Frobenius norm (sum of squared differences).',
+            math: '\\mathcal{L}_{\\text{Gram}} = \\left\\| G_S - G_G \\right\\|_F^2 = \\left\\| X_S \\cdot X_S^\\top - X_G \\cdot X_G^\\top \\right\\|_F^2',
+          },
+          {
+            note: 'Final refinement loss: combine all objectives. Gram loss joins after 1M iterations of pre-training to "repair" degraded dense features while letting global features continue improving.',
+            math: '\\mathcal{L}_{\\text{Ref}} = w_D \\cdot \\mathcal{L}_{\\text{DINO}} + \\mathcal{L}_{\\text{iBOT}} + w_{DK} \\cdot \\mathcal{L}_{\\text{DKoleo}} + w_G \\cdot \\mathcal{L}_{\\text{Gram}}',
+          },
         ]}
-      />
-
-      <FormulaBlock
-        math="\mathcal{L}_{\text{Ref}} = w_D \cdot \mathcal{L}_{\text{DINO}} + \mathcal{L}_{\text{iBOT}} + w_{DK} \cdot \mathcal{L}_{\text{DKoleo}} + w_G \cdot \mathcal{L}_{\text{Gram}}"
-        label="Refinement Phase Total Loss"
-        color={P}
         symbols={[
-          { symbol: 'L_Ref', meaning: 'Total loss during refinement phase (after 1M pre-training iterations)' },
-          { symbol: 'w_D', meaning: 'DINO loss weight (reduced during refinement to let Gram loss dominate)' },
-          { symbol: 'w_G', meaning: 'Gram loss weight (controls strength of structural anchoring)' },
-          { symbol: 'w_DK', meaning: 'Koleo regularizer weight (maintained at 0.1)' },
+          { symbol: 'X_S', meaning: 'Student L2-normalized patch features (P×d matrix from current model)' },
+          { symbol: 'X_G', meaning: 'Gram teacher features (from early checkpoint with good dense features)' },
+          { symbol: 'G_S, G_G', meaning: 'Gram matrices — P×P matrices of all pairwise patch cosine similarities' },
+          { symbol: '||·||_F²', meaning: 'Squared Frobenius norm — total squared deviation between all P² similarity pairs' },
+          { symbol: 'P', meaning: 'Number of patches (256 for 256×256 crop, 1024 for 518×518)' },
+          { symbol: 'w_D, w_G, w_DK', meaning: 'Loss weights — tuned to balance global quality vs dense structure preservation' },
         ]}
       />
 
