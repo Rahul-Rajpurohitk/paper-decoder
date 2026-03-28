@@ -78,6 +78,7 @@ html {
 body {
   font-family: var(--font-body);
   background: var(--bg-root);
+  background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(6, 182, 212, 0.06) 0%, transparent 60%);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
@@ -107,16 +108,19 @@ img, svg { max-width: 100%; display: block; }
   overflow-y: hidden;
 }
 .katex-display > .katex {
-  white-space: normal !important;
+  white-space: nowrap !important;
+  text-align: left !important;
 }
 .katex {
-  font-size: 1.05em !important;
-  color: var(--text-primary) !important;
+  font-size: 1.1em !important;
+  color: #e0eaff !important;
 }
 .katex .mord, .katex .mbin, .katex .mrel,
 .katex .mopen, .katex .mclose, .katex .mpunct {
-  color: var(--text-primary) !important;
+  color: #e0eaff !important;
 }
+.katex .mord.text { color: var(--text-secondary) !important; }
+.katex .mop { color: var(--cyan) !important; }
 
 /* ── Utility ── */
 .sr-only {
