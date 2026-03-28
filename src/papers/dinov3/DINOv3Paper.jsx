@@ -452,7 +452,7 @@ export default function DINOv3Paper() {
 
       {/* ── Multi-Crop Strategy SVG ── */}
       <Diagram caption={<><strong>Multi-Crop Strategy</strong> — One image generates 2 global + 8 local crops. Teacher sees only globals, student sees all 10.</>}>
-        <svg viewBox="0 0 800 350" style={{ width: '100%', height: 'auto' }}>
+        <svg viewBox="0 0 800 420" style={{ width: '100%', height: 'auto' }}>
           <defs>
             <linearGradient id="mc-gp" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#5b21b6" />
@@ -469,7 +469,7 @@ export default function DINOv3Paper() {
             </marker>
           </defs>
 
-          <rect width="800" height="350" rx="12" fill={BG} />
+          <rect width="800" height="420" rx="12" fill={BG} />
 
           {/* Source Image (center) */}
           <rect x="330" y="120" width="140" height="110" rx="10" fill="url(#mc-gp)" stroke={P} strokeWidth="2" />
@@ -495,27 +495,27 @@ export default function DINOv3Paper() {
           <line x1="430" y1="120" x2="510" y2="108" stroke={GREEN} strokeWidth="1.5" markerEnd="url(#mc-ag)" />
 
           {/* ── Local Crops (bottom) ── */}
-          <text x="400" y="290" textAnchor="middle" fill={AMBER} fontSize="12" fontWeight="700" letterSpacing="1" fontFamily="Inter, system-ui, sans-serif">LOCAL CROPS (Student only)</text>
+          <text x="400" y="280" textAnchor="middle" fill={AMBER} fontSize="12" fontWeight="700" letterSpacing="1" fontFamily="Inter, system-ui, sans-serif">LOCAL CROPS (Student only)</text>
+
+          {/* Arrows from source to local — go below the label */}
+          {[0,1,2,3,4,5,6,7].map(i => {
+            const x = 147 + i * 75;
+            return (
+              <line key={`la-${i}`} x1="400" y1="248" x2={x} y2="300" stroke={AMBER} strokeWidth="1" strokeDasharray="4 2" markerEnd="url(#mc-aa)" />
+            );
+          })}
 
           {/* 8 local crops */}
           {[0,1,2,3,4,5,6,7].map(i => {
             const x = 120 + i * 75;
             return (
               <g key={`local-${i}`}>
-                <rect x={x} y="302" width="55" height="38" rx="6" fill={AMBER} fillOpacity="0.12" stroke={AMBER} strokeWidth="1" />
-                <text x={x + 27} y="325" textAnchor="middle" fill={AMBER} fontSize="9" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">L{i+1}</text>
+                <rect x={x} y="305" width="55" height="42" rx="7" fill={AMBER} fillOpacity="0.12" stroke={AMBER} strokeWidth="1.5" />
+                <text x={x + 27} y="332" textAnchor="middle" fill={AMBER} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">L{i+1}</text>
               </g>
             );
           })}
-          <text x="400" y="348" textAnchor="middle" fill={GRAY} fontSize="9" fontFamily="Inter, system-ui, sans-serif">112x112 each (5-40% coverage) — may show just a paw, a corner, a texture patch</text>
-
-          {/* Arrows from source to local */}
-          {[0,1,2,3,4,5,6,7].map(i => {
-            const x = 147 + i * 75;
-            return (
-              <line key={`la-${i}`} x1="400" y1="230" x2={x} y2="302" stroke={AMBER} strokeWidth="1" strokeDasharray="4 2" markerEnd="url(#mc-aa)" />
-            );
-          })}
+          <text x="400" y="370" textAnchor="middle" fill={GRAY} fontSize="9" fontFamily="Inter, system-ui, sans-serif">112×112 each (5–40% coverage) — may show just a paw, a corner, a texture patch</text>
 
           {/* Teacher / Student labels */}
           <rect x="20" y="50" width="90" height="50" rx="8" fill={P} fillOpacity="0.2" stroke={P} strokeWidth="1" />
