@@ -352,10 +352,10 @@ export default function MSAPaper() {
             { symbol: 't', meaning: 'Token index in the current query sequence' },
             { symbol: 'h', meaning: 'Attention head index' },
             { symbol: 'Q^R_t', meaning: 'Routing query vector at token position t' },
-            { symbol: '\bar{K}^R_{ij}', meaning: 'Mean-pooled routing key for chunk j of document i (compressed)' },
+            { symbol: 'K̄^R_ij', meaning: 'Mean-pooled routing key for chunk j of document i (compressed)' },
             { symbol: '\cos', meaning: 'Cosine similarity — measures directional alignment in embedding space' },
             { symbol: '\max_t', meaning: 'Take the maximum across all query tokens — if ANY token needs this chunk, select it' },
-            { symbol: '\text{mean}_h', meaning: 'Average across attention heads — consensus across different attention patterns' },
+            { symbol: 'mean_h', meaning: 'Average across attention heads — consensus across different attention patterns' },
           ]}
         />
 
@@ -392,7 +392,7 @@ export default function MSAPaper() {
           label="Chunk Mean Pooling"
           color={CYAN}
           symbols={[
-            { symbol: '\bar{K}^R_{ij}', meaning: 'Mean-pooled routing key for chunk j of document i' },
+            { symbol: 'K̄^R_ij', meaning: 'Mean-pooled routing key for chunk j of document i' },
             { symbol: 'P', meaning: 'Chunk size — set to 64 tokens' },
             { symbol: 'K^R_{i, (j-1)P+p}', meaning: 'Individual routing key at position p within chunk j of document i' },
           ]}
@@ -521,10 +521,10 @@ export default function MSAPaper() {
           label="Auxiliary Contrastive Loss"
           color={ORANGE}
           symbols={[
-            { symbol: 'L_{\text{aux}}', meaning: 'Contrastive loss — pushes relevant chunk routing keys closer to query' },
+            { symbol: 'L_aux', meaning: 'Contrastive loss — pushes relevant chunk routing keys closer to query' },
             { symbol: 'Q^R', meaning: 'Routing query from the current input' },
-            { symbol: '\bar{K}^R_{+}', meaning: 'Routing key of the positive (correct/relevant) chunk' },
-            { symbol: '\bar{K}^R_{j}', meaning: 'Routing keys of all chunks (positive + negatives)' },
+            { symbol: 'K̄^R_+', meaning: 'Routing key of the positive (correct/relevant) chunk' },
+            { symbol: 'K̄^R_j', meaning: 'Routing keys of all chunks (positive + negatives)' },
             { symbol: '\tau', meaning: 'Temperature parameter — controls the sharpness of the distribution' },
             { symbol: '\cos', meaning: 'Cosine similarity in routing embedding space' },
           ]}
@@ -543,9 +543,9 @@ export default function MSAPaper() {
         label="Total Training Objective"
         color={CYAN}
         symbols={[
-          { symbol: 'L_{\text{LM}}', meaning: 'Standard next-token prediction (language modeling) loss' },
-          { symbol: 'L_{\text{aux}}', meaning: 'Auxiliary contrastive loss for routing supervision' },
-          { symbol: '\lambda', meaning: 'Balancing weight — 1.0 during CPT warmup, reduced to 0.1 during main training' },
+          { symbol: 'L_LM', meaning: 'Standard next-token prediction (language modeling) loss' },
+          { symbol: 'L_aux', meaning: 'Auxiliary contrastive loss for routing supervision' },
+          { symbol: 'λ', meaning: 'Balancing weight — 1.0 during CPT warmup, reduced to 0.1 during main training' },
         ]}
       />
 
@@ -684,7 +684,7 @@ export default function MSAPaper() {
           label="S2 — Online Routing Cost"
           color={ORANGE}
           symbols={[
-            { symbol: 'N_{\text{mem}}', meaning: 'Total tokens across ALL documents in memory' },
+            { symbol: 'N_mem', meaning: 'Total tokens across ALL documents in memory' },
             { symbol: 'P', meaning: 'Chunk size (64) — routing operates on compressed representations' },
             { symbol: 'd', meaning: 'Routing embedding dimension' },
           ]}
