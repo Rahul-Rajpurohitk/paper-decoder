@@ -9,6 +9,7 @@ import MentalModel from '../../components/MentalModel';
 import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
 import FormulaSteps from '../../components/FormulaSteps';
+import H from '../../components/HoverTerm';
 
 /* ─── colour tokens ─── */
 const P = '#8b5cf6';   // primary purple
@@ -91,21 +92,21 @@ export default function DINOv3Paper() {
 
       <Prose>
         <p>
-          Imagine you want to build a vision model that understands <em>everything</em> in an image —
-          not just "this is a cat" but the texture of its fur, the depth of the shelf it sits on, the
+          Imagine you want to build a <H tip="Foundation model = a single large model pre-trained on massive data that can be adapted to many downstream tasks without task-specific training. Like a PhD graduate who can work in any company without needing to go back to school for each job." color={P}>vision foundation model</H> that understands <em>everything</em> in an image —
+          not just "this is a cat" but the texture of its fur, the <H tip="Depth estimation = predicting how far each pixel is from the camera. Crucial for robotics, AR/VR, autonomous driving. Requires the model to understand 3D structure from a 2D image." color={CYAN}>depth</H> of the shelf it sits on, the
           boundary between the cat and the background, pixel by pixel. The traditional approach?
           Hire annotators. Label every pixel. For <strong>1.69 billion images</strong>, that would cost
           north of <strong>$17 million</strong> and take years. And you would still only get labels for
           the categories you thought to include.
         </p>
         <p>
-          Self-supervised learning (SSL) sidesteps this entirely. The idea is deceptively simple:
+          <H tip="Self-supervised learning = training without human labels. The model creates its own supervision signal from the structure of the data — e.g., predicting masked patches, matching different views of the same image. Unlocks training on virtually unlimited unlabeled data." color={P}>Self-supervised learning (SSL)</H> sidesteps this entirely. The idea is deceptively simple:
           show the model <em>different views of the same image</em> and train it so that those views
-          produce similar representations. No labels needed. The image <strong>is</strong> its own
+          produce similar <H tip="Representation = the internal feature vector a neural network produces for an input. A good representation captures the 'meaning' of the input in a way that's useful for downstream tasks. Think of it as the model's internal understanding." color={P}>representations</H>. No labels needed. The image <strong>is</strong> its own
           supervision. DINOv3 pushes this idea to its absolute limit — a <strong>6.7 billion parameter
-          </strong> Vision Transformer trained on 1.69B images with zero human labels — and achieves
-          state-of-the-art results on dense prediction tasks like segmentation, depth estimation, and
-          object tracking.
+          </strong> <H tip="Vision Transformer (ViT) = applying the Transformer architecture (originally designed for text/NLP) to images by splitting them into patches and treating each patch as a token. Introduced by Dosovitskiy et al. (2020)." color={P}>Vision Transformer</H> trained on 1.69B images with zero human labels — and achieves
+          state-of-the-art results on <H tip="Dense prediction = tasks where you need a prediction for EVERY pixel or patch, not just one label for the whole image. Includes segmentation (which class is each pixel?), depth (how far is each pixel?), and optical flow (where did each pixel move?)." color={AMBER}>dense prediction tasks</H> like <H tip="Semantic segmentation = labeling every pixel in an image with a class (sky, road, car, person). Unlike classification which gives ONE label per image, segmentation gives one label per PIXEL." color={GREEN}>segmentation</H>, depth estimation, and
+          <H tip="Object tracking = following a specific object across video frames. The model must maintain identity even when the object is temporarily occluded, changes shape, or moves unpredictably." color={CYAN}>object tracking</H>.
         </p>
       </Prose>
 
@@ -133,7 +134,7 @@ export default function DINOv3Paper() {
           <p>
             DINOv2 topped out at <strong>ViT-g (1.1B params)</strong> trained on 142M images. DINOv3
             scales to <strong>ViT-7B (6.7B params)</strong> on <strong>1.69B images</strong>. But
-            raw scale is not the contribution — the key innovation is solving a <em>training
+            raw scale is not the contribution — the key innovation is solving a <H tip="Dense feature degradation = a phenomenon where patch-level features (used for segmentation, depth, etc.) become noisier and less localized as training progresses beyond ~200K iterations. Global features (CLS token) keep improving, but the per-pixel quality collapses. Gram Anchoring fixes this." color={RED}>dense feature degradation</H> — a <em>training
             instability</em> that DINOv2 never had to deal with because it trained for fewer iterations.
           </p>
         </Prose>
@@ -182,17 +183,15 @@ export default function DINOv3Paper() {
       <Prose>
         <p>
           The backbone is a <strong>Vision Transformer</strong> (ViT) scaled to 6.7 billion parameters.
-          The architecture follows a fairly standard design — patch embedding, a stack of transformer
-          blocks, and output heads — but every component has been tuned for the self-supervised regime.
+          The architecture follows a fairly standard design — <H tip="Patch embedding = the first layer that converts raw pixel patches into token vectors. A 16×16 patch (768 pixels for RGB) gets mapped to a 4096-dimensional vector via a single linear layer (convolution with stride=patch_size)." color={P}>patch embedding</H>, a stack of <H tip="Transformer block = one layer of the Transformer. Contains: LayerNorm → Multi-Head Attention → residual add → LayerNorm → FFN → residual add. DINOv3 stacks 40 of these, each refining the token representations." color={P}>transformer blocks</H>, and output heads — but every component has been tuned for the <H tip="Self-supervised regime = training setup where the loss function doesn't use human labels. Instead, the model's own outputs (or augmented versions of inputs) provide the training signal. This changes what architectural choices work best." color={P}>self-supervised regime</H>.
           Let us walk through it top to bottom.
         </p>
         <p>
-          A <code>518 x 518</code> input image is split into <code>16 x 16</code> patches, producing
+          A <code>518 × 518</code> input image is split into <code>16 × 16</code> patches, producing
           a grid of <strong>1024 patches</strong> at training resolution (or 256 at the standard 256px
           crop). But the actual token count entering the transformer is higher: we prepend a
-          <strong> [CLS] token</strong> (for the global image representation) and <strong>4 register
-          tokens</strong> (R1-R4) that act as scratch memory for the model. For a 256px crop, that is
-          <code>1 + 4 + 256 = 261 tokens</code> flowing through 40 transformer layers.
+          <H tip="[CLS] token = a special learnable token prepended to the sequence. It doesn't correspond to any image patch — instead, it aggregates information from ALL patches through attention and becomes the 'global image representation'. Used for classification tasks." color={GREEN}>[CLS] token</H> (for the global image representation) and <H tip="Register tokens = 4 extra learnable tokens (R1-R4) added to the sequence. They don't correspond to patches and are discarded at output. They act as 'scratch memory' — the model can store intermediate computations in them, reducing the burden on patch tokens to serve dual roles. Introduced by Darcet et al. (2024)." color={P}>4 register tokens</H> (R1-R4) that act as scratch memory for the model. For a 256px crop, that is
+          <code>1 + 4 + 256 = 261 tokens</code> flowing through 40 <H tip="Each layer = 2 sub-operations: Multi-Head Attention (tokens communicate) + FFN (tokens think). With 40 layers, a token gets 40 rounds of gathering context and processing it — progressively building from edges → textures → parts → objects → semantics." color={P}>transformer layers</H>.
         </p>
       </Prose>
 

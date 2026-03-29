@@ -8,6 +8,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
+import H from '../../components/HoverTerm';
 
 /* ─── colour tokens ─── */
 const A = '#f59e0b';   // amber accent
@@ -35,19 +36,17 @@ export default function TurboQuantPaper() {
 
       <Prose>
         <p>
-          Imagine you have a billion vectors, each with 128 dimensions, stored as 32-bit floats.
+          Imagine you have a billion <H tip="Vector = an ordered list of numbers. In ML, vectors represent 'embeddings' — compressed representations of data (images, words, documents). A 128-dimensional vector is a point in 128-dimensional space." color={A}>vectors</H>, each with 128 <H tip="Dimensions = the number of numbers in a vector. Higher dimensions can capture more nuance but use more memory. A 128-d vector uses 512 bytes at 32-bit precision." color={A}>dimensions</H>, stored as <H tip="32-bit float = standard precision for neural network computations. Each number uses 4 bytes. Quantization aims to reduce this to 1-4 bits per number (0.125-0.5 bytes) — a 8-32× compression." color={BLUE}>32-bit floats</H>.
           That is <strong>512 GB</strong> of raw data. Now imagine you need to search through all of them
-          in milliseconds to find the nearest neighbor to a query. Or imagine those vectors are the
-          key-value cache of a large language model serving thousands of concurrent users, and your GPU
-          memory is the bottleneck. This is the <strong>vector quantization</strong> problem: how do
-          you compress high-dimensional vectors into compact codes while preserving the geometric
-          relationships (distances, inner products) that downstream tasks rely on?
+          in milliseconds to find the <H tip="Nearest neighbor = the stored vector most similar to your query. Used in RAG (retrieval-augmented generation), recommendation systems, and similarity search. The challenge: doing this fast when you have billions of vectors." color={GREEN}>nearest neighbor</H> to a query. Or imagine those vectors are the
+          <H tip="Key-Value cache (KV cache) = the memory that Transformers build up during generation. For each token generated, every layer stores a Key vector and a Value vector. With long sequences and many layers, this dominates GPU memory." color={A}>key-value cache</H> of a large language model serving thousands of concurrent users, and your <H tip="GPU memory (VRAM) = the high-bandwidth memory on graphics cards. H100 has 80GB. KV caches for long-context LLMs can easily exceed this, requiring compression or offloading to slower CPU memory." color={A}>GPU memory</H> is the bottleneck. This is the <strong>vector quantization</strong> problem: how do
+          you compress high-dimensional vectors into compact codes while preserving the <H tip="Geometric relationships = the distances and angles between vectors. In ML, these encode meaning: similar items have nearby vectors (small distance), related items have aligned vectors (high inner product). Quantization must preserve these or downstream tasks break." color={A}>geometric relationships</H> (distances, <H tip="Inner product = the dot product ⟨x,y⟩ = Σ x_i·y_i. In attention mechanisms, the Query-Key inner product determines how much one token 'attends' to another. If quantization distorts inner products, attention scores become wrong and the model produces garbage." color={RED}>inner products</H>) that downstream tasks rely on?
         </p>
         <p>
           TurboQuant attacks this problem with a beautifully simple idea: <em>randomly rotate your
-          vectors, then quantize each coordinate independently</em>. The result is an algorithm that
-          is near-optimal in the information-theoretic sense, requires zero indexing time, and works
-          as a drop-in replacement for existing KV cache compression and nearest-neighbor search
+          vectors, then <H tip="Scalar quantization = compressing each number independently to fewer bits. Like rounding 3.14159 to 3.14 or even just 3. TurboQuant's insight: after random rotation, optimal scalar quantization achieves near-optimal VECTOR quantization." color={A}>quantize each coordinate independently</H></em>. The result is an algorithm that
+          is near-optimal in the <H tip="Information-theoretic sense = compared to the absolute mathematical limit (Shannon bound) on how well ANY quantizer can do, regardless of complexity. TurboQuant is within 2.7× of this limit — remarkably close to perfect." color={A}>information-theoretic sense</H>, requires zero indexing time, and works
+          as a <H tip="Drop-in replacement = you can swap it in without changing the rest of your system. TurboQuant replaces the quantization step in existing KV cache or vector search pipelines without requiring retraining, new data structures, or architectural changes." color={GREEN}>drop-in replacement</H> for existing KV cache compression and <H tip="Nearest-neighbor search = finding the most similar vectors in a database. Critical for RAG, recommendation engines, and vector databases (Pinecone, Weaviate, Qdrant). Speed vs accuracy is the core tradeoff." color={GREEN}>nearest-neighbor search</H>{' '}
           pipelines.
         </p>
       </Prose>
@@ -65,21 +64,21 @@ export default function TurboQuantPaper() {
         <Prose>
           <p>Three converging trends make fast, high-quality vector quantization critical:</p>
           <p>
-            <strong>1. KV Cache Compression.</strong> Every token a Transformer generates stores a
-            key and a value vector in the KV cache. For a model like Llama-3-70B serving 128K-context
+            <strong>1. KV Cache Compression.</strong> Every token a <H tip="Transformer = the dominant neural network architecture since 2017. Uses self-attention to let every element in a sequence interact with every other. Powers GPT, Claude, Llama, Gemini, and essentially all modern AI." color={A}>Transformer</H> generates stores a
+            key and a value vector in the <H tip="KV cache = the accumulated Key and Value vectors from all previous tokens. During autoregressive generation, each new token needs to attend to ALL previous keys/values. This grows linearly with sequence length × layers × heads." color={A}>KV cache</H>. For a model like Llama-3-70B serving 128K-context
             requests, the KV cache alone can consume <strong>40+ GB per user</strong>. Quantizing
-            these vectors from 16 bits to 3-4 bits per dimension can cut memory by 4-5x with
+            these vectors from <H tip="16 bits (FP16/BF16) = the standard precision for inference. Each number uses 2 bytes. Going to 3-4 bits = 0.375-0.5 bytes per number — a 4-5× memory reduction." color={BLUE}>16 bits</H> to 3-4 bits per dimension can cut memory by 4-5× with
             negligible quality loss.
           </p>
           <p>
-            <strong>2. Nearest-Neighbor Search.</strong> Vector databases (Pinecone, Weaviate, Milvus)
-            store billions of embeddings. Product Quantization (PQ) has been the workhorse for
-            decades, but it requires expensive codebook training and is suboptimal for skewed
+            <strong>2. Nearest-Neighbor Search.</strong> <H tip="Vector databases = specialized databases for storing and searching high-dimensional vectors. Used in RAG pipelines, recommendation engines, image search. Examples: Pinecone, Weaviate, Milvus, Qdrant, Chroma." color={GREEN}>Vector databases</H> (Pinecone, Weaviate, Milvus)
+            store billions of <H tip="Embeddings = dense vector representations of data (text, images, audio). Models like CLIP, BERT, and OpenAI's text-embedding produce these. Similar items have nearby embeddings in the vector space." color={GREEN}>embeddings</H>. <H tip="Product Quantization (PQ) = the classic approach to vector compression. Splits each vector into subvectors, quantizes each subvector independently using a learned codebook. Requires expensive offline training (k-means clustering) on the data distribution." color={RED}>Product Quantization (PQ)</H> has been the workhorse for
+            decades, but it requires expensive <H tip="Codebook = a lookup table mapping quantized indices to reconstruction vectors. PQ learns this codebook via k-means clustering on training data. TurboQuant needs no codebook — it uses precomputed optimal quantizers for the Beta distribution." color={RED}>codebook training</H> and is suboptimal for skewed
             distributions. TurboQuant needs no training at all.
           </p>
           <p>
             <strong>3. Model Weight Quantization.</strong> Compressing the weights of a 70B-parameter
-            model from FP16 to 4-bit enables inference on consumer GPUs. The distortion-rate tradeoff
+            model from <H tip="FP16 = 16-bit floating point. Each weight uses 2 bytes. A 70B model in FP16 needs ~140 GB — too large for a single consumer GPU (24GB). Quantizing to 4-bit reduces this to ~35 GB, fitting on one RTX 4090." color={BLUE}>FP16</H> to 4-bit enables inference on consumer GPUs. The <H tip="Distortion-rate tradeoff = the fundamental tension: fewer bits per number → more compression but more error. Rate-distortion theory (Shannon) defines the mathematical limit of this tradeoff for any quantizer." color={A}>distortion-rate tradeoff</H>{' '}
             of the quantizer directly determines model quality degradation.
           </p>
         </Prose>
