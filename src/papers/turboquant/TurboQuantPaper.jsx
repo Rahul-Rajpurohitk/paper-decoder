@@ -101,16 +101,15 @@ export default function TurboQuantPaper() {
 
       <Prose>
         <p>
-          The fundamental challenge of vector quantization is that coordinates of a real-world vector
-          are typically <em>correlated</em>. Word embeddings, attention keys, image features -- they
+          The fundamental challenge of <H tip="Vector quantization = mapping continuous high-dimensional vectors to a finite set of discrete codes. Unlike scalar quantization (which compresses one number at a time), vector quantization considers all dimensions jointly — which is optimal but exponentially complex." color={A}>vector quantization</H> is that coordinates of a real-world vector
+          are typically <H tip="Correlated = knowing one coordinate tells you something about other coordinates. In word embeddings, the 'gender' dimension often correlates with the 'royalty' dimension (king↔queen). This structure makes naive per-coordinate compression suboptimal." color={A}>correlated</H>. <H tip="Word embeddings = dense vector representations of words (Word2Vec, GloVe, GPT embeddings). 'King' and 'Queen' are nearby, 'King'-'Man'+'Woman' ≈ 'Queen'. These vectors have rich internal structure that makes them hard to compress naively." color={BLUE}>Word embeddings</H>, <H tip="Attention keys = the Key vectors in Transformer self-attention. Each token projects its representation into K, Q, V vectors. Keys are what get matched against queries to compute attention weights. In long-context models, storing billions of key vectors is the memory bottleneck." color={BLUE}>attention keys</H>, image features — they
           all have structure that means some directions carry more information than others. Designing
-          an optimal quantizer for correlated data is NP-hard in general.
+          an optimal quantizer for <H tip="Correlated data is hard because the optimal quantizer depends on the joint distribution of ALL coordinates. For d=128 dimensions with b=4 bits each, the search space has 2^512 possible codewords — more than atoms in the universe. This is why vector quantization is NP-hard." color={RED}>correlated data is NP-hard</H> in general.
         </p>
         <p>
           TurboQuant sidesteps this entirely with one elegant move: <strong>multiply the vector by a
-          random rotation matrix</strong>. After rotation, every coordinate has the same marginal
-          distribution, and they become nearly independent in high dimensions. This means you can
-          quantize each coordinate separately using the same scalar quantizer -- the optimal one for
+          <H tip="Random rotation matrix = an orthogonal matrix Π sampled uniformly from O(d). 'Random' means each rotation is equally likely. 'Rotation' means it preserves lengths and angles — no information is lost, just redistributed across coordinates. Implemented via random Hadamard transforms for O(d log d) speed." color={A}>random rotation matrix</H></strong>. After rotation, every coordinate has the same <H tip="Marginal distribution = the probability distribution of a single coordinate, ignoring all others. Before rotation, some coordinates might be Gaussian while others are bimodal. After random rotation, ALL coordinates follow the same scaled Beta distribution — a remarkable property of uniform rotations." color={A}>marginal distribution</H>, and they become nearly <H tip="Independent in high dimensions = a consequence of measure concentration. For d≥64, the coordinates of a randomly rotated unit vector behave almost exactly like independent Gaussians with variance 1/d. The correlation between any two coordinates is O(1/d), which vanishes as d grows." color={GREEN}>independent in high dimensions</H>. This means you can
+          quantize each coordinate separately using the same <H tip="Scalar quantizer = a function that maps one real number to one of 2^b discrete levels (b bits). The optimal scalar quantizer for a known distribution is called the Lloyd-Max quantizer — it minimizes MSE by placing reconstruction points at the centroids of equal-probability regions." color={A}>scalar quantizer</H> — the optimal one for
           that known distribution.
         </p>
       </Prose>

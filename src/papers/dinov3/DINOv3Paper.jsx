@@ -588,15 +588,13 @@ export default function DINOv3Paper() {
 
       <Prose>
         <p>
-          DINOv3 uses a <strong>teacher-student self-distillation</strong> framework. There is no
+          DINOv3 uses a <H tip="Self-distillation = the model teaches itself. Unlike traditional distillation (where a pre-trained teacher transfers knowledge to a smaller student), here the teacher IS the student — just a smoothed, time-delayed copy. This creates a bootstrapping loop: student improves → teacher slowly follows → provides better targets → student improves further." color={P}>teacher-student self-distillation</H> framework. There is no
           separate "teacher model" trained ahead of time — the teacher <em>is</em> the student, just
-          a smoother version of it. Specifically, the teacher is an <strong>Exponential Moving Average
-          (EMA)</strong> of the student's weights, updated after every step. The momentum starts at
-          0.994 and cosine-anneals to 0.9999. This means the teacher evolves slowly, providing
+          a smoother version of it. Specifically, the teacher is an <H tip="EMA = Exponential Moving Average. After each training step, teacher weights are updated: θ_teacher = m·θ_teacher + (1-m)·θ_student, where m=0.994→0.9999. High momentum = teacher changes very slowly, providing stable targets. Without EMA, the training would collapse — both networks would converge to outputting a constant." color={P}>Exponential Moving Average (EMA)</H> of the student's weights, updated after every step. The <H tip="Momentum schedule: starts at 0.994 (teacher tracks student closely, useful early when features change fast) and cosine-anneals to 0.9999 (teacher becomes very stable, like a reliable anchor). At 0.9999, the teacher's weights at any step are a weighted average of ~10,000 previous student checkpoints." color={P}>momentum starts at 0.994</H> and cosine-anneals to 0.9999. This means the teacher evolves slowly, providing
           stable targets for the student to chase.
         </p>
         <p>
-          The training signal comes from three loss functions, each targeting a different aspect of
+          The training signal comes from <H tip="Three complementary losses: (1) DINO loss for global image understanding via CLS token, (2) iBOT loss for local patch understanding via masked prediction, (3) Koleo regularizer to prevent embedding collapse. Together they ensure the model learns both the 'what is this image?' and 'what does each pixel show?' questions." color={P}>three loss functions</H>, each targeting a different aspect of
           feature quality:
         </p>
       </Prose>

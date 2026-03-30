@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './styles/library.css';
 import './styles/reader.css';
 
 import PaperLibrary from './components/PaperLibrary';
+import ReadingProgress from './components/ReadingProgress';
 import MSAPaper from './papers/msa/MSAPaper';
 import TurboQuantPaper from './papers/turboquant/TurboQuantPaper';
 import DINOv3Paper from './papers/dinov3/DINOv3Paper';
@@ -26,17 +27,31 @@ const PAPER_COMPONENTS = {
   dinov3: DINOv3Paper,
 };
 
+const PAPER_SECTIONS = {
+  msa: ['The Core Problem', 'Architecture', 'Training Pipeline', 'Three-Stage Inference', 'Results', 'Mental Models'],
+  turboquant: ['The Core Problem', 'Random Rotation', 'TurboQuant_mse', 'TurboQuant_prod', 'Lower Bounds', 'Results', 'Mental Models'],
+  dinov3: ['Why DINOv3?', 'ViT-7B Architecture', 'Multi-Crop Strategy', 'Teacher-Student & Losses', 'Gram Anchoring', 'Training Pipeline', 'Distillation', 'Results'],
+};
+
 export default function App() {
   const [activePaper, setActivePaper] = useState(null);
   const paper = PAPERS.find(p => p.id === activePaper);
   const PaperComponent = activePaper ? PAPER_COMPONENTS[activePaper] : null;
 
+  // Scroll to top when switching papers
+  useEffect(() => { window.scrollTo(0, 0); }, [activePaper]);
+
   if (!activePaper) {
     return <PaperLibrary papers={PAPERS} onSelect={setActivePaper} />;
   }
 
+  // Lazy-load TOC only in paper view
+  const TableOfContents = require('./components/TableOfContents').default;
+
   return (
     <div>
+      <ReadingProgress color={paper.accent} />
+
       <header className="reader-header">
         <div className="reader-header-inner">
           <button className="reader-back-btn" onClick={() => setActivePaper(null)}>
@@ -64,9 +79,14 @@ export default function App() {
         {PaperComponent && <PaperComponent />}
       </main>
 
+      <TableOfContents
+        sections={PAPER_SECTIONS[activePaper] || []}
+        color={paper.accent}
+      />
+
       <footer className="reader-footer">
         <span>Paper Decoder &mdash; Deep-dive AI paper learning</span>
-        <span>Scalable to N papers</span>
+        <span>Built for depth, not skimming</span>
       </footer>
     </div>
   );
