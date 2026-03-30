@@ -462,6 +462,10 @@ export default function TurboQuantPaper() {
         systematic error. This motivates Algorithm 2.
       </Callout>
 
+      <Callout type="math">
+        <strong>Why exactly does MSE-optimal quantization create biased inner products?</strong> This is a subtle but crucial point. When you quantize a value x to its nearest centroid c, the reconstruction error is (x - c). For MSE, this error averages to zero — the centroid IS the conditional mean. But when you compute the inner product of two quantized vectors, you get ⟨ĉ_x, ĉ_y⟩ instead of ⟨x, y⟩. The error terms (x - c_x) and (y - c_y) are independent, so their cross-product vanishes in expectation. But the squared terms DON'T vanish: ⟨ĉ_x, ĉ_y⟩ = ⟨x, y⟩ - ⟨x, e_y⟩ - ⟨e_x, y⟩ + ⟨e_x, e_y⟩. The last term ⟨e_x, e_y⟩ ≈ 0 by independence, but the middle terms create a systematic downward bias because quantization always shrinks toward centroids. This is why attention scores computed from MSE-quantized KV caches are systematically underestimated — and why TurboQuant_prod exists.
+      </Callout>
+
       <VisualCompare
         leftLabel="Naive Quantization"
         rightLabel="TurboQuant"

@@ -1088,6 +1088,14 @@ export default function DINOv3Paper() {
         </p>
       </Prose>
 
+      <Callout type="math">
+        <strong>Why operate on the Gram matrix instead of the features directly?</strong> This is the deepest insight in the paper. If you constrained the features directly (||X_S - X_G||²), you'd freeze the model — it couldn't learn new representations at all. But the Gram matrix captures only the <em>structure of similarities</em>, not the features themselves. Two completely different feature spaces can produce identical Gram matrices as long as the <em>pairwise relationships are preserved</em>. This means the student is free to move its features anywhere in the d-dimensional space — rotate them, scale them, project them — as long as the structural fingerprint stays close to the Gram teacher's. It's like saying "I don't care what language you speak, as long as you preserve the same social network among your tokens." This is why Gram anchoring can improve global features (which need freedom to evolve) while simultaneously preserving dense features (which need structural consistency).
+      </Callout>
+
+      <Callout type="insight">
+        <strong>Why use an earlier checkpoint as the Gram teacher, not a separate model?</strong> Because the problem IS the model's own trajectory. Early in training (200K iterations), the model has excellent dense features — patches are localized, similarity maps are clean. By 1M iterations, these have degraded. So the best "teacher" for dense structure is the model's own younger self — before it went astray. Using an external teacher (like a supervised model) would impose a different feature structure entirely, potentially conflicting with the SSL objective. The Gram teacher is updated every 10K iterations, creating a moving reference point that keeps pulling the student back toward good dense behavior without preventing global improvement. It's self-correction, not external correction.
+      </Callout>
+
       <FormulaSteps
         label="Gram Anchoring — Building the Loss Step by Step"
         color={RED}

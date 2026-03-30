@@ -499,6 +499,14 @@ export default function MSAPaper() {
           </p>
         </Prose>
 
+        <Callout type="math">
+          <strong>Why P=64 specifically?</strong> This is a sweet spot in the accuracy-speed tradeoff. Smaller P (say 16) gives finer-grained routing — you can pinpoint exactly which 16-token window matters — but costs 4× more routing compute. Larger P (say 256) is faster but too coarse — a 256-token chunk might contain one critical sentence buried among 15 irrelevant ones, and mean-pooling would dilute the signal. At P=64, each chunk spans roughly 2-3 sentences, which is the natural granularity of a "topical unit" in text. The paper ablates this: P=32 gives +0.3% accuracy but costs 2× more routing; P=128 saves compute but drops accuracy by 1.2%. The 64-token sweet spot mirrors a deeper linguistic truth: meaning in text clusters at the paragraph level, not the word or page level.
+        </Callout>
+
+        <Callout type="insight">
+          <strong>Why mean pooling and not max pooling or attention pooling?</strong> Mean pooling works here because the routing keys represent <em>semantic direction</em>, not magnitude. When you average 64 unit-direction vectors, the result points toward the "average topic" of that chunk — which is exactly what routing needs. Max pooling would pick the most extreme feature in any dimension, which captures outliers, not topics. Attention pooling would need a learned query, adding parameters and computation to the very bottleneck you're trying to accelerate. Mean pooling is parameter-free, O(1) per chunk, and empirically matches or beats alternatives. Sometimes the simplest operation is the right one.
+        </Callout>
+
         <FormulaSteps
           label="Chunk Compression — Building Up Step by Step"
           color={CYAN}
@@ -891,6 +899,10 @@ export default function MSAPaper() {
           { symbol: 'λ = 1.0 → 0.1', meaning: 'Priority shift: routing-first (warmup) → generation-first (main training)' },
         ]}
       />
+
+      <Callout type="math">
+        <strong>Why does λ decrease and not stay at 1.0?</strong> This is a bootstrap problem — the same kind you see in reinforcement learning. At the start, the routing mechanism is random. If you rely on L_LM alone, the model gets garbage chunks, generates garbage tokens, and the gradient signal for "which chunk should I have picked?" is hopelessly diluted across millions of parameters. L_aux solves the cold-start: it directly tells the router "this chunk is relevant, that one isn't" using contrastive supervision. But once routing is decent (after CPT), you WANT L_LM to dominate — because L_LM captures the true objective (good text), while L_aux only captures a proxy (chunk-query similarity). If you kept λ=1.0 forever, the router would over-optimize for similarity and under-optimize for actual usefulness. The λ decay is a curriculum: <strong>first learn to navigate, then learn to think</strong>.
+      </Callout>
 
       <ConceptCard title="Why CPT Matters: The Ablation" color="#ef4444" defaultOpen={false}>
         <Prose>

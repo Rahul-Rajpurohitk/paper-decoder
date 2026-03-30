@@ -299,6 +299,14 @@ export default function AttnResPaper() {
         relevance varies per input. A fixed, uniform scheme wastes capacity.
       </Callout>
 
+      <Callout type="math">
+        <strong>Why didn't anyone fix this earlier?</strong> Residual connections were introduced in ResNet (2015) as a training trick — they solve the vanishing gradient problem by providing a direct gradient path to early layers. The formula ∂h_l/∂h_{l-1} = I + ∂f/∂h always has the identity matrix I, so gradients never vanish completely. This was so successful that everyone adopted it as-is, without questioning whether the <em>uniform accumulation</em> part was optimal. The Kimi team's insight is that you can keep the gradient-flow benefit (the I term) while replacing the uniform accumulation with learned, input-dependent weights. The reason this works NOW and didn't before: (1) modern models are much deeper (40-100 layers), making dilution severe, (2) MoE architectures already have routing mechanisms, so adding depth-wise attention is a natural extension, and (3) training stability tools (RMSNorm, careful initialization) make the extra parameters trainable.
+      </Callout>
+
+      <Callout type="insight">
+        <strong>Why does this matter more for reasoning than memorization?</strong> Multi-step reasoning (GPQA-Diamond: +7.5 points) requires the model to chain information across layers — "fact A from layer 12 + inference rule from layer 25 + fact B from layer 38 = answer." With standard residuals, these signals get diluted as they accumulate through 40 layers of noise. With AttnRes, the model can directly attend to the specific layers that produced the relevant intermediate results, bypassing the noise. Memorization tasks (like simple factual recall) don't benefit as much because they only need one layer to "fire" — the answer is stored in one place and retrieved in one step. The deeper the reasoning chain, the more AttnRes helps. This is why the biggest gains are on GPQA (complex PhD-level reasoning) and Math (multi-step derivations), not on MMLU (mostly recall).
+      </Callout>
+
       {/* ── Layer Contribution Decay Bar Chart ── */}
       <Diagram caption={<><strong>Layer Contribution Decay</strong> — Each layer's relative contribution to the final hidden state shrinks as depth increases. By layer 40, a single layer's voice is nearly silent.</>}>
         <svg viewBox="0 0 800 280" style={{ width: '100%', height: 'auto' }}>
