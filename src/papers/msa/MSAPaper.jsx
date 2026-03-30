@@ -10,6 +10,8 @@ import MentalModel from '../../components/MentalModel';
 import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
 import H from '../../components/HoverTerm';
+import VisualCompare from '../../components/VisualCompare';
+import KeyNumber from '../../components/KeyNumber';
 
 const CYAN = '#06b6d4';
 const ORANGE = '#f97316';
@@ -137,6 +139,26 @@ export default function MSAPaper() {
         rather than attending to everything. The routing itself is part of the attention mechanism,
         not a separate retrieval system.
       </Callout>
+
+      <VisualCompare
+        leftLabel="Dense Attention"
+        rightLabel="MSA (Sparse)"
+        leftColor="#ef4444"
+        rightColor="#06b6d4"
+        left={<>
+          <p>Every token attends to every other token</p>
+          <p style={{fontFamily:'var(--font-mono)',color:'#ef4444'}}>O(N²) compute</p>
+          <p>100M tokens → 10¹⁶ operations</p>
+          <p style={{color:'#ef4444'}}>Completely infeasible</p>
+        </>}
+        right={<>
+          <p>Route to top-k relevant chunks, attend only to those</p>
+          <p style={{fontFamily:'var(--font-mono)',color:'#06b6d4'}}>O(N/P + k·P) compute</p>
+          <p>100M tokens → 10⁸ operations</p>
+          <p style={{color:'#22c55e'}}>8 orders of magnitude cheaper</p>
+        </>}
+        caption="The fundamental insight: you don't need to read every book to answer a question"
+      />
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 02 — ARCHITECTURE
@@ -386,6 +408,30 @@ export default function MSAPaper() {
         parameters would create a tug-of-war. Separation lets each optimize freely — and the paper shows
         this is the difference between 95% and 76% NIAH accuracy.
       </Callout>
+
+      <VisualCompare
+        leftLabel="Content Projector (W_K, W_V)"
+        rightLabel="Routing Projector (W_KR)"
+        leftColor="#06b6d4"
+        rightColor="#f97316"
+        left={<>
+          <p><strong>Purpose:</strong> fine-grained token-level detail</p>
+          <p>Asks: <em>"What specific info does this token carry?"</em></p>
+          <p style={{fontFamily:'var(--font-mono)',color:'#06b6d4'}}>K_i = H_i · W_K</p>
+          <p style={{fontFamily:'var(--font-mono)',color:'#06b6d4'}}>V_i = H_i · W_V</p>
+          <p>Used in <strong>final sparse attention</strong></p>
+          <p>Optimized by language modeling loss (L_LM)</p>
+        </>}
+        right={<>
+          <p><strong>Purpose:</strong> coarse document-level relevance</p>
+          <p>Asks: <em>"Is this document about the right topic?"</em></p>
+          <p style={{fontFamily:'var(--font-mono)',color:'#f97316'}}>K^R_i = H_i · W_KR</p>
+          <p>&nbsp;</p>
+          <p>Used <strong>only for routing</strong> (never in attention)</p>
+          <p>Optimized by auxiliary routing loss (L_aux)</p>
+        </>}
+        caption="Separation is critical: shared projectors drop NIAH accuracy from 95% to 76%"
+      />
 
       {/* ── Relevance Scoring ── */}
       <ConceptCard title="Relevance Scoring: How MSA Picks the Right Chunks" color={ORANGE} defaultOpen={true}>

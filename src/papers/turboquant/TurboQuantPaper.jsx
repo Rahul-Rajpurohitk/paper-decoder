@@ -10,6 +10,8 @@ import MentalModel from '../../components/MentalModel';
 import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
 import H from '../../components/HoverTerm';
+import VisualCompare from '../../components/VisualCompare';
+import KeyNumber from '../../components/KeyNumber';
 
 /* ─── colour tokens ─── */
 const A = '#f59e0b';   // amber accent
@@ -460,6 +462,26 @@ export default function TurboQuantPaper() {
         systematic error. This motivates Algorithm 2.
       </Callout>
 
+      <VisualCompare
+        leftLabel="Naive Quantization"
+        rightLabel="TurboQuant"
+        leftColor="#ef4444"
+        rightColor="#f59e0b"
+        left={<>
+          <p>Quantize each coordinate directly</p>
+          <p>Coordinates are correlated → suboptimal</p>
+          <p>No theoretical guarantees</p>
+          <p style={{color:'#ef4444'}}>Distortion depends on data distribution</p>
+        </>}
+        right={<>
+          <p>Random rotate first, THEN quantize</p>
+          <p>Coordinates become independent → optimal scalar quantization</p>
+          <p style={{fontFamily:'var(--font-mono)',color:'#f59e0b'}}>Within 2.7× of Shannon bound</p>
+          <p style={{color:'#22c55e'}}>Works for ANY data — no training needed</p>
+        </>}
+        caption="Random rotation is the key: it turns a hard vector problem into easy scalar problems"
+      />
+
       {/* ═══════════════════════════════════════════════════════════
           SECTION 04 — ALGORITHM 2: TurboQuant_prod
           ═══════════════════════════════════════════════════════════ */}
@@ -505,6 +527,26 @@ export default function TurboQuantPaper() {
           </p>
         </Prose>
       </ConceptCard>
+
+      <VisualCompare
+        leftLabel="TurboQuant_mse"
+        rightLabel="TurboQuant_prod"
+        leftColor="#f59e0b"
+        rightColor="#06b6d4"
+        left={<>
+          <p>Optimizes for reconstruction quality (MSE)</p>
+          <p>Best for: weight compression, nearest-neighbor</p>
+          <p style={{color:'#ef4444'}}>BIASED for inner products</p>
+          <p>Attention scores systematically underestimated</p>
+        </>}
+        right={<>
+          <p>Optimizes for inner product estimation</p>
+          <p>Best for: KV cache, attention, ranking</p>
+          <p style={{color:'#22c55e'}}>UNBIASED — mathematically guaranteed</p>
+          <p>Uses QJL residual correction trick</p>
+        </>}
+        caption="Choose based on your use case: reconstruction (MSE) vs similarity (prod)"
+      />
 
       <Diagram caption="Two Algorithms Comparison: TurboQuant_mse (direct) vs TurboQuant_prod (with QJL residual correction)">
         <svg viewBox="0 0 800 420" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>

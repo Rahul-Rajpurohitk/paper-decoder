@@ -9,6 +9,8 @@ import MentalModel from '../../components/MentalModel';
 import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
 import H from '../../components/HoverTerm';
+import VisualCompare from '../../components/VisualCompare';
+import KeyNumber from '../../components/KeyNumber';
 
 const PK = '#ec4899';
 const PK2 = '#f472b6';
@@ -296,6 +298,80 @@ export default function AttnResPaper() {
         Some layers specialize in syntax, others in factual recall, others in reasoning — and their
         relevance varies per input. A fixed, uniform scheme wastes capacity.
       </Callout>
+
+      {/* ── Layer Contribution Decay Bar Chart ── */}
+      <Diagram caption={<><strong>Layer Contribution Decay</strong> — Each layer's relative contribution to the final hidden state shrinks as depth increases. By layer 40, a single layer's voice is nearly silent.</>}>
+        <svg viewBox="0 0 800 280" style={{ width: '100%', height: 'auto' }}>
+          <defs>
+            <linearGradient id="ar-decay-bar" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ef4444" />
+              <stop offset="100%" stopColor="#991b1b" />
+            </linearGradient>
+          </defs>
+
+          <text x="400" y="24" textAnchor="middle" fill={RED} fontSize="14" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">
+            Relative Layer Contribution vs Depth (Standard Residuals)
+          </text>
+          <text x="400" y="42" textAnchor="middle" fill={GRAY} fontSize="10" fontFamily="Inter, system-ui, sans-serif">
+            Each bar = one layer's share of the total hidden state
+          </text>
+
+          {/* Axis */}
+          <line x1="100" y1="240" x2="720" y2="240" stroke="#334155" strokeWidth="1" />
+          <text x="410" y="270" textAnchor="middle" fill={GRAY} fontSize="11" fontFamily="Inter, system-ui, sans-serif">
+            Layer Depth
+          </text>
+
+          {/* Bars — contribution ~ 1/sqrt(l) normalized */}
+          {[
+            { label: '1', height: 170, x: 120 },
+            { label: '2', height: 120, x: 180 },
+            { label: '5', height: 76, x: 240 },
+            { label: '10', height: 54, x: 300 },
+            { label: '15', height: 44, x: 360 },
+            { label: '20', height: 38, x: 420 },
+            { label: '30', height: 31, x: 480 },
+            { label: '40', height: 27, x: 540 },
+            { label: '60', height: 22, x: 600 },
+            { label: '100', height: 17, x: 660 },
+          ].map((bar) => (
+            <g key={`decay-${bar.label}`}>
+              <rect
+                x={bar.x}
+                y={240 - bar.height}
+                width="40"
+                height={bar.height}
+                rx="4"
+                fill="url(#ar-decay-bar)"
+                opacity={Math.max(0.3, bar.height / 170)}
+              />
+              <text
+                x={bar.x + 20} y={240 - bar.height - 6}
+                textAnchor="middle" fill={RED} fontSize="9" fontWeight="600"
+                fontFamily="Inter, system-ui, sans-serif"
+              >
+                {(bar.height / 170 * 100).toFixed(0)}%
+              </text>
+              <text
+                x={bar.x + 20} y={254}
+                textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="500"
+                fontFamily="Inter, system-ui, sans-serif"
+              >
+                L{bar.label}
+              </text>
+            </g>
+          ))}
+
+          {/* Annotation */}
+          <line x1="570" y1="215" x2="660" y2="225" stroke={RED} strokeWidth="1" strokeDasharray="4 2" />
+          <text x="700" y="210" textAnchor="middle" fill={RED} fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">
+            Layer 100:
+          </text>
+          <text x="700" y="224" textAnchor="middle" fill="#fca5a5" fontSize="9" fontFamily="Inter, system-ui, sans-serif">
+            only 10% of L1
+          </text>
+        </svg>
+      </Diagram>
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 02 — THE SOLUTION: ATTENTION RESIDUALS
@@ -834,6 +910,28 @@ export default function AttnResPaper() {
         <code>||h_L|| ~ O(sqrt(L))</code> and grows without bound as you add layers.
       </Callout>
 
+      <VisualCompare
+        leftLabel="Standard Residual"
+        rightLabel="Attention Residual"
+        leftColor="#ef4444"
+        rightColor="#ec4899"
+        left={<>
+          <p><strong>Fixed weights</strong>: every layer contributes equally</p>
+          <p>Layer 1: 2.5% contribution</p>
+          <p>Layer 40: 2.5% contribution</p>
+          <p>Hidden state grows as O(sqrt(L))</p>
+          <p style={{color:'#ef4444'}}>Early layers get diluted</p>
+        </>}
+        right={<>
+          <p><strong>Learned weights</strong>: each layer's contribution is input-dependent</p>
+          <p>Layer 1: 15% (if relevant to this input)</p>
+          <p>Layer 40: 0.5% (less useful for this query)</p>
+          <p>Hidden state is controlled</p>
+          <p style={{color:'#22c55e'}}>Dynamic skip connections</p>
+        </>}
+        caption="The core difference: fixed vs learned depth aggregation"
+      />
+
       {/* ═══════════════════════════════════════════════════════════
           SECTION 05 — RESULTS: THE NUMBERS
           ═══════════════════════════════════════════════════════════ */}
@@ -981,6 +1079,24 @@ export default function AttnResPaper() {
         matters most — the model needs to dynamically combine different types of processing (syntax parsing,
         fact retrieval, logical chaining) in an input-specific way.
       </Callout>
+
+      <VisualCompare
+        leftLabel="Before (Standard)"
+        rightLabel="After (AttnRes)"
+        leftColor="#64748b"
+        rightColor="#ec4899"
+        left={<>
+          <p style={{fontSize:28,fontWeight:800,fontFamily:'var(--font-mono)',color:'#64748b'}}>36.9</p>
+          <p>GPQA-Diamond</p>
+          <p>Multi-step reasoning struggles</p>
+        </>}
+        right={<>
+          <p style={{fontSize:28,fontWeight:800,fontFamily:'var(--font-mono)',color:'#ec4899'}}>44.4</p>
+          <p>GPQA-Diamond</p>
+          <p><strong>+7.5 points</strong> — largest gain</p>
+        </>}
+        caption="Reasoning tasks benefit most because later layers can selectively build on early discoveries"
+      />
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 06 — TRAINING & ARCHITECTURE DETAILS

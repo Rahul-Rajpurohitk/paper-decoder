@@ -9,6 +9,8 @@ import Diagram from '../../components/Diagram';
 import Prose from '../../components/Prose';
 import FormulaSteps from '../../components/FormulaSteps';
 import H from '../../components/HoverTerm';
+import VisualCompare from '../../components/VisualCompare';
+import KeyNumber from '../../components/KeyNumber';
 
 /* ─── colour tokens ─── */
 const P = '#8b5cf6';   // primary purple
@@ -167,6 +169,26 @@ export default function DINOv3Paper() {
         Anchoring is the fix — it preserves the structural relationships between patches throughout
         long training runs. This is the paper's primary contribution.
       </Callout>
+
+      <VisualCompare
+        leftLabel="Supervised Learning"
+        rightLabel="Self-Supervised (DINOv3)"
+        leftColor="#f59e0b"
+        rightColor="#8b5cf6"
+        left={<>
+          <p>Requires human labels for every image</p>
+          <p style={{fontFamily:'var(--font-mono)'}}>$17M+ to label 1.69B images</p>
+          <p>Features biased toward label vocabulary</p>
+          <p>Poor dense features (CLS-optimized)</p>
+        </>}
+        right={<>
+          <p>Zero labels needed — learns from data structure</p>
+          <p style={{fontFamily:'var(--font-mono)'}}>$0 annotation cost</p>
+          <p>Features capture universal visual structure</p>
+          <p style={{color:'#22c55e'}}>Excellent dense features (Gram-anchored)</p>
+        </>}
+        caption="Self-supervised learning scales where supervised hits a wall"
+      />
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 02 — ARCHITECTURE
@@ -1117,6 +1139,26 @@ export default function DINOv3Paper() {
         patch tokens maintain their spatial structure.
       </Callout>
 
+      <VisualCompare
+        leftLabel="Without Gram Anchoring"
+        rightLabel="With Gram Anchoring"
+        leftColor="#ef4444"
+        rightColor="#22c55e"
+        left={<>
+          <p><strong>200K iterations</strong>: Dense features clean, localized</p>
+          <p><strong>600K iterations</strong>: Features degrading, noisy</p>
+          <p><strong>1M iterations</strong>: Patches all look like CLS token</p>
+          <p style={{color:'#ef4444'}}>Segmentation performance drops below 200K checkpoint</p>
+        </>}
+        right={<>
+          <p><strong>200K iterations</strong>: Dense features clean (same)</p>
+          <p><strong>600K iterations</strong>: Features stay clean — Gram loss active</p>
+          <p><strong>1M iterations</strong>: Patches maintain spatial identity</p>
+          <p style={{color:'#22c55e'}}>Both global AND dense features improve together</p>
+        </>}
+        caption="Gram Anchoring preserves dense feature structure while letting global features continue improving"
+      />
+
       <ConceptCard title="Why Does Dense Feature Degradation Happen?" color={RED} defaultOpen={true}>
         <Prose>
           <p>
@@ -1520,6 +1562,144 @@ export default function DINOv3Paper() {
         <em>general-purpose visual representations</em> — the long-sought "visual equivalent of word
         embeddings."
       </Callout>
+
+      {/* ── DINOv3 Model Family Tree SVG ── */}
+      <Diagram caption={<><strong>DINOv3 Model Family</strong> — The 7B teacher distills knowledge down to smaller student models. Percentages show relative performance retained vs the teacher.</>}>
+        <svg viewBox="0 0 900 520" style={{ width: '100%', height: 'auto' }}>
+          <defs>
+            <linearGradient id="mft-bg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#1a1030" />
+              <stop offset="100%" stopColor="#0f0b1e" />
+            </linearGradient>
+            <linearGradient id="mft-glow" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={P} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={P} stopOpacity="0.05" />
+            </linearGradient>
+            <filter id="mft-shadow">
+              <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor={P} floodOpacity="0.3" />
+            </filter>
+            <marker id="mft-ap" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill={P2} />
+            </marker>
+          </defs>
+
+          <rect width="900" height="520" rx="12" fill="url(#mft-bg)" />
+          <text x="450" y="32" textAnchor="middle" fill={P} fontSize="14" fontWeight="700" letterSpacing="1.5" fontFamily="Inter, system-ui, sans-serif">DINOV3 MODEL FAMILY — KNOWLEDGE DISTILLATION TREE</text>
+
+          {/* ── Teacher: ViT-7B at the top ── */}
+          <rect x="325" y="52" width="250" height="70" rx="14" fill="url(#mft-glow)" stroke={P} strokeWidth="2.5" filter="url(#mft-shadow)" />
+          <text x="450" y="78" textAnchor="middle" fill="#fff" fontSize="18" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">ViT-7B Teacher</text>
+          <text x="450" y="98" textAnchor="middle" fill={P2} fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">6.7B params  |  4096 embed dim  |  40 layers</text>
+          <text x="450" y="112" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">100% reference performance</text>
+
+          {/* ── Trunk line from teacher ── */}
+          <line x1="450" y1="122" x2="450" y2="160" stroke={P2} strokeWidth="2" />
+
+          {/* ── Horizontal distribution bar ── */}
+          <line x1="95" y1="160" x2="805" y2="160" stroke={P2} strokeWidth="1.5" strokeDasharray="4 3" />
+
+          {/* ── Branch lines down to each student ── */}
+          {/* ViT-g */}
+          <line x1="95" y1="160" x2="95" y2="200" stroke={P2} strokeWidth="1.5" markerEnd="url(#mft-ap)" />
+          {/* ViT-L */}
+          <line x1="275" y1="160" x2="275" y2="200" stroke={P2} strokeWidth="1.5" markerEnd="url(#mft-ap)" />
+          {/* ViT-B */}
+          <line x1="450" y1="160" x2="450" y2="200" stroke={P2} strokeWidth="1.5" markerEnd="url(#mft-ap)" />
+          {/* ViT-S */}
+          <line x1="625" y1="160" x2="625" y2="200" stroke={P2} strokeWidth="1.5" markerEnd="url(#mft-ap)" />
+          {/* ConvNeXt */}
+          <line x1="805" y1="160" x2="805" y2="200" stroke={P2} strokeWidth="1.5" markerEnd="url(#mft-ap)" />
+
+          {/* ── Student: ViT-g ── */}
+          <rect x="20" y="205" width="150" height="60" rx="10" fill={P} fillOpacity="0.15" stroke={P} strokeWidth="1.5" />
+          <text x="95" y="228" textAnchor="middle" fill="#fff" fontSize="15" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">ViT-g</text>
+          <text x="95" y="248" textAnchor="middle" fill={GRAY} fontSize="11" fontFamily="Inter, system-ui, sans-serif">1.1B params</text>
+          {/* Performance bars for ViT-g */}
+          <rect x="30" y="280" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="30" y="280" width={130 * 0.96} rx="4" height="8" fill={GREEN} />
+          <text x="95" y="302" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">96% — Classification</text>
+          <rect x="30" y="312" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="30" y="312" width={130 * 0.92} rx="4" height="8" fill={CYAN} />
+          <text x="95" y="334" textAnchor="middle" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">92% — Segmentation</text>
+          <rect x="30" y="344" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="30" y="344" width={130 * 0.90} rx="4" height="8" fill={AMBER} />
+          <text x="95" y="366" textAnchor="middle" fill={AMBER} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">90% — Depth</text>
+
+          {/* ── Student: ViT-L ── */}
+          <rect x="200" y="205" width="150" height="60" rx="10" fill={P} fillOpacity="0.12" stroke={P} strokeWidth="1.5" />
+          <text x="275" y="228" textAnchor="middle" fill="#fff" fontSize="15" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">ViT-L</text>
+          <text x="275" y="248" textAnchor="middle" fill={GRAY} fontSize="11" fontFamily="Inter, system-ui, sans-serif">307M params</text>
+          <rect x="210" y="280" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="210" y="280" width={130 * 0.93} rx="4" height="8" fill={GREEN} />
+          <text x="275" y="302" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">93% — Classification</text>
+          <rect x="210" y="312" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="210" y="312" width={130 * 0.85} rx="4" height="8" fill={CYAN} />
+          <text x="275" y="334" textAnchor="middle" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">85% — Segmentation</text>
+          <rect x="210" y="344" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="210" y="344" width={130 * 0.83} rx="4" height="8" fill={AMBER} />
+          <text x="275" y="366" textAnchor="middle" fill={AMBER} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">83% — Depth</text>
+
+          {/* ── Student: ViT-B ── */}
+          <rect x="375" y="205" width="150" height="60" rx="10" fill={P} fillOpacity="0.10" stroke={P} strokeWidth="1.5" />
+          <text x="450" y="228" textAnchor="middle" fill="#fff" fontSize="15" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">ViT-B</text>
+          <text x="450" y="248" textAnchor="middle" fill={GRAY} fontSize="11" fontFamily="Inter, system-ui, sans-serif">87M params</text>
+          <rect x="385" y="280" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="385" y="280" width={130 * 0.89} rx="4" height="8" fill={GREEN} />
+          <text x="450" y="302" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">89% — Classification</text>
+          <rect x="385" y="312" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="385" y="312" width={130 * 0.78} rx="4" height="8" fill={CYAN} />
+          <text x="450" y="334" textAnchor="middle" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">78% — Segmentation</text>
+          <rect x="385" y="344" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="385" y="344" width={130 * 0.76} rx="4" height="8" fill={AMBER} />
+          <text x="450" y="366" textAnchor="middle" fill={AMBER} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">76% — Depth</text>
+
+          {/* ── Student: ViT-S ── */}
+          <rect x="555" y="205" width="140" height="60" rx="10" fill={P} fillOpacity="0.08" stroke={P} strokeWidth="1.5" />
+          <text x="625" y="228" textAnchor="middle" fill="#fff" fontSize="15" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">ViT-S</text>
+          <text x="625" y="248" textAnchor="middle" fill={GRAY} fontSize="11" fontFamily="Inter, system-ui, sans-serif">22M params</text>
+          <rect x="560" y="280" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="560" y="280" width={130 * 0.84} rx="4" height="8" fill={GREEN} />
+          <text x="625" y="302" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">84% — Classification</text>
+          <rect x="560" y="312" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="560" y="312" width={130 * 0.71} rx="4" height="8" fill={CYAN} />
+          <text x="625" y="334" textAnchor="middle" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">71% — Segmentation</text>
+          <rect x="560" y="344" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="560" y="344" width={130 * 0.68} rx="4" height="8" fill={AMBER} />
+          <text x="625" y="366" textAnchor="middle" fill={AMBER} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">68% — Depth</text>
+
+          {/* ── Student: ConvNeXt ── */}
+          <rect x="730" y="205" width="150" height="60" rx="10" fill={AMBER} fillOpacity="0.10" stroke={AMBER} strokeWidth="1.5" />
+          <text x="805" y="228" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">ConvNeXt</text>
+          <text x="805" y="248" textAnchor="middle" fill={GRAY} fontSize="11" fontFamily="Inter, system-ui, sans-serif">350M params (CNN)</text>
+          <rect x="740" y="280" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="740" y="280" width={130 * 0.91} rx="4" height="8" fill={GREEN} />
+          <text x="805" y="302" textAnchor="middle" fill={GREEN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">91% — Classification</text>
+          <rect x="740" y="312" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="740" y="312" width={130 * 0.82} rx="4" height="8" fill={CYAN} />
+          <text x="805" y="334" textAnchor="middle" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">82% — Segmentation</text>
+          <rect x="740" y="344" width="130" height="8" rx="4" fill="#1e293b" />
+          <rect x="740" y="344" width={130 * 0.80} rx="4" height="8" fill={AMBER} />
+          <text x="805" y="366" textAnchor="middle" fill={AMBER} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">80% — Depth</text>
+
+          {/* ── Legend ── */}
+          <rect x="200" y="400" width="500" height="55" rx="10" fill="#1e293b" fillOpacity="0.6" stroke="#334155" strokeWidth="1" />
+          <text x="450" y="418" textAnchor="middle" fill={FG} fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Distillation: 7B teacher trains smaller students with matching loss — no labels needed</text>
+          <rect x="250" y="432" width="10" height="10" rx="2" fill={GREEN} />
+          <text x="268" y="441" fill={GRAY} fontSize="10" fontFamily="Inter, system-ui, sans-serif">Classification</text>
+          <rect x="370" y="432" width="10" height="10" rx="2" fill={CYAN} />
+          <text x="388" y="441" fill={GRAY} fontSize="10" fontFamily="Inter, system-ui, sans-serif">Segmentation</text>
+          <rect x="500" y="432" width="10" height="10" rx="2" fill={AMBER} />
+          <text x="518" y="441" fill={GRAY} fontSize="10" fontFamily="Inter, system-ui, sans-serif">Depth</text>
+
+          {/* ── Param count comparison ── */}
+          <text x="450" y="490" textAnchor="middle" fill={P2} fontSize="10" fontFamily="Inter, system-ui, sans-serif">
+            7B → 1.1B (6x smaller) → 307M (22x) → 87M (77x) → 22M (305x) — massive compression with high retention
+          </text>
+          <text x="450" y="510" textAnchor="middle" fill={GRAY} fontSize="9" fontFamily="Inter, system-ui, sans-serif">
+            Bars show approximate % of teacher performance retained on each task
+          </text>
+        </svg>
+      </Diagram>
 
       <MentalModel
         title="A Single Frozen Model That Sees Like a Human"
