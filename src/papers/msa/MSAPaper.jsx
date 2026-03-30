@@ -12,6 +12,7 @@ import Prose from '../../components/Prose';
 import H from '../../components/HoverTerm';
 import VisualCompare from '../../components/VisualCompare';
 import KeyNumber from '../../components/KeyNumber';
+import SimpleExplain from '../../components/SimpleExplain';
 
 const CYAN = '#06b6d4';
 const ORANGE = '#f97316';
@@ -125,6 +126,10 @@ export default function MSAPaper() {
           { value: '300×', unit: '', label: 'Gap closed vs dense', color: GREEN },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>Picture this:</strong> Your brain stores a lifetime of memories — about 300 million "words" worth. The best AI today can only hold about 1 million words at once. That's like having a brain that forgets everything older than last week. MSA is trying to give AI a memory 100× larger — not by making the brain bigger, but by teaching it to quickly find the RIGHT memories instead of reading everything.</p>
+      </SimpleExplain>
 
       <MentalModel
         title="The Library Analogy"
@@ -346,6 +351,10 @@ export default function MSAPaper() {
         </svg>
       </Diagram>
 
+      <SimpleExplain>
+        <p><strong>Think of it like a library system.</strong> Every document gets two kinds of tags: a "topic tag" (routing key — tells you WHAT the document is about at a high level) and a "content bookmark" (content key/value — the actual detailed information). When you have a question, the system first scans all topic tags (fast, because they're compressed) to find relevant documents, then reads only those documents in detail. You never read every book — just the ones that match your question.</p>
+      </SimpleExplain>
+
       {/* ── Dual Projectors ── */}
       <ConceptCard title="Dual Projectors: Content vs Routing" color={CYAN} defaultOpen={true}>
         <Prose>
@@ -400,6 +409,10 @@ export default function MSAPaper() {
           { symbol: 'd', meaning: 'Model dimension (embedding size)' },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>Why two separate "tag systems"?</strong> Imagine you're searching for a recipe. The "topic tag" (routing) just needs to know "this is a cooking document" — broad, coarse. The "content bookmark" (content projection) needs to know "step 3 says add 2 cups of flour at 350°F" — precise, detailed. If you forced one tag to do both jobs, it would be mediocre at both. Separating them lets each be excellent at its specific job.</p>
+      </SimpleExplain>
 
       <Callout type="insight">
         Why does separation matter mathematically? The routing loss (L_aux) and the language modeling
@@ -474,6 +487,10 @@ export default function MSAPaper() {
           ]}
         />
 
+        <SimpleExplain>
+          <p><strong>The scoring formula in everyday terms:</strong> For each "topic tag" in memory, ask every word in your question "do you need this document?" Take the AVERAGE answer across different perspectives (mean across heads = consensus), then take the LOUDEST "yes" from any word (max across tokens). If even one word in your question strongly needs a document, fetch it. It's like a team decision: everyone votes on quality (consensus), but one urgent need overrides a mild "no" (inclusion).</p>
+        </SimpleExplain>
+
         <Callout type="insight">
           The <strong>mean-then-max asymmetry</strong> is psychologically intuitive. Imagine you are assembling a team for a project.
           <strong> Mean across heads</strong> is like requiring consensus from multiple evaluators — reduces noise, prevents a single
@@ -530,6 +547,10 @@ export default function MSAPaper() {
             { symbol: '1.56M', meaning: '100M tokens / 64 tokens per chunk ≈ 1.56M chunk representations' },
           ]}
         />
+
+        <SimpleExplain>
+          <p><strong>Chunk pooling is like zip codes.</strong> Instead of checking every house address (100M tokens), you check neighborhoods (1.56M chunks). A chunk of 64 tokens is like one paragraph — enough to capture the topic without drowning in details. You scan all neighborhoods, pick the 8 most relevant, then visit those specific houses. This turns a "read every book in the library" problem into a "check the catalog, grab 8 books" problem.</p>
+        </SimpleExplain>
 
         <Callout type="math">
           Why P=64 specifically? The paper ablates this: P=32 gives slightly better accuracy but
@@ -868,6 +889,10 @@ export default function MSAPaper() {
           ]}
         />
 
+        <SimpleExplain>
+          <p><strong>The contrastive loss in simple terms:</strong> It's like a matching game. Show the model a question and a bunch of document summaries. Tell it "this one is the answer, those others are distractors." The model learns to score the right document higher than all the wrong ones. Over millions of these matching games, the routing system becomes incredibly accurate at finding needles in haystacks — literally what the NIAH benchmark tests.</p>
+        </SimpleExplain>
+
         <Callout type="math">
           This is essentially an InfoNCE loss, the same family used in CLIP and SimCLR. The
           "positive" chunk is identified by which chunk the model actually attended to most
@@ -1053,6 +1078,10 @@ export default function MSAPaper() {
             { symbol: 'L', meaning: 'Number of Transformer layers' },
           ]}
         />
+
+        <SimpleExplain>
+          <p><strong>The three stages in kitchen terms:</strong> Stage 1 (Store) = prep all your ingredients once and put them in labeled containers. Expensive upfront, but you only do it once. Stage 2 (Search) = look at the container labels to find what you need for today's dish. Fast because labels are small. Stage 3 (Serve) = open only the containers you need and cook with their contents. You never unpack every container — just the relevant ones. Total time = label-reading + cooking, NOT proportional to how many containers you own.</p>
+        </SimpleExplain>
 
         <Callout type="key">
           <strong>Memory hook:</strong> Think "Store-Search-Serve." S1 <em>stores</em> documents (expensive, once).

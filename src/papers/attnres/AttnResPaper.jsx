@@ -11,6 +11,7 @@ import Prose from '../../components/Prose';
 import H from '../../components/HoverTerm';
 import VisualCompare from '../../components/VisualCompare';
 import KeyNumber from '../../components/KeyNumber';
+import SimpleExplain from '../../components/SimpleExplain';
 
 const PK = '#ec4899';
 const PK2 = '#f472b6';
@@ -128,6 +129,10 @@ export default function AttnResPaper() {
         ]}
       />
 
+      <SimpleExplain>
+        <p><strong>Residual connections in everyday terms:</strong> Imagine a relay race where each runner adds their contribution. In standard residuals, it's like each runner carries the baton PLUS everything every previous runner was carrying. By runner 40, the baton is so heavy with accumulated stuff that what runner 40 adds barely makes a dent. The identity shortcut (h + f(h)) ensures information can flow directly from start to finish, which prevents the signal from dying. But it also means the total pile grows and each runner's individual contribution gets diluted.</p>
+      </SimpleExplain>
+
       <Prose>
         <p>
           This works beautifully for shallow networks. But as models get deeper — 80, 120, even
@@ -153,6 +158,10 @@ export default function AttnResPaper() {
           { value: '<2%', unit: '', label: 'AttnRes latency overhead', color: GREEN },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>What these numbers mean:</strong> Imagine you could make every AI model 25% more efficient — same quality but cheaper to train — by changing just ONE thing about how layers connect to each other. That's what Attention Residuals does. The &lt;2% overhead means it's practically free. And the +7.5 points on the hardest reasoning test (GPQA) shows it especially helps when the model needs to think in multiple steps.</p>
+      </SimpleExplain>
 
       <ConceptCard title="PreNorm Dilution — The Deep Network Killer" color={PK} defaultOpen={true}>
         <Prose>
@@ -291,6 +300,10 @@ export default function AttnResPaper() {
           </text>
         </svg>
       </Diagram>
+
+      <SimpleExplain>
+        <p><strong>The dilution problem visually:</strong> Look at the bars getting thinner. Layer 1's contribution starts as a big slice of the total. By layer 40, it's a tiny sliver — not because it's doing less work, but because 39 other layers have piled on top. The model is shouting into an increasingly noisy room. The early layers (which learn basic patterns) are drowned out by later layers (which may be less useful). Standard residuals have no way to say "Layer 12 was really important for this input — let's amplify it."</p>
+      </SimpleExplain>
 
       <Callout type="key">
         The fundamental flaw: standard residual connections treat all layers equally. Layer 1 and layer 100
@@ -440,6 +453,10 @@ export default function AttnResPaper() {
           { symbol: 'd', meaning: 'dimension of the query/key space' },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>Attention Residuals in everyday terms:</strong> Instead of blindly piling up all 40 runners' contributions equally, imagine a conductor who can adjust each runner's volume. For a math problem, the conductor might crank up layers 15 (arithmetic) and 32 (logical reasoning) while turning down layers 5 (basic syntax). For a creative writing task, different layers would be amplified. The "conductor" is a small attention mechanism that looks at what the current input needs and decides which layers to listen to. Standard residuals are like every musician playing at the same volume — a wall of noise. AttnRes is like a conductor creating a clear, intentional sound.</p>
+      </SimpleExplain>
 
       <Prose>
         <p>
@@ -674,6 +691,10 @@ export default function AttnResPaper() {
           },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>Block AttnRes in simple terms:</strong> Full AttnRes would mean layer 40 paying attention to all 39 previous layers individually — that's a lot of "conductor work." Block AttnRes groups layers into ~8 chapters (blocks of ~5 layers each) and the conductor only decides between chapters, not individual layers. It's like a book editor who reads chapter summaries instead of every paragraph. You lose some fine-grained control, but save massive memory — and in practice, the chapter-level decisions capture 95% of the benefit.</p>
+      </SimpleExplain>
 
       <FormulaSteps
         label="Block AttnRes — Memory Reduction"
@@ -1081,6 +1102,10 @@ export default function AttnResPaper() {
         </svg>
       </Diagram>
 
+      <SimpleExplain>
+        <p><strong>Why reasoning benefits most:</strong> Think of a math proof that takes 5 logical steps. With standard residuals, step 5 has to work through a fog of steps 1-4 all mixed together with equal weight. With AttnRes, step 5 can directly "look back" at step 2 (which produced a key intermediate result) and amplify it while ignoring steps that aren't relevant. The harder the reasoning chain, the more this selective look-back helps. That's why GPQA-Diamond (+7.5) and Math (+3.6) see the biggest improvements — they require the longest reasoning chains.</p>
+      </SimpleExplain>
+
       <Callout type="key">
         AttnRes achieves its largest gains on reasoning-heavy benchmarks: <strong>+7.5 on GPQA-Diamond</strong> and
         <strong> +3.6 on Math</strong>. These are exactly the tasks where selective routing across depth
@@ -1227,6 +1252,10 @@ export default function AttnResPaper() {
         technical="Each block's output is like a specialist's contribution. The block query determines 'what kind of expertise do I need right now?' The attention mechanism matches this query against each specialist's key (their competency profile) and produces weights that select the most relevant ones. The input-dependence means a math problem pulls from different specialists than a coding task."
         color={CYAN}
       />
+
+      <SimpleExplain>
+        <p><strong>The big picture:</strong> For a decade, every Transformer just piled layers on top of each other with equal weight. It worked well enough because the gradient shortcut (identity connection) kept training stable. But "stable" isn't "optimal." Attention Residuals asks a simple question: "What if the model could CHOOSE which of its own layers to listen to?" The answer turns out to be worth 25% more compute efficiency and dramatic gains on hard reasoning — all from changing how layers connect, not what they compute. Sometimes the biggest improvements come from rethinking the plumbing, not the pipes.</p>
+      </SimpleExplain>
 
       <ConceptCard title="Broader Implications for Future Architectures" color={PURPLE} defaultOpen={true}>
         <Prose>

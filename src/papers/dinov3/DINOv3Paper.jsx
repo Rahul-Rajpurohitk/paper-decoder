@@ -11,6 +11,7 @@ import FormulaSteps from '../../components/FormulaSteps';
 import H from '../../components/HoverTerm';
 import VisualCompare from '../../components/VisualCompare';
 import KeyNumber from '../../components/KeyNumber';
+import SimpleExplain from '../../components/SimpleExplain';
 
 /* ─── colour tokens ─── */
 const P = '#8b5cf6';   // primary purple
@@ -119,6 +120,10 @@ export default function DINOv3Paper() {
           { value: '66.1', unit: ' mAP', label: 'COCO Detection', color: AMBER },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>What's really happening:</strong> DINOv3 looked at 1.69 billion photos — more than any human could see in 100 lifetimes — and figured out how to understand images WITHOUT anyone telling it what's in them. No labels like "this is a cat." Instead, it played a game with itself: "I'll show you different parts of the same photo, and you tell me they're from the same image." By playing this game billions of times, it learned to understand everything from textures to 3D structure to object boundaries.</p>
+      </SimpleExplain>
 
       <ComparisonTable
         headers={['Paradigm', 'Labels Needed', 'Dense Features', 'Scalability', 'Example']}
@@ -434,6 +439,10 @@ export default function DINOv3Paper() {
         ]}
       />
 
+      <SimpleExplain>
+        <p><strong>Self-attention in human terms:</strong> Imagine 261 people in a room, each holding a piece of a jigsaw puzzle. Self-attention is everyone asking everyone else: "Does your piece connect to mine?" Each person computes a compatibility score with every other person (the QK^T matrix), figures out who has the most relevant pieces (softmax), then combines information from the most relevant people (the weighted sum of V). After this round of communication, each person knows much more about the full picture than before. DINOv3 does 40 rounds of this.</p>
+      </SimpleExplain>
+
       <FormulaSteps
         label="SwiGLU FFN — The Thinking Step"
         color={P2}
@@ -462,6 +471,10 @@ export default function DINOv3Paper() {
           { symbol: 'odot', meaning: 'Element-wise multiplication — the gating operation (8192 independent gates)' },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>The FFN in simple terms:</strong> After each round of "talking to everyone" (attention), each person goes back to their desk and THINKS about what they learned. The FFN is this thinking step. It expands the information into a bigger workspace (4096→8192 dimensions — like spreading papers across a wider desk), processes it through a smart filter (SwiGLU — like highlighting only the important parts), and compresses it back down (8192→4096 — filing the conclusions). Without FFN, the model would just mix information but never actually process it.</p>
+      </SimpleExplain>
 
       <MentalModel
         title="Attention = Communication, FFN = Thinking"
@@ -581,6 +594,10 @@ export default function DINOv3Paper() {
           <text x="735" y="88" textAnchor="middle" fill={GRAY} fontSize="9" fontFamily="Inter, system-ui, sans-serif">all 10 crops</text>
         </svg>
       </Diagram>
+
+      <SimpleExplain>
+        <p><strong>Multi-crop in everyday terms:</strong> Show a child a zoomed-in photo of a cat's paw, and ask "what animal is this?" If the child says "cat" just from seeing a paw, they truly understand cats — not just memorizing full photos. That's exactly what multi-crop does. The teacher sees the full photo (global crop), the student sees only a tiny piece (local crop). The student must develop such deep understanding that even a small fragment is enough to recognize the whole. This is why DINOv3's features are so powerful — they learned to extract meaning from fragments.</p>
+      </SimpleExplain>
 
       <ConceptCard title="Why Multi-Crop Works: The Asymmetry Engine" color={P} defaultOpen={true}>
         <Prose>
@@ -806,6 +823,10 @@ export default function DINOv3Paper() {
             { symbol: 'K = 65536', meaning: 'Projection head vocabulary size (number of prototypes)' },
           ]}
         />
+
+        <SimpleExplain>
+          <p><strong>DINO loss in simple terms:</strong> The teacher looks at the full cat photo and creates a "summary card" — a probability distribution describing what it sees. The student looks at just a paw photo and creates its own summary card. The DINO loss measures: "How different are these two cards?" If the student's card matches the teacher's, the loss is low (good!). If they're different, the loss is high (bad — the student hasn't learned to see the whole from a part). Over time, the student's summary cards become so good that paw=cat, ear=cat, even a patch of fur=cat.</p>
+        </SimpleExplain>
       </ConceptCard>
 
       <ConceptCard title="Loss 2: iBOT Loss — Dense Feature Learning via Masked Prediction" color={AMBER} defaultOpen={true}>
@@ -847,6 +868,10 @@ export default function DINOv3Paper() {
             { symbol: 'PatchHead', meaning: 'Per-patch MLP projection head (separate from CLS head)' },
           ]}
         />
+
+        <SimpleExplain>
+          <p><strong>iBOT loss in simple terms:</strong> While DINO teaches "what is this image about?" (global), iBOT teaches "what is at this specific location?" (local). It's like a fill-in-the-blank test: cover up 50% of the image patches, then ask the student to guess what was behind each covered spot. The teacher (who sees everything) provides the "correct answers." This forces the student to build rich, spatially aware features — it must know that "above the paw is usually a leg" and "next to the eye is usually an ear." This is what gives DINOv3 its incredible dense features.</p>
+        </SimpleExplain>
       </ConceptCard>
 
       <ConceptCard title="Loss 3: Koleo Regularizer — Preventing Representation Collapse" color={GREEN} defaultOpen={false}>
@@ -1131,6 +1156,10 @@ export default function DINOv3Paper() {
         ]}
       />
 
+      <SimpleExplain>
+        <p><strong>Gram Anchoring in everyday terms:</strong> After training for a long time, the model starts to "blur" its understanding — like a student who crams so hard for the final exam that they forget the basics. Global knowledge (what IS this image?) keeps improving, but local knowledge (what's at each pixel?) degrades. Gram Anchoring is like keeping a photo of the student's earlier, well-organized notes. Every few hours of studying, you check: "Do your notes still have the same structure as before?" If the structure starts to drift, you pull it back. The notes can add new information, but the organizational structure must be preserved.</p>
+      </SimpleExplain>
+
       <MentalModel
         title="Keeping the Skeleton While Changing the Muscles"
         analogy="Imagine you are sculpting a figure from clay. After hours of work, the proportions (skeleton) are perfect, but you want to add more surface detail (muscles). The problem: adding detail sometimes distorts the proportions. Gram Anchoring is like having a transparent overlay of the original skeleton — you can add as much detail as you want, but an alarm goes off if you accidentally shift a bone. The Gram matrix IS that skeleton: it captures the structural relationships between all parts."
@@ -1266,6 +1295,10 @@ export default function DINOv3Paper() {
           <text x="300" y="35" textAnchor="middle" fill="#ef4444" fontSize="8" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">~200k: dense features start degrading</text>
         </svg>
       </Diagram>
+
+      <SimpleExplain>
+        <p><strong>The three training phases in simple terms:</strong> Phase 1 is like high school — learn the fundamentals (1M iterations of basic image understanding). Phase 2 is like a specialty workshop — fix the one weakness that emerged (50K iterations of Gram refinement to repair dense features). Phase 3 is like final polish — adapt to high-resolution images so the model works at any zoom level. The key insight: you don't need fancy learning rate schedules. Just train at a constant pace and let the model converge naturally. This makes training much simpler and more predictable than previous approaches.</p>
+      </SimpleExplain>
 
       <StepFlow
         color={P}

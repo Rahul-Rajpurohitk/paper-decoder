@@ -12,6 +12,7 @@ import Prose from '../../components/Prose';
 import H from '../../components/HoverTerm';
 import VisualCompare from '../../components/VisualCompare';
 import KeyNumber from '../../components/KeyNumber';
+import SimpleExplain from '../../components/SimpleExplain';
 
 /* ─── colour tokens ─── */
 const A = '#f59e0b';   // amber accent
@@ -62,6 +63,10 @@ export default function TurboQuantPaper() {
           { value: '128d', unit: '', label: 'Typical vector dim', color: BLUE },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>What's happening at a high level:</strong> AI models store information as lists of numbers (vectors). A single number in a list normally takes 32 bits of storage. TurboQuant squishes each number down to just 3-4 bits — like compressing a detailed photograph into a tiny thumbnail that still looks almost identical. The magic: it does this with provable quality guarantees, zero preparation time, and near-perfect accuracy.</p>
+      </SimpleExplain>
 
       <ConceptCard title="Why does this matter RIGHT NOW?" color={A} defaultOpen={true}>
         <Prose>
@@ -186,6 +191,10 @@ export default function TurboQuantPaper() {
         </svg>
       </Diagram>
 
+      <SimpleExplain>
+        <p><strong>The random rotation trick in everyday terms:</strong> Imagine you have a suitcase packed unevenly — heavy books on one side, light clothes on the other. Compressing it naively means some parts get crushed (the heavy side) while others waste space (the light side). TurboQuant's insight: shake the suitcase randomly first so the weight spreads evenly. Now you can compress every section by the same amount with the same quality. The "shaking" is mathematically precise — it's a random rotation that spreads the vector's energy uniformly across all dimensions.</p>
+      </SimpleExplain>
+
       <ConceptCard title="Lemma 1: Coordinate Distribution on the Hypersphere" color={A} defaultOpen={true}>
         <Prose>
           <p>
@@ -230,6 +239,10 @@ export default function TurboQuantPaper() {
             { symbol: 'Π', meaning: 'Random rotation matrix (uniform over orthogonal group O(d))' },
           ]}
         />
+
+        <SimpleExplain>
+          <p><strong>What the formula really says:</strong> After the random shake, every number in your list follows the exact same pattern (a Beta distribution). In high dimensions (128+), this pattern is basically a bell curve centered at zero with a very specific width (1/√d). Since we KNOW the pattern, we can design the mathematically perfect compressor for it — like having the cheat sheet for an exam. This is why TurboQuant is near-optimal: it's not guessing, it's using the known answer.</p>
+        </SimpleExplain>
       </ConceptCard>
 
       <Callout type="insight">
@@ -432,6 +445,10 @@ export default function TurboQuantPaper() {
           { symbol: 'b', meaning: 'Number of bits per coordinate' },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>The distortion bound in plain English:</strong> The formula says "the error you get from compressing to b bits per number is proportional to α_b/d." Two key insights: (1) More bits = exponentially less error (each extra bit roughly quarters the error). (2) Higher dimensions = LESS error per dimension. This is counterintuitive — you'd think more dimensions means more to compress. But random rotation makes dimensions independent, so errors don't compound. They actually help each other average out.</p>
+      </SimpleExplain>
 
       <ConceptCard title="Concrete Numbers: What does α_b look like?" color={A} defaultOpen={true}>
         <ComparisonTable
@@ -795,6 +812,10 @@ export default function TurboQuantPaper() {
         ]}
       />
 
+      <SimpleExplain>
+        <p><strong>Why "unbiased" matters so much:</strong> When AI models decide which words to pay attention to, they compute dot products between vectors. If your compressor consistently underestimates these dot products (biased), the AI makes slightly wrong attention decisions — billions of times per second. These small errors compound into noticeably worse outputs. TurboQuant_prod guarantees zero systematic bias: sometimes it overestimates, sometimes underestimates, but ON AVERAGE it's exactly right. This is like a bathroom scale that's sometimes +2 lbs, sometimes -2 lbs, but averages to your true weight. For AI, this averaging-out property is mathematically provable.</p>
+      </SimpleExplain>
+
       <Callout type="math">
         <strong>The 1/d factor is magic.</strong> The variance of the inner-product estimator
         scales as O(1/d). This means that in high dimensions (d = 128, 256, ...), the estimator
@@ -855,6 +876,10 @@ export default function TurboQuantPaper() {
           { symbol: '2^(-2b)', meaning: 'Exponential decay: each extra bit halves the distortion twice' },
         ]}
       />
+
+      <SimpleExplain>
+        <p><strong>Shannon's bound in human terms:</strong> Claude Shannon proved in 1948 that there's a fundamental speed limit for compression — you literally CANNOT do better than a certain quality at a given compression ratio, no matter how clever your algorithm. TurboQuant gets within 2.7× of this cosmic speed limit. To put this in perspective: most practical quantizers are 10-100× away from Shannon's bound. Being at 2.7× is like running a marathon in 5 hours when the world record is 2 hours — you're in the same ballpark as theoretical perfection.</p>
+      </SimpleExplain>
 
       <ConceptCard title="Where does this bound come from?" color={A} defaultOpen={false}>
         <Prose>
@@ -1256,6 +1281,10 @@ export default function TurboQuantPaper() {
           </text>
         </svg>
       </Diagram>
+
+      <SimpleExplain>
+        <p><strong>What this means for real AI systems:</strong> A model like Llama-3-70B serving long conversations needs 78 GB of memory just for its "attention cache" — that's an entire high-end GPU's worth. TurboQuant at 4 bits shrinks this to 9.75 GB — small enough to fit alongside the model weights on a single GPU. This is the difference between needing 4 expensive GPUs and needing 1. At $30,000 per GPU, that's a $90,000 saving per server. Multiply by thousands of servers, and you understand why Google published this paper.</p>
+      </SimpleExplain>
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 07 — MENTAL MODELS
