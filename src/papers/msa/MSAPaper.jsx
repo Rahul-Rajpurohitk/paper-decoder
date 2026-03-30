@@ -87,14 +87,14 @@ export default function MSAPaper() {
       <Prose>
         <p>
           Think about your own memory for a moment. Over a lifetime, you accumulate roughly
-          <strong> 300 million tokens</strong> of experience — conversations, books, observations,
+          <strong> 300 million <H tip="Token = the smallest unit of text a language model processes. Roughly 1 token ≈ 0.75 words in English. 'hamburger' might be split into 'ham' + 'burger' = 2 tokens." color={CYAN}>tokens</H></strong> of experience — conversations, books, observations,
           everything. You can recall a specific detail from years ago if the right cue triggers it.
           Your brain does not re-read every memory when answering a question; it <em>routes</em> to
           the relevant ones instantly.
         </p>
         <p>
           Now look at the best <H tip="Large Language Model — a neural network trained on massive text corpora to predict the next token. Examples: GPT-4, Claude, Llama. The 'context window' is the maximum number of tokens it can process at once." color={CYAN}>LLMs</H> available today. Even frontier models cap out around
-          <strong> 1 million tokens</strong> of context. That is 0.3% of what a human can hold.
+          <strong> 1 million tokens</strong> of <H tip="Context window = the maximum number of tokens a model can 'see' at once. Think of it as the model's working memory — everything outside the window is invisible." color={CYAN}>context</H>. That is 0.3% of what a human can hold.
           And it gets worse: standard <H tip="Self-attention = the core operation in Transformers. Every token computes a weighted sum over all other tokens. The weight matrix is N×N (where N = sequence length), so memory and compute grow quadratically. This is why long contexts are so expensive." color={ORANGE}>self-attention</H> has <code>O(N²)</code> complexity, so
           doubling the context length quadruples the compute. At 100M tokens, <H tip="Dense attention = the standard approach where every token attends to every other token. No tokens are skipped. This gives perfect information flow but O(N²) cost. MSA replaces this with sparse attention — attending only to the most relevant chunks." color={ORANGE}>dense attention</H>{' '}
           would need <strong>10,000 times</strong> the compute of a 1M context — completely infeasible.
@@ -108,9 +108,9 @@ export default function MSAPaper() {
         headers={['Approach', 'Storage', 'Complexity', 'Limitation']}
         rows={[
           ['Parameter-Based (fine-tuning)', 'In weights', 'O(1) inference', 'Catastrophic forgetting; can\'t add new memories without retraining'],
-          ['External Storage (RAG)', 'Vector DB', 'O(L × G)', 'Retriever is separate from the model — no end-to-end gradient flow'],
-          ['Latent State (MemoryFormer)', 'Hidden state', 'O(N)', 'Compresses aggressively — loses fine-grained details'],
-          ['MSA (this paper)', 'K/V cache', 'O(N/P × k)', 'End-to-end attention with learned routing — scales to 100M tokens'],
+          ['External Storage (RAG)', 'Vector DB', 'O(L \u00d7 G)', 'Retriever is separate from the model \u2014 no end-to-end gradient flow'],
+          ['Latent State (MemoryFormer)', 'Hidden state', 'O(N)', 'Compresses aggressively \u2014 loses fine-grained details'],
+          ['MSA (this paper)', 'K/V cache', 'O(N/P \u00d7 k)', 'End-to-end attention with learned routing \u2014 scales to 100M tokens'],
         ]}
         caption="Four paradigms for giving LLMs long-term memory"
       />
@@ -151,10 +151,10 @@ export default function MSAPaper() {
 
       <Prose>
         <p>
-          The MSA architecture sits inside a standard Transformer decoder. The key modification is
+          The MSA architecture sits inside a standard <H tip="Transformer decoder = the autoregressive half of the Transformer architecture. It generates tokens one at a time, each attending only to previous tokens (causal masking). GPT, Llama, and most modern LLMs are decoder-only." color={CYAN}>Transformer decoder</H>. The key modification is
           that each attention layer has been upgraded with <strong>three innovations</strong>:
           (1) dual content/routing projectors, (2) chunk-level mean pooling for routing, and
-          (3) document-wise RoPE to eliminate position-dependent extrapolation failure. Let us
+          (3) document-wise <H tip="RoPE (Rotary Position Embedding) = a method for encoding token positions by rotating the query and key vectors. The rotation angle depends on position, so the dot product between Q and K naturally captures relative distance." color={PURPLE}>RoPE</H> to eliminate position-dependent extrapolation failure. Let us
           walk through each, starting with the full picture.
         </p>
       </Prose>
@@ -489,10 +489,10 @@ export default function MSAPaper() {
       <ConceptCard title="Doc-wise RoPE: Breaking the Position Barrier" color={PURPLE} defaultOpen={true}>
         <Prose>
           <p>
-            Standard RoPE (Rotary Position Embedding) assigns each token an absolute position
+            Standard RoPE (<H tip="Rotary Position Embedding — encodes token position by applying a rotation matrix to Q and K vectors. The rotation angle is proportional to position, so nearby tokens have similar rotations and distant tokens have different rotations." color={PURPLE}>Rotary Position Embedding</H>) assigns each token an absolute position
             within the full sequence. When you train with sequences up to 32K tokens but then try
             to stuff 100M tokens into the context, positions 32,001 through 100,000,000 have
-            <strong>never been seen during training</strong>. The model falls apart.
+            <strong>never been seen during training</strong>. The model <H tip="Extrapolation failure = when a model encounters input values outside its training distribution. For RoPE, this means position indices the model never learned rotations for — the attention patterns become incoherent." color="#ef4444">falls apart</H>.
           </p>
           <p>
             MSA's solution is elegant: <strong>reset the position counter at the start of each
@@ -517,18 +517,123 @@ export default function MSAPaper() {
         </Callout>
       </ConceptCard>
 
+      {/* ── Doc-wise RoPE Visual Comparison SVG ── */}
+      <Diagram caption={<><strong>Standard RoPE vs Doc-wise RoPE</strong> — Standard RoPE assigns global positions that exceed training range. Doc-wise RoPE resets per document, keeping all positions within the trained distribution.</>}>
+        <svg viewBox="0 0 920 360" style={{ width: '100%', height: 'auto' }}>
+          <rect width="920" height="360" rx="12" fill="#0a0f1a" />
+
+          {/* Title */}
+          <text x="460" y="28" textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="700" letterSpacing="2" fontFamily="Inter, system-ui, sans-serif">POSITION ENCODING COMPARISON</text>
+
+          {/* ── Left: Standard RoPE ── */}
+          <rect x="20" y="42" width="430" height="300" rx="10" fill="#1e293b" stroke="#ef4444" strokeWidth="1.5" />
+          <text x="235" y="66" textAnchor="middle" fill="#ef4444" fontSize="14" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Standard RoPE (fails at scale)</text>
+
+          {/* Global position axis */}
+          <line x1="40" y1="200" x2="430" y2="200" stroke="#475569" strokeWidth="1.5" />
+          <text x="235" y="218" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Global Position Index</text>
+
+          {/* Doc A - positions 0-8K */}
+          <rect x="45" y="100" width="80" height="85" rx="6" fill="#164e63" stroke={CYAN} strokeWidth="1" />
+          <text x="85" y="120" textAnchor="middle" fill={CYAN} fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Doc A</text>
+          <text x="85" y="138" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontFamily="Inter, system-ui, sans-serif">pos 0</text>
+          <text x="85" y="153" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontFamily="Inter, system-ui, sans-serif">to 8K</text>
+          <text x="85" y="173" textAnchor="middle" fill={GREEN} fontSize="8" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">IN RANGE</text>
+
+          {/* Doc B - positions 8K-16K */}
+          <rect x="135" y="100" width="80" height="85" rx="6" fill="#164e63" stroke={CYAN} strokeWidth="1" />
+          <text x="175" y="120" textAnchor="middle" fill={CYAN} fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Doc B</text>
+          <text x="175" y="138" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontFamily="Inter, system-ui, sans-serif">pos 8K</text>
+          <text x="175" y="153" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontFamily="Inter, system-ui, sans-serif">to 16K</text>
+          <text x="175" y="173" textAnchor="middle" fill={GREEN} fontSize="8" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">IN RANGE</text>
+
+          {/* ... */}
+          <text x="245" y="145" textAnchor="middle" fill="#475569" fontSize="16" fontFamily="Inter, system-ui, sans-serif">...</text>
+
+          {/* Doc N - positions exceed training */}
+          <rect x="280" y="100" width="80" height="85" rx="6" fill="#3b0d0d" stroke="#ef4444" strokeWidth="1.5" />
+          <text x="320" y="120" textAnchor="middle" fill="#ef4444" fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Doc N</text>
+          <text x="320" y="138" textAnchor="middle" fill="#fca5a5" fontSize="9" fontFamily="Inter, system-ui, sans-serif">pos 90M</text>
+          <text x="320" y="153" textAnchor="middle" fill="#fca5a5" fontSize="9" fontFamily="Inter, system-ui, sans-serif">to 100M</text>
+          <text x="320" y="173" textAnchor="middle" fill="#ef4444" fontSize="8" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">OUT OF RANGE!</text>
+
+          {/* Training range bracket */}
+          <line x1="45" y1="235" x2="215" y2="235" stroke={GREEN} strokeWidth="2" />
+          <line x1="45" y1="230" x2="45" y2="240" stroke={GREEN} strokeWidth="2" />
+          <line x1="215" y1="230" x2="215" y2="240" stroke={GREEN} strokeWidth="2" />
+          <text x="130" y="252" textAnchor="middle" fill={GREEN} fontSize="9" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Trained range (0-32K)</text>
+
+          {/* OOD bracket */}
+          <line x1="225" y1="235" x2="430" y2="235" stroke="#ef4444" strokeWidth="2" strokeDasharray="4 2" />
+          <text x="327" y="252" textAnchor="middle" fill="#ef4444" fontSize="9" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Never seen in training</text>
+
+          {/* Failure X */}
+          <text x="370" y="150" textAnchor="middle" fill="#ef4444" fontSize="28" fontWeight="900" fontFamily="Inter, system-ui, sans-serif">X</text>
+          <text x="235" y="290" textAnchor="middle" fill="#ef4444" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Attention degrades at unseen positions</text>
+          <text x="235" y="306" textAnchor="middle" fill="#ef4444" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Model cannot extrapolate to 100M</text>
+
+          {/* ── Right: Doc-wise RoPE ── */}
+          <rect x="470" y="42" width="430" height="300" rx="10" fill="#1e293b" stroke={GREEN} strokeWidth="1.5" />
+          <text x="685" y="66" textAnchor="middle" fill={GREEN} fontSize="14" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Doc-wise RoPE (scales to any N)</text>
+
+          {/* Per-doc position axis */}
+          <line x1="490" y1="200" x2="880" y2="200" stroke="#475569" strokeWidth="1.5" />
+          <text x="685" y="218" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Per-Document Position (reset each doc)</text>
+
+          {/* Doc A */}
+          <rect x="495" y="100" width="80" height="85" rx="6" fill="#14532d" stroke={GREEN} strokeWidth="1" />
+          <text x="535" y="120" textAnchor="middle" fill={GREEN} fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Doc A</text>
+          <text x="535" y="138" textAnchor="middle" fill="#86efac" fontSize="9" fontFamily="Inter, system-ui, sans-serif">pos 0</text>
+          <text x="535" y="153" textAnchor="middle" fill="#86efac" fontSize="9" fontFamily="Inter, system-ui, sans-serif">to 8K</text>
+          <text x="535" y="173" textAnchor="middle" fill={GREEN} fontSize="8" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">IN RANGE</text>
+
+          {/* Doc B */}
+          <rect x="585" y="100" width="80" height="85" rx="6" fill="#14532d" stroke={GREEN} strokeWidth="1" />
+          <text x="625" y="120" textAnchor="middle" fill={GREEN} fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Doc B</text>
+          <text x="625" y="138" textAnchor="middle" fill="#86efac" fontSize="9" fontFamily="Inter, system-ui, sans-serif">pos 0</text>
+          <text x="625" y="153" textAnchor="middle" fill="#86efac" fontSize="9" fontFamily="Inter, system-ui, sans-serif">to 8K</text>
+          <text x="625" y="173" textAnchor="middle" fill={GREEN} fontSize="8" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">IN RANGE</text>
+
+          {/* ... */}
+          <text x="695" y="145" textAnchor="middle" fill="#475569" fontSize="16" fontFamily="Inter, system-ui, sans-serif">...</text>
+
+          {/* Doc N */}
+          <rect x="730" y="100" width="80" height="85" rx="6" fill="#14532d" stroke={GREEN} strokeWidth="1" />
+          <text x="770" y="120" textAnchor="middle" fill={GREEN} fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Doc N</text>
+          <text x="770" y="138" textAnchor="middle" fill="#86efac" fontSize="9" fontFamily="Inter, system-ui, sans-serif">pos 0</text>
+          <text x="770" y="153" textAnchor="middle" fill="#86efac" fontSize="9" fontFamily="Inter, system-ui, sans-serif">to 8K</text>
+          <text x="770" y="173" textAnchor="middle" fill={GREEN} fontSize="8" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">IN RANGE</text>
+
+          {/* Reset arrows */}
+          <text x="560" y="96" textAnchor="middle" fill="#64748b" fontSize="8" fontFamily="Inter, system-ui, sans-serif">reset</text>
+          <text x="650" y="96" textAnchor="middle" fill="#64748b" fontSize="8" fontFamily="Inter, system-ui, sans-serif">reset</text>
+          <text x="750" y="96" textAnchor="middle" fill="#64748b" fontSize="8" fontFamily="Inter, system-ui, sans-serif">reset</text>
+
+          {/* All in-range bracket */}
+          <line x1="495" y1="235" x2="810" y2="235" stroke={GREEN} strokeWidth="2" />
+          <line x1="495" y1="230" x2="495" y2="240" stroke={GREEN} strokeWidth="2" />
+          <line x1="810" y1="230" x2="810" y2="240" stroke={GREEN} strokeWidth="2" />
+          <text x="652" y="252" textAnchor="middle" fill={GREEN} fontSize="9" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">ALL positions in trained range (0-8K)</text>
+
+          {/* Checkmark */}
+          <text x="840" y="150" textAnchor="middle" fill={GREEN} fontSize="24" fontWeight="900" fontFamily="Inter, system-ui, sans-serif">OK</text>
+          <text x="685" y="290" textAnchor="middle" fill={GREEN} fontSize="10" fontFamily="Inter, system-ui, sans-serif">Every document uses same position range</text>
+          <text x="685" y="306" textAnchor="middle" fill={GREEN} fontSize="10" fontFamily="Inter, system-ui, sans-serif">Scales to unlimited documents</text>
+        </svg>
+      </Diagram>
+
       {/* ── Top-k Selection ── */}
       <ConceptCard title="Top-k Selection: Sparse but Sufficient" color={GREEN} defaultOpen={false}>
         <Prose>
           <p>
-            After scoring all chunks, MSA selects the <strong>top-k highest-scoring chunks</strong>
-            and fetches their full-resolution K and V vectors for standard attention. The rest of
+            After scoring all chunks, MSA selects the <strong><H tip="Top-k selection = keeping only the k highest-scored items and discarding the rest. A hard threshold that creates true sparsity — the model literally ignores all unchosen chunks, saving both compute and memory bandwidth." color={GREEN}>top-k</H> highest-scoring chunks</strong>
+            and fetches their full-resolution <H tip="KV cache = stored Key and Value vectors from a previous forward pass. These represent the 'memory' of what the model has already processed. In MSA, KV caches are stored at full token-level resolution and fetched only for selected chunks." color={CYAN}>K and V vectors</H> for standard attention. The rest of
             memory is ignored for this query.
           </p>
           <p>
             The default k value is <strong>8 chunks per layer</strong> (512 tokens total at P=64).
             This means the model attends to only 512 tokens out of potentially 100 million — a
-            sparsity ratio of 0.0005%. Yet on benchmarks, this tiny window captures the relevant
+            <H tip="Sparsity ratio = the fraction of elements that are non-zero (or selected). 0.0005% means 99.9995% of memory is ignored per query. Extreme sparsity is what makes MSA efficient — but the learned routing ensures the right 0.0005% is always selected." color={GREEN}>sparsity ratio</H> of 0.0005%. Yet on benchmarks, this tiny window captures the relevant
             information with near-perfect accuracy.
           </p>
           <p>
@@ -553,10 +658,10 @@ export default function MSAPaper() {
 
       <Prose>
         <p>
-          You cannot simply take a pretrained LLM, bolt on sparse attention layers, and expect it
+          You cannot simply take a <H tip="Pretrained = a model that has already been trained on a large corpus (often trillions of tokens) to learn general language patterns. Continued pretraining (CPT) adapts it further for a specific capability." color={CYAN}>pretrained</H> LLM, bolt on sparse attention layers, and expect it
           to work. The routing mechanism needs to learn which documents are relevant — and the
-          model needs to learn to trust the routing. MSA uses a carefully staged training
-          curriculum.
+          model needs to learn to trust the routing. MSA uses a carefully staged <H tip="Training curriculum = a structured schedule that gradually increases task difficulty. Like teaching math: arithmetic before algebra before calculus. Here: short contexts before long, strong supervision before weak." color={ORANGE}>training
+          curriculum</H>.
         </p>
       </Prose>
 
@@ -565,7 +670,7 @@ export default function MSAPaper() {
         steps={[
           {
             title: 'Phase 1: Continued Pre-Training (CPT)',
-            desc: 'Train on 10B tokens with memory contexts up to 256K tokens. The model learns the basic mechanics: how to encode documents into KV caches, how the routing projectors should behave, and how to use selected chunks. The auxiliary loss L_aux is weighted heavily (lambda=1.0) to bootstrap routing quality.',
+            desc: 'Train on 10B tokens with memory contexts up to 256K tokens. The model learns the basic mechanics: how to encode documents into KV caches, how the routing projectors should behave, and how to use selected chunks. The auxiliary loss L_aux is weighted heavily (\u03BB=1.0) to bootstrap routing quality.',
           },
           {
             title: 'Phase 2: Main Training',
@@ -577,6 +682,90 @@ export default function MSAPaper() {
           },
         ]}
       />
+
+      {/* ── Training Pipeline Timeline SVG ── */}
+      <Diagram caption={<><strong>Three-Phase Training Pipeline</strong> — CPT bootstraps routing, main training refines it at scale, SFT teaches practical usage. Lambda (λ) controls how strongly routing is supervised.</>}>
+        <svg viewBox="0 0 920 340" style={{ width: '100%', height: 'auto' }}>
+          <rect width="920" height="340" rx="12" fill="#0a0f1a" />
+          <defs>
+            <linearGradient id="tp-cyan" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#164e63" /><stop offset="100%" stopColor="#0e7490" /></linearGradient>
+            <linearGradient id="tp-orange" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#7c2d12" /><stop offset="100%" stopColor="#c2410c" /></linearGradient>
+            <linearGradient id="tp-green" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#14532d" /><stop offset="100%" stopColor="#15803d" /></linearGradient>
+          </defs>
+
+          {/* Title */}
+          <text x="460" y="30" textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="700" letterSpacing="2" fontFamily="Inter, system-ui, sans-serif">TRAINING TIMELINE</text>
+
+          {/* Timeline axis */}
+          <line x1="60" y1="160" x2="880" y2="160" stroke="#334155" strokeWidth="2" />
+          <polygon points="880,155 895,160 880,165" fill="#334155" />
+
+          {/* Phase 1: CPT */}
+          <rect x="70" y="70" width="220" height="75" rx="10" fill="url(#tp-cyan)" stroke={CYAN} strokeWidth="2" />
+          <text x="180" y="95" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Phase 1: CPT</text>
+          <text x="180" y="113" textAnchor="middle" fill="#67e8f9" fontSize="10" fontFamily="Inter, system-ui, sans-serif">10B tokens | 256K context</text>
+          <text x="180" y="130" textAnchor="middle" fill="#a5f3fc" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">lambda = 1.0 (heavy routing)</text>
+
+          {/* Phase 1 marker */}
+          <circle cx="180" cy="160" r="8" fill={CYAN} />
+          <text x="180" y="163" textAnchor="middle" fill="#0a0f1a" fontSize="8" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">1</text>
+
+          {/* Phase 1 details below */}
+          <rect x="70" y="180" width="220" height="60" rx="8" fill="#0c4a6e" opacity="0.5" />
+          <text x="180" y="200" textAnchor="middle" fill="#7dd3fc" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Bootstrap routing quality</text>
+          <text x="180" y="216" textAnchor="middle" fill="#7dd3fc" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Strong L_aux supervision</text>
+          <text x="180" y="232" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Model learns to trust routing</text>
+
+          {/* Phase 2: Main Training */}
+          <rect x="330" y="70" width="260" height="75" rx="10" fill="url(#tp-orange)" stroke={ORANGE} strokeWidth="2" />
+          <text x="460" y="95" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Phase 2: Main Training</text>
+          <text x="460" y="113" textAnchor="middle" fill="#fed7aa" fontSize="10" fontFamily="Inter, system-ui, sans-serif">100B tokens | 4M context</text>
+          <text x="460" y="130" textAnchor="middle" fill="#fdba74" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">lambda = 0.1 (reduced routing)</text>
+
+          {/* Phase 2 marker */}
+          <circle cx="460" cy="160" r="8" fill={ORANGE} />
+          <text x="460" y="163" textAnchor="middle" fill="#0a0f1a" fontSize="8" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">2</text>
+
+          {/* Phase 2 details below */}
+          <rect x="330" y="180" width="260" height="60" rx="8" fill="#431407" opacity="0.5" />
+          <text x="460" y="200" textAnchor="middle" fill="#fdba74" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Refine at scale, grow context</text>
+          <text x="460" y="216" textAnchor="middle" fill="#fdba74" fontSize="10" fontFamily="Inter, system-ui, sans-serif">L_LM takes over as primary signal</text>
+          <text x="460" y="232" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Memory gradually scaled up</text>
+
+          {/* Phase 3: SFT */}
+          <rect x="630" y="70" width="240" height="75" rx="10" fill="url(#tp-green)" stroke={GREEN} strokeWidth="2" />
+          <text x="750" y="95" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">Phase 3: SFT</text>
+          <text x="750" y="113" textAnchor="middle" fill="#bbf7d0" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Instruction-following data</text>
+          <text x="750" y="130" textAnchor="middle" fill="#86efac" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Memory Interleave enabled</text>
+
+          {/* Phase 3 marker */}
+          <circle cx="750" cy="160" r="8" fill={GREEN} />
+          <text x="750" y="163" textAnchor="middle" fill="#0a0f1a" fontSize="8" fontWeight="800" fontFamily="Inter, system-ui, sans-serif">3</text>
+
+          {/* Phase 3 details below */}
+          <rect x="630" y="180" width="240" height="60" rx="8" fill="#14532d" opacity="0.5" />
+          <text x="750" y="200" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">QA, summarization, reasoning</text>
+          <text x="750" y="216" textAnchor="middle" fill="#86efac" fontSize="10" fontFamily="Inter, system-ui, sans-serif">Multi-hop with interleave</text>
+          <text x="750" y="232" textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Practical task adaptation</text>
+
+          {/* Connecting arrows between phases */}
+          <line x1="290" y1="107" x2="330" y2="107" stroke="#475569" strokeWidth="1.5" strokeDasharray="4 2" />
+          <polygon points="326,103 336,107 326,111" fill="#475569" />
+          <line x1="590" y1="107" x2="630" y2="107" stroke="#475569" strokeWidth="1.5" strokeDasharray="4 2" />
+          <polygon points="626,103 636,107 626,111" fill="#475569" />
+
+          {/* Lambda curve label */}
+          <text x="460" y="275" textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="Inter, system-ui, sans-serif">lambda decay: 1.0 → 0.1 → fine-tune only</text>
+
+          {/* Data volume bar */}
+          <rect x="70" y="290" width="220" height="12" rx="4" fill={CYAN} opacity="0.4" />
+          <rect x="330" y="290" width="260" height="12" rx="4" fill={ORANGE} opacity="0.4" />
+          <rect x="630" y="290" width="240" height="12" rx="4" fill={GREEN} opacity="0.4" />
+          <text x="180" y="318" textAnchor="middle" fill="#67e8f9" fontSize="9" fontFamily="Inter, system-ui, sans-serif">10B tokens</text>
+          <text x="460" y="318" textAnchor="middle" fill="#fdba74" fontSize="9" fontFamily="Inter, system-ui, sans-serif">100B tokens</text>
+          <text x="750" y="318" textAnchor="middle" fill="#86efac" fontSize="9" fontFamily="Inter, system-ui, sans-serif">Task-specific</text>
+        </svg>
+      </Diagram>
 
       <ConceptCard title="The Auxiliary Contrastive Loss (L_aux)" color={ORANGE} defaultOpen={true}>
         <Prose>
@@ -647,18 +836,18 @@ export default function MSAPaper() {
       <ConceptCard title="Why CPT Matters: The Ablation" color="#ef4444" defaultOpen={false}>
         <Prose>
           <p>
-            The paper provides a striking ablation: removing the CPT phase entirely and going
+            The paper provides a striking <H tip="Ablation study = an experiment where you remove or disable one component of a system to measure its individual contribution. Like removing one ingredient from a recipe to see what it adds." color="#ef4444">ablation</H>: removing the <H tip="CPT (Continued Pre-Training) = additional pretraining of an already-trained model on new data or with new architectural features. The model retains existing knowledge while learning new capabilities." color={CYAN}>CPT</H> phase entirely and going
             straight to main training causes a <strong>31.3% average drop</strong> across
             benchmarks. Why?
           </p>
           <p>
-            Without CPT, the routing projectors start from random initialization. During early
+            Without CPT, the routing projectors start from <H tip="Random initialization = setting weights to small random values before training begins. For a new component like the routing projector, this means its outputs are essentially noise until training shapes them." color="#ef4444">random initialization</H>. During early
             main training, they route essentially at random, so the model learns to ignore the
             memory system entirely — it cannot trust it. Once the model has learned to ignore
             memory, it is very hard to unlearn that behavior even as routing improves later.
           </p>
           <p>
-            CPT with high lambda (strong routing supervision) bootstraps the routing quality
+            CPT with high <H tip="Lambda (λ) = a hyperparameter that controls the weight of the auxiliary loss relative to the main language modeling loss. Higher λ means stronger routing supervision. Set to 1.0 during CPT warmup, then decayed to 0.1." color={ORANGE}>lambda</H> (strong routing supervision) bootstraps the routing quality
             before the model has a chance to learn to ignore it. Think of it like teaching a
             student to use the library catalog before assigning a research paper — otherwise
             they will just Google everything and never learn to use the library.
@@ -688,9 +877,9 @@ export default function MSAPaper() {
 
       <Prose>
         <p>
-          MSA's inference is split into three stages that cleanly separate the expensive one-time
+          MSA's <H tip="Inference = using a trained model to generate predictions/outputs. Unlike training (which updates weights), inference only runs the forward pass. The cost is dominated by the prefill phase (encoding the context) and the decode phase (generating tokens one by one)." color={GREEN}>inference</H> is split into three stages that cleanly separate the expensive one-time
           work from the cheap per-query work. This separation is what makes 100M-token memory
-          practical in deployment.
+          practical in deployment — the bulk of computation happens <H tip="Offline encoding = processing documents ahead of time and caching the results. The KV caches are stored on disk or in CPU memory and fetched on demand. This amortizes the O(N·d·L) encoding cost across all future queries." color={CYAN}>offline</H>.
         </p>
       </Prose>
 
@@ -809,13 +998,13 @@ export default function MSAPaper() {
       <ConceptCard title="Memory Interleave: Multi-Hop Reasoning" color={PURPLE} defaultOpen={true}>
         <Prose>
           <p>
-            Many real questions require <strong>multi-hop reasoning</strong> — you can't find the
+            Many real questions require <strong><H tip="Multi-hop reasoning = answering a question that requires chaining facts from multiple sources. Each 'hop' uses information from one source to formulate a query for the next. RAG typically supports only 1 hop; MSA supports arbitrary depth." color={PURPLE}>multi-hop reasoning</H></strong> — you cannot find the
             answer in a single document. For example: "When was Erik Watts' father born?" requires
             first finding who Erik Watts is, then discovering his father is Bill Watts, then
             finding Bill Watts' birth year.
           </p>
           <p>
-            Standard retrieve-then-generate pipelines fail at this because they do a single
+            Standard <H tip="Retrieve-then-generate = the RAG pattern where documents are retrieved ONCE before generation starts. The retriever and generator are separate systems with no shared gradient flow, limiting the model to a single retrieval pass." color={ORANGE}>retrieve-then-generate</H> pipelines fail at this because they do a single
             retrieval pass before generating. If the first retrieval finds Erik Watts but not
             Bill Watts, the model is stuck.
           </p>
@@ -934,7 +1123,7 @@ export default function MSAPaper() {
       <Prose>
         <p>
           The results are striking, especially considering MSA uses only a <strong>4 billion
-          parameter</strong> model. Across long-context benchmarks, MSA-4B consistently
+          parameter</strong> model. Across <H tip="Long-context benchmarks = standardized tests that measure a model's ability to use information spread across very long inputs. Examples include NIAH (finding a fact in a haystack), multi-hop QA (chaining facts), and summarization over thousands of pages." color={CYAN}>long-context benchmarks</H>, MSA-4B consistently
           outperforms models that are 10-20x larger when those models are limited to their
           standard context windows.
         </p>
@@ -954,10 +1143,92 @@ export default function MSAPaper() {
         caption="Comparison across methods. MSA-4B exceeds 70B+ dense models on long-context tasks while using 18x fewer parameters. *RAG has unlimited corpus but no end-to-end gradient."
       />
 
+      {/* ── Results Comparison Bar Chart SVG ── */}
+      <Diagram caption={<><strong>Benchmark Comparison</strong> — MSA-4B vs baselines across three key metrics. A 4B model outperforms 70B+ models on long-context tasks.</>}>
+        <svg viewBox="0 0 920 520" style={{ width: '100%', height: 'auto' }}>
+          <rect width="920" height="520" rx="12" fill="#0a0f1a" />
+
+          {/* Title */}
+          <text x="460" y="30" textAnchor="middle" fill="#94a3b8" fontSize="11" fontWeight="700" letterSpacing="2" fontFamily="Inter, system-ui, sans-serif">BENCHMARK RESULTS</text>
+
+          {/* ── Average Score Section ── */}
+          <text x="50" y="65" fill="#e2e8f0" fontSize="13" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Average Score</text>
+          <line x1="50" y1="72" x2="880" y2="72" stroke="#1e293b" strokeWidth="1" />
+
+          {/* MSA bar */}
+          <rect x="200" y="82" width={55.1 * 11} height="24" rx="4" fill={CYAN} opacity="0.9" />
+          <text x="190" y="99" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">MSA (4B)</text>
+          <text x={200 + 55.1 * 11 + 8} y="99" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">55.1</text>
+
+          {/* RAG Dense bar */}
+          <rect x="200" y="112" width={50.2 * 11} height="24" rx="4" fill={ORANGE} opacity="0.7" />
+          <text x="190" y="129" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">RAG Dense (4B)</text>
+          <text x={200 + 50.2 * 11 + 8} y="129" fill={ORANGE} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">50.2</text>
+
+          {/* Dense Attention bar */}
+          <rect x="200" y="142" width={42.8 * 11} height="24" rx="4" fill="#64748b" opacity="0.7" />
+          <text x="190" y="159" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">Dense (4B)</text>
+          <text x={200 + 42.8 * 11 + 8} y="159" fill="#94a3b8" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">42.8</text>
+
+          {/* Qwen 72B bar */}
+          <rect x="200" y="172" width={53.8 * 11} height="24" rx="4" fill={PURPLE} opacity="0.6" />
+          <text x="190" y="189" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">Qwen2.5 (72B)</text>
+          <text x={200 + 53.8 * 11 + 8} y="189" fill={PURPLE} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">53.8</text>
+
+          {/* ── NIAH Section ── */}
+          <text x="50" y="225" fill="#e2e8f0" fontSize="13" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">NIAH Accuracy (%)</text>
+          <line x1="50" y1="232" x2="880" y2="232" stroke="#1e293b" strokeWidth="1" />
+
+          {/* MSA bar */}
+          <rect x="200" y="242" width={99.3 / 100 * 660} height="24" rx="4" fill={CYAN} opacity="0.9" />
+          <text x="190" y="259" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">MSA (4B)</text>
+          <text x={200 + 99.3 / 100 * 660 + 8} y="259" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">99.3%</text>
+
+          {/* Dense bar */}
+          <rect x="200" y="272" width={95.1 / 100 * 660} height="24" rx="4" fill="#64748b" opacity="0.7" />
+          <text x="190" y="289" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">Dense (4B)</text>
+          <text x={200 + 95.1 / 100 * 660 + 8} y="289" fill="#94a3b8" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">95.1%</text>
+
+          {/* RAG Dense bar */}
+          <rect x="200" y="302" width={91.2 / 100 * 660} height="24" rx="4" fill={ORANGE} opacity="0.7" />
+          <text x="190" y="319" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">RAG Dense (4B)</text>
+          <text x={200 + 91.2 / 100 * 660 + 8} y="319" fill={ORANGE} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">91.2%</text>
+
+          {/* RAG BM25 bar */}
+          <rect x="200" y="332" width={87.6 / 100 * 660} height="24" rx="4" fill="#ef4444" opacity="0.6" />
+          <text x="190" y="349" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">RAG BM25 (4B)</text>
+          <text x={200 + 87.6 / 100 * 660 + 8} y="349" fill="#ef4444" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">87.6%</text>
+
+          {/* ── Multi-hop Section ── */}
+          <text x="50" y="385" fill="#e2e8f0" fontSize="13" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">Multi-Hop Reasoning</text>
+          <line x1="50" y1="392" x2="880" y2="392" stroke="#1e293b" strokeWidth="1" />
+
+          {/* MSA bar */}
+          <rect x="200" y="402" width={62.4 / 100 * 660} height="24" rx="4" fill={CYAN} opacity="0.9" />
+          <text x="190" y="419" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">MSA (4B)</text>
+          <text x={200 + 62.4 / 100 * 660 + 8} y="419" fill={CYAN} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">62.4</text>
+
+          {/* Qwen 72B bar */}
+          <rect x="200" y="432" width={56.3 / 100 * 660} height="24" rx="4" fill={PURPLE} opacity="0.6" />
+          <text x="190" y="449" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">Qwen2.5 (72B)</text>
+          <text x={200 + 56.3 / 100 * 660 + 8} y="449" fill={PURPLE} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">56.3</text>
+
+          {/* RAG Dense bar */}
+          <rect x="200" y="462" width={44.9 / 100 * 660} height="24" rx="4" fill={ORANGE} opacity="0.7" />
+          <text x="190" y="479" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">RAG Dense (4B)</text>
+          <text x={200 + 44.9 / 100 * 660 + 8} y="479" fill={ORANGE} fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">44.9</text>
+
+          {/* Dense bar */}
+          <rect x="200" y="492" width={38.2 / 100 * 660} height="24" rx="4" fill="#64748b" opacity="0.7" />
+          <text x="190" y="509" textAnchor="end" fill="#e2e8f0" fontSize="11" fontFamily="Inter, system-ui, sans-serif">Dense (4B)</text>
+          <text x={200 + 38.2 / 100 * 660 + 8} y="509" fill="#94a3b8" fontSize="11" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">38.2</text>
+        </svg>
+      </Diagram>
+
       <ConceptCard title="Needle in a Haystack (NIAH)" color={PURPLE} defaultOpen={true}>
         <Prose>
           <p>
-            NIAH is the gold standard for testing whether a model can find a specific piece of
+            <H tip="NIAH (Needle In A Haystack) = a benchmark where a single specific fact ('needle') is hidden at a random position in a massive body of irrelevant text ('haystack'). The model must locate and return the needle. Tests pure retrieval/attention ability at scale." color={PURPLE}>NIAH</H> is the gold standard for testing whether a model can find a specific piece of
             information buried in a massive context. A "needle" (a specific fact) is inserted at
             a random position within a "haystack" of irrelevant text. The model must find and
             return the needle.
@@ -965,7 +1236,7 @@ export default function MSAPaper() {
           <p>
             MSA achieves <strong>99.3% accuracy</strong> on NIAH at 100M tokens. This means the
             routing mechanism almost never misses the relevant chunk, even when it is one chunk
-            out of ~1.56 million candidates. For comparison, RAG with BM25 retrieval drops to
+            out of ~1.56 million candidates. For comparison, RAG with <H tip="BM25 (Best Match 25) = a classic keyword-based retrieval algorithm. It scores documents by term frequency and inverse document frequency. Fast but brittle — fails when the query uses different words than the document (the 'vocabulary mismatch' problem)." color={ORANGE}>BM25</H> retrieval drops to
             87.6% — the keyword-based retriever fails on paraphrased or semantically similar
             queries.
           </p>
@@ -989,10 +1260,10 @@ export default function MSAPaper() {
             devastating for single-retrieval systems.
           </p>
           <p>
-            MSA's Memory Interleave enables it to score <strong>62.4</strong> on multi-hop
-            benchmarks — beating RAG by 17+ points and even surpassing the 72B Qwen model.
+            MSA's Memory Interleave enables it to score <strong>62.4</strong> on <H tip="Multi-hop QA benchmarks = datasets where answering each question requires finding and combining facts from 2+ separate documents. Examples: HotpotQA, MuSiQue, 2WikiMultiHopQA. Much harder than single-hop retrieval." color={GREEN}>multi-hop
+            benchmarks</H> — beating RAG by 17+ points and even surpassing the 72B <H tip="Qwen2.5-72B = a 72 billion parameter LLM from Alibaba. One of the strongest open-weight models, used here as a high-bar baseline. MSA's 4B model beats it on long-context tasks despite being 18x smaller." color={PURPLE}>Qwen</H> model.
             The ability to re-route mid-generation gives the model something no retrieval-augmented
-            system can match: <em>iterative, learned, end-to-end reasoning across documents</em>.
+            system can match: <em>iterative, learned, <H tip="End-to-end gradient flow = gradients propagate from the final loss all the way back through attention, routing, and projectors in a single computation graph. This lets the routing learn directly from language modeling performance — unlike RAG where the retriever is trained separately." color={CYAN}>end-to-end</H> reasoning across documents</em>.
           </p>
         </Prose>
       </ConceptCard>
@@ -1000,9 +1271,9 @@ export default function MSAPaper() {
       <ConceptCard title="Efficiency Analysis" color={CYAN} defaultOpen={false}>
         <Prose>
           <p>
-            Beyond accuracy, MSA is remarkably efficient. The per-query inference cost is dominated
+            Beyond accuracy, MSA is remarkably efficient. The <H tip="Per-query inference cost = the compute required to process a single user query. This is the latency-critical path — it determines how fast the model responds. MSA keeps this constant regardless of how much memory is stored." color={GREEN}>per-query inference cost</H> is dominated
             by S3 (generation), which attends to only ~512 tokens regardless of memory size.
-            The routing overhead (S2) is less than 2% of total inference time.
+            The <H tip="Routing overhead = the extra compute needed for the routing step (S2). At only ~2% of total inference time, it's nearly free — the bottleneck is still the attention computation over selected chunks." color={ORANGE}>routing overhead</H> (S2) is less than 2% of total inference time.
           </p>
         </Prose>
 
@@ -1033,7 +1304,7 @@ export default function MSAPaper() {
       <Prose>
         <p>
           Complex systems are best understood through multiple lenses. Here are three complementary
-          mental models for MSA — each highlights a different aspect of the system's design.
+          <H tip="Mental model = an internal representation that helps you reason about a system by analogy to something familiar. Good mental models capture the essential structure while hiding irrelevant details." color={CYAN}>mental models</H> for MSA — each highlights a different aspect of the system's design.
         </p>
       </Prose>
 
@@ -1060,8 +1331,8 @@ export default function MSAPaper() {
 
       <Callout type="key">
         MSA represents a paradigm shift in how we think about LLM memory. Instead of choosing
-        between "expensive but accurate" (dense attention) and "cheap but disconnected" (RAG),
-        MSA achieves both: end-to-end attention quality with sub-quadratic scaling. The key
+        between "expensive but accurate" (<H tip="Dense attention = standard O(N²) attention where every token attends to every other token. Gives perfect information flow but becomes computationally infeasible beyond ~1M tokens." color={ORANGE}>dense attention</H>) and "cheap but disconnected" (<H tip="RAG (Retrieval-Augmented Generation) = a two-stage approach where a separate retriever finds relevant documents, then a generator LLM reads them. The retriever has no gradient connection to the generator, limiting optimization." color={ORANGE}>RAG</H>),
+        MSA achieves both: end-to-end attention quality with <H tip="Sub-quadratic scaling = growing slower than O(N²). MSA's routing is O(N/P) and attention is O(k·P), both linear or constant relative to total memory size. This is what makes 100M tokens feasible." color={GREEN}>sub-quadratic scaling</H>. The key
         enablers are: (1) dual projectors that separate routing from content, (2) chunk pooling
         for 64x routing compression, (3) doc-wise RoPE for unlimited position extrapolation, and
         (4) Memory Interleave for multi-hop reasoning. Together, these four innovations push the
