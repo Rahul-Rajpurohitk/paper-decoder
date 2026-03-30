@@ -1,5 +1,4 @@
 import SectionHeader from '../../components/SectionHeader';
-import FormulaBlock from '../../components/FormulaBlock';
 import FormulaSteps from '../../components/FormulaSteps';
 import Callout from '../../components/Callout';
 import StatBar from '../../components/StatBar';
@@ -98,14 +97,32 @@ export default function AttnResPaper() {
         </p>
       </Prose>
 
-      <FormulaBlock
-        math="h_l = h_{l-1} + f_l(h_{l-1})"
+      <FormulaSteps
         label="Standard Residual Connection"
         color={PK}
+        steps={[
+          {
+            note: 'You know how deep networks stack layers one after another? Each layer takes the previous output and transforms it. Let\'s call that transformation f_l.',
+            math: 'f_l(h_{l-1}) \\quad \\text{(layer } l \\text{\'s contribution)}',
+          },
+          {
+            note: 'The key insight of residual connections: don\'t replace the input — add to it. The original signal passes through untouched via a "skip connection." If you were coding this: output = input + layer(input).',
+            math: 'h_l = h_{l-1} + f_l(h_{l-1})',
+          },
+          {
+            note: 'This means every layer only needs to learn the "delta" — what to change, not the full mapping. Gradients flow directly through the addition, solving the vanishing gradient problem.',
+            math: '\\frac{\\partial h_l}{\\partial h_{l-1}} = I + \\frac{\\partial f_l}{\\partial h_{l-1}} \\quad \\text{(gradient never vanishes — the } I \\text{ term always survives)}',
+          },
+          {
+            note: 'Takeaway: The whole formula just says: "Keep everything from before, and add whatever new information this layer discovers."',
+            math: 'h_l = \\underbrace{h_{l-1}}_{\\text{skip (identity)}} + \\underbrace{f_l(h_{l-1})}_{\\text{new info}}',
+          },
+        ]}
         symbols={[
-          { symbol: 'h_l', meaning: 'hidden state after layer l' },
+          { symbol: 'h_l', meaning: 'hidden state after layer l — a vector in R^d (e.g. d=4096)' },
           { symbol: 'f_l', meaning: 'layer l transformation (attention + FFN)' },
-          { symbol: 'h_{l-1}', meaning: 'hidden state from previous layer' },
+          { symbol: 'h_{l-1}', meaning: 'hidden state from previous layer (the skip connection input)' },
+          { symbol: 'I', meaning: 'identity matrix — ensures gradient of at least 1.0 flows backward' },
         ]}
       />
 
@@ -373,12 +390,31 @@ export default function AttnResPaper() {
           </p>
         </Prose>
 
-        <FormulaBlock
-          math="\\alpha_i = \\frac{1}{l+1} \\; \\forall \\; i \\implies h_{l+1} = \\frac{1}{l+1}\\sum_{i=0}^{l} v_i \\quad \\text{(standard residual)}"
+        <FormulaSteps
           label="Standard Residual = Uniform AttnRes"
           color={CYAN}
+          steps={[
+            {
+              note: 'You already know standard residuals add every layer\'s output equally. Now imagine AttnRes assigns a learned weight alpha_i to each preceding layer. What if all those weights were equal?',
+              math: '\\alpha_i = \\frac{1}{l+1} \\quad \\forall \\; i \\in \\{0, 1, \\ldots, l\\}',
+            },
+            {
+              note: 'With uniform weights, the AttnRes formula simplifies to a plain average of all layer outputs. Notice this is exactly what standard residuals do — just a running sum divided by layer count.',
+              math: 'h_{l+1} = \\sum_{i=0}^{l} \\alpha_i \\cdot v_i = \\frac{1}{l+1}\\sum_{i=0}^{l} v_i',
+            },
+            {
+              note: 'If you were coding this: standard_residual = mean(all_layer_outputs). AttnRes = weighted_sum(all_layer_outputs, learned_weights). The standard case is just one specific configuration of AttnRes weights.',
+              math: '\\frac{1}{l+1}\\sum_{i=0}^{l} v_i \\quad \\equiv \\quad \\text{standard residual connection}',
+            },
+            {
+              note: 'Takeaway: Standard residuals are AttnRes with uniform weights. AttnRes can never be worse — it includes the standard case as one point in its solution space, and learns to deviate when beneficial.',
+              math: '\\alpha_i = \\frac{1}{l+1} \\; \\forall \\; i \\implies h_{l+1} = \\frac{1}{l+1}\\sum_{i=0}^{l} v_i \\quad \\text{(standard residual as special case)}',
+            },
+          ]}
           symbols={[
-            { symbol: '1/(l+1)', meaning: 'uniform weight across all l+1 preceding layers' },
+            { symbol: 'alpha_i', meaning: 'learned attention weight for layer i\'s output' },
+            { symbol: '1/(l+1)', meaning: 'uniform weight — the specific case that recovers standard residuals' },
+            { symbol: 'v_i', meaning: 'value vector from layer i (its contribution to the next layer)' },
           ]}
         />
       </ConceptCard>

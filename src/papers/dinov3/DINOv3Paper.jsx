@@ -1,5 +1,4 @@
 import SectionHeader from '../../components/SectionHeader';
-import FormulaBlock from '../../components/FormulaBlock';
 import Callout from '../../components/Callout';
 import StatBar from '../../components/StatBar';
 import ConceptCard from '../../components/ConceptCard';
@@ -413,15 +412,32 @@ export default function DINOv3Paper() {
         ]}
       />
 
-      <FormulaBlock
-        math="\text{FFN}(x) = \left(\text{SiLU}(x W_1) \odot x W_3\right) W_2"
+      <FormulaSteps
         label="SwiGLU FFN — The Thinking Step"
         color={P2}
+        steps={[
+          {
+            note: 'After attention lets tokens communicate, each token now "thinks" individually. First, we project each token\'s 4096-dim vector up into a higher-dimensional space — like spreading out your notes on a bigger desk so you can see connections.',
+            math: 'x W_1 \\in \\mathbb{R}^{261 \\times 8192}, \\quad x W_3 \\in \\mathbb{R}^{261 \\times 8192}',
+          },
+          {
+            note: 'Here\'s the clever part: SiLU(x W_1) acts as a learned gate — values near 0 get suppressed, useful values pass through. This is the same gating pattern you see in LSTMs, just smoother. If you were coding this: gate = silu(matmul(x, W1)).',
+            math: '\\text{gate} = \\text{SiLU}(x W_1) \\quad \\text{where SiLU}(z) = z \\cdot \\sigma(z)',
+          },
+          {
+            note: 'Now multiply the gate by the value branch element-wise. Each dimension independently decides how much information to keep — this is why it\'s called "gated." Notice this is two parallel projections merged by element-wise product, not a single wide MLP.',
+            math: '\\text{hidden} = \\text{SiLU}(x W_1) \\odot x W_3 \\quad \\in \\mathbb{R}^{261 \\times 8192}',
+          },
+          {
+            note: 'Finally, project back down to the original dimension. Dimensional analysis: 261 tokens go from 4096 up to 8192 (gate + value), then back to 4096. The whole formula just says: "expand, gate, compress."',
+            math: '\\text{FFN}(x) = \\left(\\text{SiLU}(x W_1) \\odot x W_3\\right) W_2 \\quad \\in \\mathbb{R}^{261 \\times 4096}',
+          },
+        ]}
         symbols={[
-          { symbol: 'W_1, W_3', meaning: 'Gate and value projection matrices (4096 → 8192)' },
-          { symbol: 'W_2', meaning: 'Down projection (8192 → 4096)' },
-          { symbol: 'SiLU', meaning: 'Sigmoid Linear Unit — smooth gating function' },
-          { symbol: 'odot', meaning: 'Element-wise multiplication — the "gating" that makes SwiGLU powerful' },
+          { symbol: 'W_1, W_3', meaning: 'Gate and value projection matrices (4096 -> 8192) — two parallel up-projections' },
+          { symbol: 'W_2', meaning: 'Down projection (8192 -> 4096) — compresses back to model dimension' },
+          { symbol: 'SiLU(z) = z * sigma(z)', meaning: 'Sigmoid Linear Unit — smooth gating, outperforms ReLU/GELU' },
+          { symbol: 'odot', meaning: 'Element-wise multiplication — the gating operation (8192 independent gates)' },
         ]}
       />
 
@@ -827,28 +843,62 @@ export default function DINOv3Paper() {
           </p>
         </Prose>
 
-        <FormulaBlock
-          math="\mathcal{L}_{\text{DKoleo}} = - \frac{1}{n} \sum_{i=1}^{n} \log \left( \min_{j \neq i} \| z_i - z_j \| \right)"
+        <FormulaSteps
           label="Koleo Regularizer — Uniform Embedding Spread"
           color={GREEN}
+          steps={[
+            {
+              note: 'You know how cosine similarity measures whether two vectors point the same way? Koleo uses L2 distance between normalized embeddings. For each sample i in the batch, find its nearest neighbor — the closest other embedding.',
+              math: 'd_i = \\min_{j \\neq i} \\| z_i - z_j \\| \\quad \\text{(nearest-neighbor distance for sample } i \\text{)}',
+            },
+            {
+              note: 'Now take the log of each nearest-neighbor distance. Why log? It penalizes collapse exponentially — as two embeddings get close, log(distance) drops to negative infinity, creating a powerful repulsion force.',
+              math: '\\log(d_i) = \\log \\left( \\min_{j \\neq i} \\| z_i - z_j \\| \\right)',
+            },
+            {
+              note: 'Average across all n samples in the batch and negate (because we want to maximize spread, but optimizers minimize). If you were coding this: loss = -mean([log(nearest_neighbor_dist(z_i)) for z_i in batch]).',
+              math: 'L_{\\text{DKoleo}} = - \\frac{1}{n} \\sum_{i=1}^{n} \\log \\left( \\min_{j \\neq i} \\| z_i - z_j \\| \\right)',
+            },
+            {
+              note: 'Takeaway: The whole formula just says: "Push every embedding away from its nearest neighbor." This prevents mode collapse — embeddings can\'t all cluster in one spot because the log penalty becomes infinite as they converge.',
+              math: 'L_{\\text{DKoleo}} \\downarrow \\quad \\iff \\quad \\text{embeddings spread uniformly on the hypersphere}',
+            },
+          ]}
           symbols={[
-            { symbol: 'L_DKoleo', meaning: 'Kozachenko-Leonenko entropy estimator on CLS embeddings — higher is more spread' },
-            { symbol: 'z_i', meaning: 'L2-normalized CLS embedding of sample i in the batch' },
-            { symbol: 'n', meaning: 'Batch size (4096 in DINOv3)' },
-            { symbol: 'min_{j != i}', meaning: 'Distance to the nearest neighbor — the bottleneck we want to maximize' },
+            { symbol: 'z_i', meaning: 'L2-normalized CLS embedding of sample i (lives on a unit hypersphere)' },
+            { symbol: 'n', meaning: 'Batch size (4096 in DINOv3) — more samples = better entropy estimate' },
+            { symbol: 'min_{j != i}', meaning: 'Nearest-neighbor distance — the bottleneck Koleo maximizes' },
+            { symbol: 'log', meaning: 'Natural log — creates infinite penalty as embeddings collapse together' },
           ]}
         />
       </ConceptCard>
 
-      <FormulaBlock
-        math="\mathcal{L}_{\text{Pre}} = \mathcal{L}_{\text{DINO}} + \mathcal{L}_{\text{iBOT}} + 0.1 \cdot \mathcal{L}_{\text{DKoleo}}"
+      <FormulaSteps
         label="Total Pre-training Loss"
         color={P}
+        steps={[
+          {
+            note: 'You\'ve seen each loss individually. L_DINO is the cross-entropy between student and teacher CLS tokens — it drives global image understanding. Notice this is the same softmax cross-entropy pattern from the DINO section above.',
+            math: 'L_{\\text{DINO}} \\quad \\text{(global CLS matching — "what is this image about?")}',
+          },
+          {
+            note: 'L_iBOT adds masked patch prediction — the model must reconstruct hidden patches from context. This is what gives DINOv3 its strong dense/spatial features, complementing the global signal from L_DINO.',
+            math: 'L_{\\text{DINO}} + L_{\\text{iBOT}} \\quad \\text{(global + local objectives)}',
+          },
+          {
+            note: 'Finally, add the Koleo regularizer with a small 0.1 weight. Why 0.1? Too high and the repulsion force dominates — the model spreads embeddings but stops learning meaningful clusters. Too low and mode collapse can sneak in during early training.',
+            math: 'L_{\\text{DINO}} + L_{\\text{iBOT}} + 0.1 \\cdot L_{\\text{DKoleo}}',
+          },
+          {
+            note: 'Takeaway: The total loss just says: "Match the teacher globally (DINO), predict masked patches locally (iBOT), and don\'t let embeddings collapse (Koleo)." Three complementary signals, one unified gradient.',
+            math: 'L_{\\text{Pre}} = \\underbrace{L_{\\text{DINO}}}_{\\text{classify}} + \\underbrace{L_{\\text{iBOT}}}_{\\text{localize}} + 0.1 \\cdot \\underbrace{L_{\\text{DKoleo}}}_{\\text{spread}}',
+          },
+        ]}
         symbols={[
-          { symbol: 'L_Pre', meaning: 'Total pre-training loss — sum of all three objectives' },
-          { symbol: 'L_DINO', meaning: 'Global CLS matching (drives classification quality)' },
+          { symbol: 'L_Pre', meaning: 'Total pre-training loss — the single scalar the optimizer minimizes' },
+          { symbol: 'L_DINO', meaning: 'CLS cross-entropy (drives classification quality)' },
           { symbol: 'L_iBOT', meaning: 'Masked patch prediction (drives dense feature quality)' },
-          { symbol: '0.1 * L_DKoleo', meaning: 'Weighted regularizer — small weight prevents collapse without dominating training' },
+          { symbol: '0.1 * L_DKoleo', meaning: 'Weighted regularizer — safety net against embedding collapse' },
         ]}
       />
 

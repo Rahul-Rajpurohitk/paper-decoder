@@ -1,5 +1,6 @@
 import SectionHeader from '../../components/SectionHeader';
 import FormulaBlock from '../../components/FormulaBlock';
+import FormulaSteps from '../../components/FormulaSteps';
 import Callout from '../../components/Callout';
 import StatBar from '../../components/StatBar';
 import ConceptCard from '../../components/ConceptCard';
@@ -198,10 +199,27 @@ export default function TurboQuantPaper() {
             converges to a Gaussian with mean 0 and variance 1/d.
           </p>
         </Prose>
-        <FormulaBlock
-          math="y_i^2 \sim \text{Beta}\!\left(\tfrac{1}{2},\, \tfrac{d-1}{2}\right) \quad \Longrightarrow \quad y_i \approx \mathcal{N}\!\left(0,\, \tfrac{1}{d}\right) \text{ as } d \to \infty"
+        <FormulaSteps
           label="Lemma 1 — Coordinate Distribution"
           color={A}
+          steps={[
+            {
+              note: 'Start with what we have: a unit vector x on the sphere, and we hit it with a random rotation. What does a single coordinate of the result look like?',
+              math: 'y = \\Pi \\cdot x, \\quad \\|x\\| = 1, \\quad \\Pi \\sim \\text{Uniform}\\bigl(O(d)\\bigr)',
+            },
+            {
+              note: 'Think of squaring a coordinate as measuring how much energy it carries. On a d-dimensional sphere, each squared coordinate follows a Beta distribution — this is the "energy sharing" pattern from random geometry.',
+              math: 'y_i^2 \\;\\sim\\; \\text{Beta}\\!\\left(\\tfrac{1}{2},\\, \\tfrac{d-1}{2}\\right)',
+            },
+            {
+              note: 'Predict before reveal: if total energy ||x||²=1 is split among d coordinates, each should carry roughly 1/d. The math confirms — as d grows, the Beta concentrates into a Gaussian with variance exactly 1/d.',
+              math: 'y_i^2 \\;\\sim\\; \\text{Beta}\\!\\left(\\tfrac{1}{2},\\, \\tfrac{d-1}{2}\\right) \\quad \\xrightarrow{d \\to \\infty} \\quad y_i \\;\\approx\\; \\mathcal{N}\\!\\left(0,\\, \\tfrac{1}{d}\\right)',
+            },
+            {
+              note: 'Remember: "Rotate, then every coordinate looks the same." The formula just says that formally. In code: y = random_orthogonal_matrix @ (x / np.linalg.norm(x)), then each y[i] is drawn from the same known distribution.',
+              math: 'y_i^2 \\sim \\text{Beta}\\!\\left(\\tfrac{1}{2},\\, \\tfrac{d-1}{2}\\right) \\quad \\Longrightarrow \\quad y_i \\approx \\mathcal{N}\\!\\left(0,\\, \\tfrac{1}{d}\\right) \\text{ as } d \\to \\infty',
+            },
+          ]}
           symbols={[
             { symbol: 'y_i', meaning: 'i-th coordinate of the rotated vector Π · x' },
             { symbol: 'd', meaning: 'Ambient dimension of the vectors' },
@@ -381,17 +399,34 @@ export default function TurboQuantPaper() {
         ]}
       />
 
-      <FormulaBlock
-        math="D_{\text{mse}}(b, d) \;=\; \mathbb{E}\!\left[\, \left\| x - \hat{x} \right\|^2 \,\right] \;\leq\; \frac{\|x\|^2}{d} \cdot \alpha_b"
+      <FormulaSteps
         label="Theorem 1 — MSE Distortion Bound"
         color={A}
+        steps={[
+          {
+            note: 'We want to measure how much information we lose. The distortion is the expected squared difference between the original vector and its reconstruction after quantize-then-dequantize.',
+            math: 'D_{\\text{mse}}(b, d) \\;=\\; \\mathbb{E}\\!\\left[\\, \\left\\| x - \\hat{x} \\right\\|^2 \\,\\right]',
+          },
+          {
+            note: 'This is the "separate magnitude from direction" trick — you will see it everywhere in quantization. Store ||x|| exactly (32 bits, cheap), then only quantize the unit-sphere direction. The squared norm factors out cleanly.',
+            math: 'D_{\\text{mse}}(b, d) \\;=\\; \\|x\\|^2 \\cdot \\mathbb{E}\\!\\left[\\, \\left\\| \\hat{u} - u \\right\\|^2 \\,\\right], \\quad u = x / \\|x\\|',
+          },
+          {
+            note: 'After random rotation, each of the d coordinates is independent with the same distribution. So the total error is d times the per-coordinate error. The per-coordinate error of the Lloyd-Max quantizer is a known constant alpha_b divided by d.',
+            math: 'D_{\\text{mse}}(b, d) \\;=\\; \\|x\\|^2 \\cdot \\sum_{i=1}^{d} \\mathbb{E}\\!\\left[(u_i - \\hat{u}_i)^2\\right] \\;=\\; \\|x\\|^2 \\cdot d \\cdot \\frac{\\alpha_b}{d^2}',
+          },
+          {
+            note: 'The d\'s simplify beautifully. In code, this becomes: mse = np.linalg.norm(x)**2 / d * ALPHA[b], where ALPHA is a precomputed lookup table. That is it — one multiply per vector.',
+            math: 'D_{\\text{mse}}(b, d) \\;=\\; \\mathbb{E}\\!\\left[\\, \\left\\| x - \\hat{x} \\right\\|^2 \\,\\right] \\;\\leq\\; \\frac{\\|x\\|^2}{d} \\cdot \\alpha_b',
+          },
+        ]}
         symbols={[
           { symbol: 'D_{mse}(b,d)', meaning: 'Expected mean squared error of reconstruction' },
           { symbol: 'x', meaning: 'Original d-dimensional vector' },
-          { symbol: 'x̂', meaning: 'Reconstructed vector after quantize + dequantize' },
-          { symbol: '||x||²', meaning: 'Squared Euclidean norm (Frobenius norm for matrices) of the original vector. Separating the norm from direction is key: the norm is stored exactly (32 bits) while the direction (on the sphere) is quantized.' },
+          { symbol: 'x_hat', meaning: 'Reconstructed vector after quantize + dequantize' },
+          { symbol: '||x||^2', meaning: 'Squared Euclidean norm of the original vector. Stored exactly (32 bits) while the direction is quantized.' },
           { symbol: 'd', meaning: 'Dimension of the vector' },
-          { symbol: 'α_b', meaning: 'Distortion coefficient of b-bit Lloyd-Max quantizer for Beta(1/2,(d-1)/2) distribution' },
+          { symbol: 'alpha_b', meaning: 'Distortion coefficient of b-bit Lloyd-Max quantizer for Beta(1/2,(d-1)/2) distribution' },
           { symbol: 'b', meaning: 'Number of bits per coordinate' },
         ]}
       />
@@ -677,18 +712,39 @@ export default function TurboQuantPaper() {
         ]}
       />
 
-      <FormulaBlock
-        math="\widehat{\langle x, y \rangle}_{\text{prod}} \;=\; \|x\|\,\|y\|\!\left(\langle \hat{u}, \hat{v}\rangle + \sqrt{\tfrac{\pi}{2d}}\,\langle r_u,\, \text{sign}(S\, r_v)\rangle\right)"
+      <FormulaSteps
         label="Theorem 2 — Unbiased Inner Product Estimator"
         color={PURPLE}
+        steps={[
+          {
+            note: 'The problem: we want to estimate the true inner product <x, y> from compressed representations. Think of this as recovering a thermometer reading from a blurry photo — we need to correct for the blur.',
+            math: '\\text{Goal: estimate } \\langle x, y \\rangle \\text{ from b-bit codes of } x \\text{ and } y',
+          },
+          {
+            note: 'First, factor out the norms (stored exactly at 32 bits each). Now we only need to estimate the inner product of unit vectors on the sphere. This is the "separate magnitude" trick again.',
+            math: '\\langle x, y \\rangle \\;=\\; \\|x\\|\\,\\|y\\| \\cdot \\langle u, v \\rangle, \\quad u = x/\\|x\\|,\\; v = y/\\|y\\|',
+          },
+          {
+            note: 'Use (b-1) bits for Lloyd-Max: that gives us coarse reconstructions u_hat and v_hat. Their inner product is biased — it systematically underestimates. The residuals r_u = u - u_hat capture what the coarse quantizer missed.',
+            math: '\\langle u, v \\rangle \\;=\\; \\langle \\hat{u}, \\hat{v}\\rangle \\;+\\; \\underbrace{\\langle r_u, \\hat{v}\\rangle + \\langle \\hat{u}, r_v\\rangle + \\langle r_u, r_v\\rangle}_{\\text{bias correction needed}}',
+          },
+          {
+            note: 'This is the QJL trick — you will see it everywhere in sketching algorithms. Project the residual with random matrix S, keep only the sign (1 bit!). The cross-product of full-precision projection with 1-bit signs is an unbiased estimator of the residual inner product. The sqrt(pi/2d) is the debiasing constant from sign quantization.',
+            math: '\\langle r_u, r_v \\rangle \\;\\approx\\; \\sqrt{\\tfrac{\\pi}{2d}}\\,\\langle r_u,\\, \\text{sign}(S\\, r_v)\\rangle',
+          },
+          {
+            note: 'Putting it all together: norms times (coarse estimate + QJL correction). In code: est = norm_x * norm_y * (u_hat @ v_hat + sqrt(pi/(2*d)) * r_u @ np.sign(S @ r_v)). Total cost: b*d bits per vector, same as TurboQuant_mse.',
+            math: '\\widehat{\\langle x, y \\rangle}_{\\text{prod}} \\;=\\; \\|x\\|\\,\\|y\\|\\!\\left(\\langle \\hat{u}, \\hat{v}\\rangle + \\sqrt{\\tfrac{\\pi}{2d}}\\,\\langle r_u,\\, \\text{sign}(S\\, r_v)\\rangle\\right)',
+          },
+        ]}
         symbols={[
           { symbol: 'x, y', meaning: 'Original d-dimensional vectors' },
           { symbol: '||x||, ||y||', meaning: 'Stored norms (32-bit each)' },
-          { symbol: 'û, v̂', meaning: '(b-1)-bit Lloyd-Max reconstructions of the rotated unit vectors' },
-          { symbol: 'r_u, r_v', meaning: 'Residual vectors: r_u = Π·(x/||x||) - û, etc.' },
+          { symbol: 'u_hat, v_hat', meaning: '(b-1)-bit Lloyd-Max reconstructions of the rotated unit vectors' },
+          { symbol: 'r_u, r_v', meaning: 'Residual vectors: r_u = Pi·(x/||x||) - u_hat, etc.' },
           { symbol: 'S', meaning: 'Random sign matrix for QJL projection (shared, seeded)' },
           { symbol: 'sign(S·r_v)', meaning: '1-bit QJL codes of the residual' },
-          { symbol: '√(π/2d)', meaning: 'Scaling factor from QJL theory (the √(π/2d) correction)' },
+          { symbol: 'sqrt(pi/2d)', meaning: 'Scaling factor from QJL theory (the debiasing constant)' },
           { symbol: 'd', meaning: 'Vector dimension' },
         ]}
       />
@@ -724,16 +780,33 @@ export default function TurboQuantPaper() {
         </p>
       </Prose>
 
-      <FormulaBlock
-        math="D^{\star}(b) \;\geq\; \frac{1}{d} \cdot \frac{1}{2\pi e} \cdot 2^{-2b}"
+      <FormulaSteps
         label="Lemma 2 — Shannon Lower Bound"
         color={A}
+        steps={[
+          {
+            note: 'What is the absolute best ANY quantizer could do? Shannon\'s rate-distortion theory gives the answer. For a Gaussian source with variance sigma^2 at rate R bits, the minimum distortion is:',
+            math: 'D_{\\text{Gaussian}}(R) \\;=\\; \\sigma^2 \\cdot 2^{-2R}',
+          },
+          {
+            note: 'After random rotation, each coordinate is approximately Gaussian with variance 1/d (the energy is split equally among d coordinates). Plug sigma^2 = 1/d and R = b bits into Shannon\'s formula.',
+            math: 'D^{\\star}_{\\text{per-coord}}(b) \\;\\geq\\; \\frac{1}{d} \\cdot 2^{-2b}',
+          },
+          {
+            note: 'The extra 1/(2*pi*e) factor accounts for the gap between continuous and discrete quantization — this is the "quantization penalty" from information theory. The constant 2*pi*e is about 17.08, so the bound is ~17x tighter than the naive version.',
+            math: 'D^{\\star}(b) \\;\\geq\\; \\frac{1}{d} \\cdot \\frac{1}{2\\pi e} \\cdot 2^{-2b}',
+          },
+          {
+            note: 'Remember: "Each extra bit cuts distortion by 4x." The formula just says that formally. No matter how clever your quantizer — PQ, lattice, deep-learned codebook — it cannot beat this bound. In code: shannon_bound = (1/d) * (1/(2*math.pi*math.e)) * 2**(-2*b).',
+            math: 'D^{\\star}(b) \\;\\geq\\; \\frac{1}{d} \\cdot \\frac{1}{2\\pi e} \\cdot 2^{-2b} \\quad \\text{(no quantizer can beat this)}',
+          },
+        ]}
         symbols={[
           { symbol: 'D*(b)', meaning: 'Minimum achievable MSE distortion at b bits per coordinate' },
           { symbol: 'd', meaning: 'Vector dimension' },
           { symbol: 'b', meaning: 'Bits per coordinate (rate)' },
-          { symbol: '2πe', meaning: 'Constant from Gaussian rate-distortion theory (about 17.08)' },
-          { symbol: '2^{-2b}', meaning: 'Exponential decay: each extra bit halves the distortion twice' },
+          { symbol: '2*pi*e', meaning: 'Constant from Gaussian rate-distortion theory (about 17.08)' },
+          { symbol: '2^(-2b)', meaning: 'Exponential decay: each extra bit halves the distortion twice' },
         ]}
       />
 
@@ -762,13 +835,30 @@ export default function TurboQuantPaper() {
         </Prose>
       </ConceptCard>
 
-      <FormulaBlock
-        math="D_{\text{mse}}^{\text{TQ}}(b) \;\leq\; \frac{\alpha_b}{d} \;\leq\; \frac{2.7}{2\pi e} \cdot \frac{2^{-2b}}{d} \;=\; 2.7 \cdot D^{\star}(b)"
+      <FormulaSteps
         label="Theorem 3 — TurboQuant is within 2.7x of the Shannon bound"
         color={A}
+        steps={[
+          {
+            note: 'From Theorem 1, we know TurboQuant\'s distortion is bounded by the Lloyd-Max coefficient alpha_b divided by the dimension. This is what the algorithm actually achieves.',
+            math: 'D_{\\text{mse}}^{\\text{TQ}}(b) \\;\\leq\\; \\frac{\\alpha_b}{d}',
+          },
+          {
+            note: 'From Lemma 2, Shannon says no quantizer can do better than 1/(2*pi*e) * 2^(-2b) / d. Now the key question: how does alpha_b compare to 1/(2*pi*e) * 2^(-2b)?',
+            math: '\\frac{\\alpha_b}{d} \\quad \\text{vs} \\quad \\frac{1}{2\\pi e} \\cdot \\frac{2^{-2b}}{d}',
+          },
+          {
+            note: 'This is the punchline: by numerically computing alpha_b for all b, the authors verify that the ratio never exceeds 2.7. Name the pattern: this is a "constant-factor optimality" result — the holy grail of algorithm design.',
+            math: '\\frac{\\alpha_b}{\\frac{1}{2\\pi e} \\cdot 2^{-2b}} \\;\\leq\\; 2.7 \\quad \\text{for all } b',
+          },
+          {
+            note: 'Chaining inequalities: TurboQuant achieves <= alpha_b/d <= 2.7 times the Shannon bound. The gap is constant — it does not grow with d or b. In code: assert turboquant_mse <= 2.7 * shannon_bound for any bit rate, any dimension, any input vector.',
+            math: 'D_{\\text{mse}}^{\\text{TQ}}(b) \\;\\leq\\; \\frac{\\alpha_b}{d} \\;\\leq\\; \\frac{2.7}{2\\pi e} \\cdot \\frac{2^{-2b}}{d} \\;=\\; 2.7 \\cdot D^{\\star}(b)',
+          },
+        ]}
         symbols={[
           { symbol: 'D_{mse}^{TQ}(b)', meaning: 'TurboQuant MSE distortion at b bits per coordinate' },
-          { symbol: 'α_b', meaning: 'Lloyd-Max distortion coefficient (precomputed per b)' },
+          { symbol: 'alpha_b', meaning: 'Lloyd-Max distortion coefficient (precomputed per b)' },
           { symbol: 'D*(b)', meaning: 'Shannon lower bound (information-theoretic minimum)' },
           { symbol: '2.7', meaning: 'Multiplicative gap — worst-case over all b values' },
           { symbol: 'd', meaning: 'Vector dimension (cancels in the ratio)' },

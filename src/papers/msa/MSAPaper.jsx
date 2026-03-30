@@ -822,14 +822,27 @@ export default function MSAPaper() {
         </Callout>
       </ConceptCard>
 
-      <FormulaBlock
-        math="L_{\text{total}} = L_{\text{LM}} + \lambda \cdot L_{\text{aux}}"
-        label="Total Training Objective"
+      <FormulaSteps
+        label="Total Training Objective — Two Forces Pulling Together"
         color={CYAN}
+        steps={[
+          {
+            note: 'The model needs to learn two skills simultaneously: (1) generate good text (language modeling), and (2) pick the right memory chunks (routing). These are trained by two separate losses.',
+            math: 'L_{\\text{LM}} = \\text{next-token prediction loss} \\quad \\text{(standard autoregressive)}',
+          },
+          {
+            note: 'The routing loss L_aux directly trains the routing projectors using contrastive learning (see the InfoNCE formula above). Without it, routing quality depends on very diffuse gradient signals from L_LM — too weak to learn from.',
+            math: 'L_{\\text{aux}} = \\text{InfoNCE contrastive loss on routing keys}',
+          },
+          {
+            note: 'Combine them with a balancing weight λ. The key insight: λ changes over training. Early on (CPT warmup), λ=1.0 — routing gets equal priority because the model must learn WHERE to look before it learns WHAT to say. Later (main training), λ=0.1 — language modeling dominates because routing is already decent.',
+            math: 'L_{\\text{total}} = L_{\\text{LM}} + \\lambda \\cdot L_{\\text{aux}}',
+          },
+        ]}
         symbols={[
-          { symbol: 'L_LM', meaning: 'Standard next-token prediction (language modeling) loss' },
-          { symbol: 'L_aux', meaning: 'Auxiliary contrastive loss for routing supervision' },
-          { symbol: 'λ', meaning: 'Balancing weight — 1.0 during CPT warmup, reduced to 0.1 during main training' },
+          { symbol: 'L_LM', meaning: 'Language modeling loss — "did the model predict the right next token?"' },
+          { symbol: 'L_aux', meaning: 'Routing loss — "did the model select the right memory chunks?"' },
+          { symbol: 'λ = 1.0 → 0.1', meaning: 'Priority shift: routing-first (warmup) → generation-first (main training)' },
         ]}
       />
 
@@ -951,46 +964,43 @@ export default function MSAPaper() {
         </svg>
       </Diagram>
 
-      <ConceptCard title="Stage Complexities" color={CYAN} defaultOpen={true}>
-        <FormulaBlock
-          math="C_{S1} = O(N \cdot d \cdot L)"
-          label="S1 — Offline Encoding Cost"
+      <ConceptCard title="Stage Complexities — The Cost Analysis" color={CYAN} defaultOpen={true}>
+        <FormulaSteps
+          label="Three-Stage Cost — Why 100M Tokens is Feasible"
           color={CYAN}
+          steps={[
+            {
+              note: 'Stage 1 (Offline): Encode every document through the full Transformer — expensive, but you only do this ONCE when adding a document to memory. Think of it like indexing a book in a library: slow, but you never redo it. In code: `for doc in corpus: kv_cache[doc] = model.encode(doc)`.',
+              math: 'C_{S1} = O(N \\cdot d \\cdot L) \\quad \\text{per document, done once}',
+            },
+            {
+              note: 'Stage 2 (Online Routing): Compare the query\'s routing key against ALL chunk representations — but they\'re 64× compressed! So 100M tokens = only 1.56M comparisons. This is a single matrix multiply: `scores = query_routing @ all_chunk_keys.T`. Fast enough for real-time.',
+              math: 'C_{S2} = O\\!\\left(\\frac{N_{\\text{mem}}}{P} \\cdot d\\right) \\quad \\text{(1.56M cosine sims for 100M tokens)}',
+            },
+            {
+              note: 'Stage 3 (Online Generation): Standard attention, but ONLY over the k=8 selected chunks (8 × 64 = 512 tokens). This is the same cost as a normal Transformer attending to 512 tokens — tiny! `output = attention(query, selected_keys, selected_values)`.',
+              math: 'C_{S3} = O(k \\cdot P \\cdot d \\cdot L) \\quad \\text{(same as 512-token context)}',
+            },
+            {
+              note: 'The punchline: dense attention over 100M tokens would cost O(10¹⁶). MSA costs O(10⁸) for routing + O(10⁶) for generation. That\'s 8 orders of magnitude cheaper. Memory: "Remember S-1-2-3 as Store-Search-Serve."',
+              math: '\\underbrace{C_{\\text{dense}}}_{O(N^2)} \\gg \\underbrace{C_{S2} + C_{S3}}_{O(N/P + k \\cdot P)} \\quad \\text{(linear in N, not quadratic)}',
+            },
+          ]}
           symbols={[
-            { symbol: 'N', meaning: 'Total number of tokens in the document' },
-            { symbol: 'd', meaning: 'Hidden dimension of the model' },
+            { symbol: 'N', meaning: 'Total tokens in the document being encoded' },
+            { symbol: 'N_mem', meaning: 'Total tokens in ALL memory (up to 100M)' },
+            { symbol: 'P = 64', meaning: 'Chunk size — routing compresses 64× by mean-pooling' },
+            { symbol: 'k = 8', meaning: 'Chunks selected per layer — the "sparsity budget"' },
+            { symbol: 'd', meaning: 'Model dimension (hidden size)' },
             { symbol: 'L', meaning: 'Number of Transformer layers' },
           ]}
         />
 
-        <FormulaBlock
-          math="C_{S2} = O\left(\frac{N_{\text{mem}}}{P} \cdot d\right)"
-          label="S2 — Online Routing Cost"
-          color={ORANGE}
-          symbols={[
-            { symbol: 'N_mem', meaning: 'Total tokens across ALL documents in memory' },
-            { symbol: 'P', meaning: 'Chunk size (64) — routing operates on compressed representations' },
-            { symbol: 'd', meaning: 'Routing embedding dimension' },
-          ]}
-        />
-
-        <FormulaBlock
-          math="C_{S3} = O(k \cdot P \cdot d \cdot L)"
-          label="S3 — Online Generation Cost"
-          color={GREEN}
-          symbols={[
-            { symbol: 'k', meaning: 'Number of selected chunks (default: 8 per layer)' },
-            { symbol: 'P', meaning: 'Chunk size (64) — each selected chunk has P full-resolution tokens' },
-            { symbol: 'd', meaning: 'Hidden dimension' },
-            { symbol: 'L', meaning: 'Number of layers' },
-          ]}
-        />
-
         <Callout type="key">
-          The critical insight: S1 is expensive but done <strong>once per document</strong> (offline).
-          S2 is cheap because it operates on 64x-compressed representations. S3 is cheap because it
-          only attends to k selected chunks. Total per-query cost is dominated by S2+S3, which is
-          independent of total memory size once the KV caches are stored.
+          <strong>Memory hook:</strong> Think "Store-Search-Serve." S1 <em>stores</em> documents (expensive, once).
+          S2 <em>searches</em> compressed representations (cheap, per query). S3 <em>serves</em> selected
+          chunks through standard attention (cheap, per token). The total cost is <strong>linear in memory size</strong>,
+          not quadratic — this is what makes 100M tokens possible.
         </Callout>
       </ConceptCard>
 
