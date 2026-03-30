@@ -454,16 +454,15 @@ export default function DINOv3Paper() {
       <Prose>
         <p>
           Here is the setup: take one image and create <strong>10 different views</strong> of it.
-          Two of these are <strong>global crops</strong> — large 256x256 patches covering 40-100% of
-          the image. The other eight are <strong>local crops</strong> — small 112x112 patches covering
+          Two of these are <H tip="Global crops = large random crops covering 40-100% of the image at 256×256 resolution. They capture the 'big picture' — the whole cat, the whole scene. Both teacher and student see these. They provide the semantic context that defines what the image 'means'." color={GREEN}>global crops</H> — large 256×256 patches covering 40-100% of
+          the image. The other eight are <H tip="Local crops = small 112×112 random patches covering only 5-40% of the image. They might show just an ear, a texture, a background corner. ONLY the student sees these. The student must infer global meaning from these tiny fragments — this is what forces deep understanding." color={AMBER}>local crops</H> — small 112×112 patches covering
           only 5-40% of the image. These local crops might show just a paw, a bit of background, or
           a patch of fur.
         </p>
         <p>
-          The training objective forces the student to produce the <em>same representation</em> for
+          The <H tip="Cross-view consistency objective = 'different views of the same image should produce the same representation.' This is the pretext task — free supervision from the structure of data itself. The student must learn invariance to crop position, scale, and which parts are visible." color={P}>training objective</H> forces the student to produce the <em>same representation</em> for
           the local crop of a paw as the teacher produces for the global crop showing the entire cat.
-          This asymmetry is the engine of DINO's learning: the student must develop deep semantic
-          understanding to infer the whole from a tiny part.
+          This <H tip="Information asymmetry = the teacher sees global crops (the whole picture) while the student sees local crops (tiny fragments). The student must compensate for this gap by learning deep semantic features. If a local crop shows orange fur, the student must infer 'this is probably a cat' — matching the teacher who saw the whole animal." color={P}>asymmetry</H> is the engine of DINO's learning: the student must develop deep <H tip="Semantic understanding = understanding the MEANING of what's in an image, not just surface patterns. A model with semantic understanding knows that a paw patch belongs to a cat even without seeing the whole cat. This is the difference between texture recognition and true visual comprehension." color={P}>semantic understanding</H> to infer the whole from a tiny part.
         </p>
       </Prose>
 
@@ -880,17 +879,15 @@ export default function DINOv3Paper() {
 
       <Prose>
         <p>
-          Here is the problem that DINOv3 exists to solve. When you train a large self-supervised
-          ViT for a long time (1 million iterations), something unexpected happens: <strong>global
-          features keep getting better, but dense features start getting worse</strong>. Your model
-          becomes an excellent classifier but a terrible segmentor. This is the <em>dense feature
-          degradation</em> problem, and it is the central challenge of scaling SSL.
+          Here is the problem that DINOv3 exists to solve. When you train a large <H tip="Self-supervised ViT = a Vision Transformer trained without labels, using pretext tasks like DINO/iBOT. The model learns by matching representations across different views of the same image." color={P}>self-supervised ViT</H> for a long time (1 million <H tip="Iteration = one training step. With batch size 4096, 1M iterations means the model sees 4 billion training examples. At this scale, subtle training dynamics that don't appear in shorter runs become dominant." color={P}>iterations</H>), something unexpected happens: <strong>global
+          features keep getting better, but <H tip="Dense features = per-patch output vectors. Used for pixel-level tasks like segmentation, depth estimation, optical flow. Each of the 256-1024 patch tokens produces a feature vector describing its spatial location. When these degrade, the model becomes 'semantically blind' at the pixel level." color={RED}>dense features</H> start getting worse</strong>. Your model
+          becomes an excellent <H tip="Classifier = uses the [CLS] token for image-level prediction ('this is a cat'). Classification only needs one good global vector. This keeps improving because the DINO loss directly optimizes the CLS token." color={CYAN}>classifier</H> but a terrible <H tip="Segmentor = uses PATCH tokens to label every pixel ('this pixel is cat, this pixel is background'). Requires each patch to carry spatially distinctive, localized information. This is what degrades." color={RED}>segmentor</H>. This is the <em>dense feature degradation</em> problem, and it is the central challenge of scaling SSL.
         </p>
         <p>
-          The authors diagnose the cause precisely: <strong>CLS-patch cosine similarity increases</strong>
-          over training. The [CLS] token starts "absorbing" information from patch tokens, making them
-          more uniform and less spatially distinctive. By 1M iterations, the patch features have lost
-          their locality — they all look like copies of the [CLS] token rather than carrying
+          The authors diagnose the cause precisely: <H tip="CLS-patch cosine similarity = how similar the [CLS] token's representation is to each patch token's representation. Low similarity = patches carry unique, position-specific info (good for segmentation). High similarity = patches are all copies of the CLS token (bad — everything looks the same to the model)." color={RED}>CLS-patch cosine similarity increases</H>{' '}
+          over training. The [CLS] token starts "absorbing" information from <H tip="Patch tokens = the 256-1024 output vectors corresponding to spatial positions in the image. Ideally, each patch should represent what's at its specific location (eye, fur, background). Dense feature degradation = these tokens lose their spatial identity." color={P}>patch tokens</H>, making them
+          more uniform and less <H tip="Spatially distinctive = each patch token carries information unique to its location. A patch over the cat's eye should differ from a patch over the grass. When CLS absorbs patch info, all patches become similar — the model loses 'spatial vision'." color={AMBER}>spatially distinctive</H>. By 1M iterations, the patch features have lost
+          their <H tip="Locality = the property that nearby patches have related but distinct features. A well-localized feature map shows clear boundaries between objects. A degraded one shows blurry, uniform activations — the model can't tell where one object ends and another begins." color={AMBER}>locality</H> — they all look like copies of the [CLS] token rather than carrying
           position-specific information.
         </p>
       </Prose>
@@ -1317,24 +1314,24 @@ export default function DINOv3Paper() {
       <ConceptCard title="Why Distillation Works So Well Here" color={P} defaultOpen={true}>
         <Prose>
           <p>
-            There is something elegant about distilling a self-supervised teacher. In standard
-            supervised distillation, you are transferring knowledge about <em>labels</em> — "this is
-            a dog, this is a cat." In SSL distillation, you are transferring knowledge about
+            There is something elegant about distilling a <H tip="Self-supervised teacher = a model trained without labels that has learned rich internal representations. Its 'knowledge' is not about categories (cat/dog) but about visual structure — which patches relate to which, what features co-occur, how parts compose into wholes." color={P}>self-supervised teacher</H>. In standard
+            <H tip="Supervised distillation = training a small model to mimic a large model that was trained on labeled data. The student learns to match the teacher's softmax outputs (soft labels). Works well but is limited to the teacher's label vocabulary." color={CYAN}>supervised distillation</H>, you are transferring knowledge about <em>labels</em> — "this is
+            a dog, this is a cat." In <H tip="SSL distillation = the student matches the teacher's internal feature distributions, not its label predictions. This transfers structural knowledge about visual relationships that generalizes across tasks and domains." color={P}>SSL distillation</H>, you are transferring knowledge about
             <em> representation structure</em> — "these patches are similar, these are different, this
             is the global meaning."
           </p>
           <p>
-            This representation-level knowledge transfers more cleanly across architectures. The ViT-7B
-            teacher has learned extremely fine-grained patch relationships over 1M iterations on 1.69B
+            This <H tip="Representation-level knowledge = understanding encoded in the geometry of the feature space: which concepts cluster together, which are far apart, how features compose. This is more fundamental than label knowledge and transfers better across tasks." color={P}>representation-level knowledge</H> transfers more cleanly across architectures. The ViT-7B
+            teacher has learned extremely fine-grained <H tip="Patch relationships = the pairwise similarities between all spatial positions in an image. The Gram matrix captures this: G[i,j] = cos(patch_i, patch_j). This is the 'structural fingerprint' of how the model understands the image's spatial organization." color={P}>patch relationships</H> over 1M iterations on 1.69B
             images. When a ViT-L student matches these outputs, it inherits that structural understanding
-            even though it has 22x fewer parameters. The smaller model cannot represent every nuance, but
+            even though it has 22× fewer <H tip="Parameter efficiency: ViT-7B has 6.7B params, ViT-L has 300M (22× fewer). Yet ViT-L recovers ~95% of the teacher's performance. This is because the structural knowledge from SSL compresses well — the dominant patterns in 6.7B dimensions can be captured in 300M." color={GREEN}>parameters</H>. The smaller model cannot represent every nuance, but
             it captures the dominant structure remarkably well.
           </p>
           <p>
-            The DINOv3 family also includes <strong>ConvNeXt</strong> variants — proving that the
+            The DINOv3 family also includes <H tip="ConvNeXt = a modern convolutional architecture that rivals ViTs in performance. It uses depthwise separable convolutions, larger kernels (7×7), and modern training recipes. The fact that DINOv3 features distill INTO a completely different architecture family (conv vs attention) proves the knowledge is truly universal." color={AMBER}>ConvNeXt</H> variants — proving that the
             learned representations transfer even across fundamentally different architectures
             (transformers to convolutions). This is a strong signal that the 7B teacher has learned
-            genuinely universal visual features.
+            genuinely <H tip="Universal visual features = features that work for ANY downstream vision task without modification. Classification, segmentation, depth, tracking, 3D reconstruction, optical flow — one frozen backbone handles them all. This is the 'foundation model' vision." color={GREEN}>universal visual features</H>.
           </p>
         </Prose>
       </ConceptCard>

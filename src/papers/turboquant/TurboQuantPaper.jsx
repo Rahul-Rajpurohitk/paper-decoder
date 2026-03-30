@@ -187,9 +187,9 @@ export default function TurboQuantPaper() {
         <Prose>
           <p>
             Here is the key mathematical fact that makes TurboQuant work. If you take a unit vector
-            on the d-dimensional sphere and apply a random rotation (sampled uniformly from the
-            orthogonal group), then <em>each coordinate</em> of the rotated vector follows a known
-            distribution: a scaled Beta distribution.
+            on the d-dimensional <H tip="Hypersphere = the generalization of a circle (1-sphere) and sphere (2-sphere) to higher dimensions. The unit hypersphere S^(d-1) is the set of all d-dimensional vectors with norm exactly 1. In 128 dimensions, it is a 127-dimensional surface embedded in 128-dimensional space." color={A}>hypersphere</H> and apply a random rotation (sampled uniformly from the
+            <H tip="Orthogonal group O(d) = the group of all d×d matrices that preserve lengths and angles (orthogonal matrices). Sampling uniformly from O(d) gives a Haar-random rotation — the unique 'fair' way to pick a random rotation where no direction is preferred." color={A}>orthogonal group</H>), then <em>each coordinate</em> of the rotated vector follows a known
+            distribution: a scaled <H tip="Beta distribution = a continuous probability distribution on [0,1] parameterized by two shape parameters α, β. Beta(1/2, (d-1)/2) is U-shaped for small d and becomes sharply peaked near 0 as d grows, reflecting how each coordinate of a high-dimensional unit vector carries very little energy." color={A}>Beta distribution</H>.
           </p>
           <p>
             More precisely, if <code>y = Π · x</code> where Π is a random rotation and x is on the
@@ -215,8 +215,8 @@ export default function TurboQuantPaper() {
       <Callout type="insight">
         This is genuinely beautiful: a random rotation &ldquo;democratizes&rdquo; the energy of any vector across
         all coordinates. No matter how lopsided the original vector was, after rotation every
-        coordinate carries roughly 1/d of the total energy. Since we know the exact distribution, we
-        can design the optimal scalar quantizer for it -- the classical Lloyd-Max quantizer.
+        coordinate carries roughly 1/d of the total energy — a consequence of <H tip="Concentration of measure = a phenomenon in high-dimensional probability: most of the mass of a distribution is concentrated in a thin shell around its mean. For a random point on S^(d-1), each coordinate is ≈ 1/√d with very small variance. The higher d is, the more 'concentrated' each coordinate becomes." color={A}>concentration of measure</H>. Since we know the exact distribution, we
+        can design the optimal scalar quantizer for it -- the classical <H tip="Lloyd-Max quantizer = the MSE-optimal scalar quantizer for a known distribution. Named after Stuart Lloyd (1957, Bell Labs) and Joel Max (1960). It iteratively finds thresholds and centroids that minimize expected squared error. For a known distribution like Beta(1/2, (d-1)/2), it can be precomputed exactly." color={A}>Lloyd-Max quantizer</H>.
       </Callout>
 
       <MentalModel
@@ -231,14 +231,14 @@ export default function TurboQuantPaper() {
           <p>
             Once we know each coordinate follows <code>Beta(1/2, (d-1)/2)</code> scaled to
             [-1, +1], we can precompute the <strong>optimal scalar quantizer</strong> for this
-            distribution. The Lloyd-Max algorithm (1957/1960) finds the partition thresholds and
-            reconstruction points that minimize mean squared error for a given number of bits.
+            distribution. The <H tip="Lloyd-Max algorithm = an iterative procedure: (1) fix centroids, find optimal thresholds (midpoints between adjacent centroids); (2) fix thresholds, find optimal centroids (conditional means within each interval). Repeat until convergence. Guaranteed to converge to a local minimum of MSE." color={A2}>Lloyd-Max algorithm</H> (1957/1960) finds the partition thresholds and
+            reconstruction points that minimize <H tip="Mean squared error (MSE) = E[||x - x̂||²], the average squared difference between the original and reconstructed vectors. MSE is the standard distortion metric because it decomposes per-coordinate: total MSE = sum of per-coordinate MSEs, making it natural for scalar quantization." color={A2}>mean squared error</H> for a given number of bits.
           </p>
           <p>
             For b bits per coordinate, the Lloyd-Max quantizer divides the support into 2^b intervals
-            with thresholds <code>{'t_0 < t_1 < ... < t_{2^b}'}</code> and reconstruction
-            points <code>{'r_1, ..., r_{2^b}'}</code>. Each coordinate value is mapped to the index of
-            its interval, and during dequantization, replaced by the corresponding reconstruction
+            with thresholds <code>{'t_0 < t_1 < ... < t_{2^b}'}</code> and <H tip="Centroids (reconstruction points) = the values used to represent each quantization interval. Placed at the conditional mean of the distribution within each interval. Together with thresholds, they form a Voronoi tessellation of the real line — each point maps to the region whose centroid is closest." color={A2}>reconstruction
+            points</H> <code>{'r_1, ..., r_{2^b}'}</code>. Each coordinate value is mapped to the index of
+            its interval (a <H tip="Voronoi tessellation = a partition of space where each region contains all points closest to a particular centroid. In 1D scalar quantization, Voronoi regions are intervals bounded by midpoints between adjacent centroids. In higher-dimensional vector quantization, they become complex polytopes." color={A2}>Voronoi region</H>), and during dequantization, replaced by the corresponding reconstruction
             point. This is <em>the</em> MSE-optimal scalar quantizer.
           </p>
           <p>
@@ -389,7 +389,7 @@ export default function TurboQuantPaper() {
           { symbol: 'D_{mse}(b,d)', meaning: 'Expected mean squared error of reconstruction' },
           { symbol: 'x', meaning: 'Original d-dimensional vector' },
           { symbol: 'x̂', meaning: 'Reconstructed vector after quantize + dequantize' },
-          { symbol: '||x||²', meaning: 'Squared Euclidean norm of the original vector' },
+          { symbol: '||x||²', meaning: 'Squared Euclidean norm (Frobenius norm for matrices) of the original vector. Separating the norm from direction is key: the norm is stored exactly (32 bits) while the direction (on the sphere) is quantized.' },
           { symbol: 'd', meaning: 'Dimension of the vector' },
           { symbol: 'α_b', meaning: 'Distortion coefficient of b-bit Lloyd-Max quantizer for Beta(1/2,(d-1)/2) distribution' },
           { symbol: 'b', meaning: 'Number of bits per coordinate' },
@@ -408,7 +408,7 @@ export default function TurboQuantPaper() {
         />
         <Prose>
           <p>
-            Notice the dramatic drop: going from 1 bit to 4 bits reduces distortion by
+            Notice the dramatic drop: going from 1 bit to 4 bits reduces <H tip="Distortion = the error introduced by quantization, measured as MSE between original and reconstructed vectors. Lower distortion means higher fidelity. The distortion coefficient α_b captures how much error per unit of energy the b-bit quantizer introduces." color={A}>distortion</H> by
             <strong> 38x</strong>. At 4 bits, the reconstruction error is less than 1% of the
             per-coordinate energy. This is why 3-4 bits is the sweet spot for KV cache compression:
             the error is negligible for downstream tasks.
@@ -420,7 +420,7 @@ export default function TurboQuantPaper() {
         <strong>The MSE-optimal quantizer is BIASED for inner products.</strong> If you quantize
         vectors x and y using TurboQuant_mse and then compute the inner product of their
         reconstructions, the result is a biased estimate of the true inner product. The bias comes
-        from the fact that quantization shrinks magnitudes toward reconstruction points. For MSE
+        from the fact that quantization shrinks magnitudes toward <H tip="Reconstruction points (centroids) = the discrete values used to represent each quantized interval. In Lloyd-Max, each centroid is the conditional mean of the distribution within its Voronoi region. When you dequantize, each b-bit index maps to its centroid." color={A}>reconstruction points</H>. For MSE
         minimization this shrinkage is optimal, but for inner-product estimation it introduces
         systematic error. This motivates Algorithm 2.
       </Callout>
@@ -439,13 +439,13 @@ export default function TurboQuantPaper() {
           Many applications do not care about reconstructing the vector itself -- they care about
           <em>inner products</em> between vectors. Nearest-neighbor search ranks by inner product
           (or equivalently, distance). Attention scores in Transformers are inner products between
-          queries and keys. For these applications, we need an <strong>unbiased estimator</strong> of
+          queries and keys. For these applications, we need an <H tip="Unbiased estimator = a random variable whose expected value equals the true quantity being estimated. If E[estimate] = true_value, the estimator is unbiased. This is crucial for ranking: biased estimates can swap the order of similar items, ruining search results." color={PURPLE}>unbiased estimator</H> of
           the inner product, not just a low-MSE reconstruction.
         </p>
         <p>
           TurboQuant_prod achieves this with a clever two-stage approach: use (b-1) bits for
-          MSE-optimal quantization, then spend the last 1 bit on a <strong>QJL (Quantized
-          Johnson-Lindenstrauss)</strong> correction of the residual. The result is an unbiased
+          MSE-optimal quantization, then spend the last 1 bit on a <H tip="QJL (Quantized Johnson-Lindenstrauss) = a technique that combines random projection with 1-bit quantization (sign). Named after the Johnson-Lindenstrauss lemma which proves random projections preserve distances. QJL extends this to show that even after quantizing the projection to 1 bit, inner products remain estimable." color={GREEN}>QJL (Quantized
+          Johnson-Lindenstrauss)</H> correction of the <H tip="Residual = the difference r = y - ŷ between the original rotated coordinate and its (b-1)-bit quantized reconstruction. The residual captures what the coarse quantizer missed. Its norm is bounded by the quantizer's distortion, making it small enough for 1-bit sketching." color={GREEN}>residual</H>. The result is an unbiased
           inner-product estimator with variance that shrinks as 1/d -- meaning high dimensions
           actually <em>help</em>.
         </p>
@@ -567,7 +567,7 @@ export default function TurboQuantPaper() {
         <Prose>
           <p>
             QJL is a sub-algorithm used inside TurboQuant_prod to handle the residual. The idea
-            comes from the Johnson-Lindenstrauss lemma: random projections approximately preserve
+            comes from the <H tip="Johnson-Lindenstrauss lemma (1984) = a foundational result in dimensionality reduction. It states that n points in high-dimensional space can be projected to O(log n / ε²) dimensions while preserving all pairwise distances within a (1±ε) factor. The projection is simply multiplication by a random matrix." color={GREEN}>Johnson-Lindenstrauss lemma</H>: random projections approximately preserve
             inner products. QJL takes this one step further by <em>quantizing</em> the projection
             to a single bit (just the sign).
           </p>
@@ -575,7 +575,7 @@ export default function TurboQuantPaper() {
             Here is how it works. Given a residual vector r (the difference between the original
             coordinate and its (b-1)-bit quantization), QJL projects r using a random matrix S,
             then takes the sign of each component. To estimate the inner product of two residuals,
-            it uses <strong>asymmetric estimation</strong>: one side is quantized (1-bit signs),
+            it uses <H tip="Asymmetric estimation = a technique where the query vector keeps full-precision projections while the database vector uses 1-bit quantized projections. This asymmetry is key: the query is computed online (cheap to keep full precision) while database vectors are stored (need compression). The cross-product of full × quantized is still unbiased." color={GREEN}>asymmetric estimation</H>: one side is quantized (1-bit signs),
             the other side keeps the full projection. This gives an unbiased estimator with
             controlled variance.
           </p>
@@ -698,7 +698,7 @@ export default function TurboQuantPaper() {
         scales as O(1/d). This means that in high dimensions (d = 128, 256, ...), the estimator
         becomes very concentrated around the true value. High dimensions are usually a curse, but
         here they are a blessing -- more coordinates means more independent random variables, which
-        means better averaging. This is the concentration of measure phenomenon at work.
+        means better averaging. This is the <H tip="Concentration of measure phenomenon = in high dimensions, random variables that are sums/averages of many weakly-dependent terms become very predictable. The standard deviation shrinks as 1/√d relative to the mean. For TurboQuant, this means the inner-product estimate has relative error ≈ 1/√d, vanishing in high dimensions." color={A}>concentration of measure</H> phenomenon at work.
       </Callout>
 
       {/* ═══════════════════════════════════════════════════════════
@@ -712,8 +712,8 @@ export default function TurboQuantPaper() {
 
       <Prose>
         <p>
-          Every compression scheme has a fundamental limit: <strong>Shannon&apos;s rate-distortion
-          theory</strong>. Given a source distribution and a target bit rate, there is a minimum
+          Every compression scheme has a fundamental limit: <H tip="Rate-distortion theory = a branch of information theory founded by Claude Shannon (1948, 1959). It characterizes the fundamental tradeoff: at a given bit rate R, what is the minimum distortion D(R) achievable by ANY encoder/decoder pair? The rate-distortion function D(R) is computed from the source distribution via a mutual information minimization." color={A}>Shannon&apos;s rate-distortion
+          theory</H>. Given a source distribution and a target bit rate, there is a minimum
           achievable distortion that no encoder can beat. TurboQuant&apos;s authors derive this bound
           for the specific case of vectors on the unit sphere, and then show their algorithm
           nearly matches it.
@@ -741,8 +741,8 @@ export default function TurboQuantPaper() {
         <Prose>
           <p>
             The derivation goes roughly like this. After random rotation, each coordinate is
-            approximately Gaussian with variance 1/d. For a Gaussian source with variance \u03C3\u00b2,
-            Shannon&apos;s rate-distortion function says the minimum distortion at rate R bits is:
+            approximately Gaussian with variance 1/d. For a <H tip="Gaussian source = a random variable drawn from a normal distribution. The Gaussian is the 'hardest' distribution to compress in a precise information-theoretic sense: it has the maximum entropy for a given variance, meaning it contains the most 'surprise' per sample." color={A}>Gaussian source</H> with variance \u03C3\u00b2,
+            Shannon&apos;s <H tip="Rate-distortion function D(R) = the minimum distortion achievable at rate R bits. Computed by minimizing mutual information I(X; X̂) over all conditional distributions p(x̂|x) subject to E[d(X,X̂)] ≤ D. For Gaussian sources with MSE distortion: D(R) = σ² · 2^(-2R)." color={A}>rate-distortion function</H> says the minimum distortion at rate R bits is:
           </p>
           <p>
             <code>{'D(R) = \u03C3\u00b2 · 2^(-2R)'}</code>
@@ -755,9 +755,9 @@ export default function TurboQuantPaper() {
           </p>
           <p>
             Crucially, this bound applies to <em>any</em> randomized quantizer, not just
-            coordinate-wise ones. It is a fundamental limit of information theory. No matter how
+            coordinate-wise ones. It is a fundamental limit of <H tip="Information theory = the mathematical framework for quantifying information, compression, and communication, founded by Claude Shannon in 1948. Its core quantities — entropy (H), mutual information (I), and channel capacity — provide absolute limits on what is achievable." color={A}>information theory</H>. No matter how
             clever your vector quantization scheme is -- whether you use product quantization,
-            lattice quantization, or deep-learned codebooks -- you cannot beat this bound.
+            <H tip="Lattice quantization = quantizing vectors to the nearest point in a regular lattice (like a grid, but optimized for the geometry). Examples: hexagonal lattice (2D), E8 lattice (8D). Theoretically optimal for Gaussian sources but exponentially complex in high dimensions." color={A}>lattice quantization</H>, or deep-learned codebooks -- you cannot beat this bound.
           </p>
         </Prose>
       </ConceptCard>
@@ -778,14 +778,14 @@ export default function TurboQuantPaper() {
       <Callout type="insight">
         The gap of 2.7x is <em>constant</em> -- it does not grow with dimension d or the number
         of bits b. This means TurboQuant is proportionally just as good at 1 bit as at 8 bits,
-        and just as good in 64 dimensions as in 1024 dimensions. This kind of universal guarantee
+        and just as good in 64 dimensions as in 1024 dimensions. This kind of <H tip="Universal guarantee = a bound that holds for ALL input distributions and ALL dimensions, not just specific datasets. Most quantization methods only have empirical results on benchmarks. TurboQuant's 2.7× bound is a mathematical theorem — it cannot be violated." color={A}>universal guarantee</H>
         is rare in quantization.
       </Callout>
 
       <ConceptCard title="Why might the 2.7x gap be irreducible?" color={A2} defaultOpen={false}>
         <Prose>
           <p>
-            The Shannon bound is achievable only in the limit of infinite block length -- i.e.,
+            The <H tip="Shannon bound = the information-theoretic lower limit on distortion. Named after Claude Shannon, who proved that any source can be compressed to within arbitrarily close to R(D) bits per symbol, but not fewer, where R(D) is the rate-distortion function." color={A2}>Shannon bound</H> is achievable only in the limit of infinite block length -- i.e.,
             you would need to jointly encode infinitely many vectors to reach it. TurboQuant
             encodes each vector independently (online, streaming), which inherently incurs some
             overhead.
@@ -814,6 +814,101 @@ export default function TurboQuantPaper() {
         caption="TurboQuant MSE vs Shannon lower bound at different bit rates. The ratio is consistently around 2.6-3.1x."
       />
 
+      <Diagram caption={<><strong>Shannon Bound Gap</strong> — TurboQuant distortion vs the information-theoretic minimum at each bit rate</>}>
+        <svg viewBox="0 0 800 420" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+          <defs>
+            <linearGradient id="tq-shannon-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor={A} stopOpacity="0.25" />
+              <stop offset="100%" stopColor={A} stopOpacity="0.05" />
+            </linearGradient>
+            <linearGradient id="tq-gap-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor={RED} stopOpacity="0.18" />
+              <stop offset="100%" stopColor={RED} stopOpacity="0.06" />
+            </linearGradient>
+          </defs>
+          <rect width="800" height="420" rx="12" fill="#0a0f1a" />
+
+          {/* Title */}
+          <text x="400" y="30" fill={A} fontSize="15" fontWeight="700" textAnchor="middle">
+            DISTORTION GAP: TurboQuant vs Shannon Lower Bound
+          </text>
+          <text x="400" y="48" fill={GRAY} fontSize="11" textAnchor="middle">
+            Horizontal bars show MSE distortion (log scale, ×1/d) — shorter is better
+          </text>
+
+          {/* Legend */}
+          <rect x="240" y="60" width="14" height="14" rx="3" fill={A} />
+          <text x="260" y="72" fill={FG} fontSize="11">TurboQuant (achieved)</text>
+          <rect x="400" y="60" width="14" height="14" rx="3" fill={GREEN} />
+          <text x="420" y="72" fill={FG} fontSize="11">Shannon bound (theoretical min)</text>
+
+          {/* Chart area */}
+          {/* Axis labels */}
+          <text x="120" y="100" fill={GRAY} fontSize="11" textAnchor="end">MSE × d</text>
+
+          {/* b=1 row */}
+          <text x="60" y="140" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 1</text>
+          <text x="60" y="155" fill={GRAY} fontSize="10" textAnchor="middle">32× compress</text>
+          {/* Shannon bound bar */}
+          <rect x="120" y="124" width={0.1175 / 0.3634 * 520} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
+          <text x={120 + 0.1175 / 0.3634 * 520 + 6} y="137" fill={GREEN} fontSize="11" fontWeight="600">0.1175</text>
+          {/* TurboQuant bar */}
+          <rect x="120" y="144" width="520" height="16" rx="4" fill={A} fillOpacity="0.7" />
+          <text x="646" y="157" fill={A} fontSize="11" fontWeight="600">0.3634</text>
+          {/* Gap annotation */}
+          <rect x="650" y="127" width="55" height="22" rx="6" fill={RED} fillOpacity="0.15" stroke={RED} strokeWidth="1" />
+          <text x="677" y="142" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle">3.09×</text>
+
+          {/* b=2 row */}
+          <text x="60" y="205" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 2</text>
+          <text x="60" y="220" fill={GRAY} fontSize="10" textAnchor="middle">16× compress</text>
+          {/* Shannon bound bar */}
+          <rect x="120" y="189" width={0.0448 / 0.3634 * 520} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
+          <text x={120 + 0.0448 / 0.3634 * 520 + 6} y="202" fill={GREEN} fontSize="11" fontWeight="600">0.0448</text>
+          {/* TurboQuant bar */}
+          <rect x="120" y="209" width={0.1175 / 0.3634 * 520} height="16" rx="4" fill={A} fillOpacity="0.7" />
+          <text x={120 + 0.1175 / 0.3634 * 520 + 6} y="222" fill={A} fontSize="11" fontWeight="600">0.1175</text>
+          {/* Gap annotation */}
+          <rect x={120 + 0.1175 / 0.3634 * 520 + 50} y="192" width="55" height="22" rx="6" fill={RED} fillOpacity="0.15" stroke={RED} strokeWidth="1" />
+          <text x={120 + 0.1175 / 0.3634 * 520 + 77} y="207" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle">2.62×</text>
+
+          {/* b=3 row */}
+          <text x="60" y="270" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 3</text>
+          <text x="60" y="285" fill={GRAY} fontSize="10" textAnchor="middle">10.7× compress</text>
+          {/* Shannon bound bar - very small */}
+          <rect x="120" y="254" width={Math.max(0.01305 / 0.3634 * 520, 12)} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
+          <text x={120 + 0.01305 / 0.3634 * 520 + 10} y="267" fill={GREEN} fontSize="11" fontWeight="600">0.0131</text>
+          {/* TurboQuant bar */}
+          <rect x="120" y="274" width={0.03454 / 0.3634 * 520} height="16" rx="4" fill={A} fillOpacity="0.7" />
+          <text x={120 + 0.03454 / 0.3634 * 520 + 6} y="287" fill={A} fontSize="11" fontWeight="600">0.0345</text>
+          {/* Gap annotation */}
+          <rect x={120 + 0.03454 / 0.3634 * 520 + 50} y="257" width="55" height="22" rx="6" fill={RED} fillOpacity="0.15" stroke={RED} strokeWidth="1" />
+          <text x={120 + 0.03454 / 0.3634 * 520 + 77} y="272" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle">2.65×</text>
+
+          {/* b=4 row */}
+          <text x="60" y="335" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 4</text>
+          <text x="60" y="350" fill={GRAY} fontSize="10" textAnchor="middle">8× compress</text>
+          {/* Shannon bound bar */}
+          <rect x="120" y="319" width={Math.max(0.003575 / 0.3634 * 520, 8)} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
+          <text x={120 + 0.003575 / 0.3634 * 520 + 10} y="332" fill={GREEN} fontSize="11" fontWeight="600">0.0036</text>
+          {/* TurboQuant bar */}
+          <rect x="120" y="339" width={Math.max(0.009497 / 0.3634 * 520, 12)} height="16" rx="4" fill={A} fillOpacity="0.7" />
+          <text x={120 + 0.009497 / 0.3634 * 520 + 6} y="352" fill={A} fontSize="11" fontWeight="600">0.0095</text>
+          {/* Gap annotation */}
+          <rect x={120 + 0.009497 / 0.3634 * 520 + 50} y="322" width="55" height="22" rx="6" fill={RED} fillOpacity="0.15" stroke={RED} strokeWidth="1" />
+          <text x={120 + 0.009497 / 0.3634 * 520 + 77} y="337" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle">2.66×</text>
+
+          {/* Bottom insight box */}
+          <rect x="140" y="375" width="520" height="36" rx="10" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1.2" />
+          <text x="400" y="393" fill={FG} fontSize="12" textAnchor="middle">
+            Worst-case gap ≤ 2.7× — constant across all bit rates and dimensions
+          </text>
+          <text x="400" y="407" fill={GRAY} fontSize="10" textAnchor="middle">
+            No practical quantizer can beat the Shannon bound; TurboQuant is remarkably close
+          </text>
+        </svg>
+      </Diagram>
+
       {/* ═══════════════════════════════════════════════════════════
           SECTION 06 — EXPERIMENTAL RESULTS
           ═══════════════════════════════════════════════════════════ */}
@@ -827,14 +922,14 @@ export default function TurboQuantPaper() {
         <p>
           Theory is wonderful, but does TurboQuant actually work in practice? The authors evaluate
           on three fronts: KV cache compression for LLMs, approximate nearest-neighbor search, and
-          LLM perplexity benchmarks. The results are impressive across the board.
+          LLM <H tip="Perplexity = a standard metric for language model quality. It measures how 'surprised' the model is by a text. Lower is better. Perplexity of P means the model is as uncertain as choosing uniformly among P options at each step. FP16 Llama-3-8B achieves 6.14 on WikiText-2; adding quantization error raises this." color={A}>perplexity</H> benchmarks. The results are impressive across the board.
         </p>
       </Prose>
 
       <ConceptCard title="KV Cache Compression" color={A} defaultOpen={true}>
         <Prose>
           <p>
-            <strong>Setup:</strong> Llama-3-8B model on the Needle-In-A-Haystack (NIAH) benchmark.
+            <strong>Setup:</strong> Llama-3-8B model on the <H tip="Needle-In-A-Haystack (NIAH) = a benchmark that inserts a specific fact ('needle') at a random position in a very long context ('haystack') and tests whether the model can retrieve it. Scores range from 0 to 1. It is the gold standard for evaluating long-context KV cache quality because it requires precise attention across the entire sequence." color={A}>Needle-In-A-Haystack (NIAH)</H> benchmark.
             This test hides a specific fact in a long context and asks the model to retrieve it.
             It is extremely sensitive to KV cache quality because the model must attend to the
             exact location of the needle.
@@ -865,7 +960,7 @@ export default function TurboQuantPaper() {
         <Prose>
           <p>
             <strong>Setup:</strong> Standard ANN benchmarks (GloVe-100, SIFT-128, Deep-96) with
-            1M-10M vectors. Metric: Recall@1 at various compression ratios.
+            1M-10M vectors. Metric: <H tip="Recall@1 = the fraction of queries for which the true nearest neighbor is returned as the top result. Recall@1 of 0.965 means 96.5% of queries find the correct nearest neighbor. It is the strictest retrieval metric — getting the top-1 right is harder than top-10." color={BLUE}>Recall@1</H> at various compression ratios.
           </p>
           <p>
             <strong>Result:</strong> TurboQuant consistently outperforms Product Quantization (PQ)
@@ -885,8 +980,8 @@ export default function TurboQuantPaper() {
         <Prose>
           <p>
             The key advantage is not just recall -- it is the <strong>zero indexing time</strong>.
-            PQ and OPQ require training codebooks on representative data, which takes seconds to
-            minutes and requires storing the codebooks. TurboQuant needs nothing: you can quantize
+            PQ and <H tip="OPQ (Optimized Product Quantization) = an extension of PQ that learns an orthogonal rotation to minimize quantization error before applying PQ. Ironically similar in spirit to TurboQuant's random rotation, but OPQ learns the rotation from data (expensive) while TurboQuant uses a random one (free)." color={BLUE}>OPQ</H> require training codebooks on representative data, which takes seconds to
+            minutes and requires storing the codebooks. TurboQuant is <H tip="Codebook-free = no lookup table mapping quantized indices to learned reconstruction vectors. TurboQuant's reconstruction points come from the Lloyd-Max quantizer for the known Beta distribution — precomputed analytically, not learned from data. This eliminates the codebook storage overhead and training step." color={BLUE}>codebook-free</H>: you can quantize
             vectors as they arrive with no preprocessing step.
           </p>
         </Prose>
@@ -895,7 +990,7 @@ export default function TurboQuantPaper() {
       <ConceptCard title="LLM Perplexity Benchmarks" color={PURPLE} defaultOpen={false}>
         <Prose>
           <p>
-            <strong>Setup:</strong> Llama-3-8B and Llama-3-70B on WikiText-2 perplexity evaluation
+            <strong>Setup:</strong> Llama-3-8B and Llama-3-70B on <H tip="WikiText-2 = a standard language modeling benchmark derived from Wikipedia 'Good' and 'Featured' articles. Contains ~2M tokens of clean, well-written text. Perplexity on WikiText-2 is the de facto metric for evaluating LLM compression techniques because it directly measures generation quality degradation." color={PURPLE}>WikiText-2</H> perplexity evaluation
             with quantized KV cache.
           </p>
           <p>
@@ -917,7 +1012,7 @@ export default function TurboQuantPaper() {
         />
         <Prose>
           <p>
-            At 3 bits, TurboQuant has a clear edge over KIVI (6.35 vs 6.52 on Llama-3-8B). This
+            At 3 bits, TurboQuant has a clear edge over <H tip="KIVI = a state-of-the-art KV cache quantization method that uses per-channel (Key) and per-token (Value) quantization with separate calibration strategies. Unlike TurboQuant, KIVI uses simple round-to-nearest without theoretical optimality guarantees." color={PURPLE}>KIVI</H> (6.35 vs 6.52 on Llama-3-8B). This
             matters because 3-bit quantization gives ~5.3x memory reduction over FP16, enabling
             significantly longer contexts or more concurrent users on the same hardware.
           </p>
@@ -938,6 +1033,93 @@ export default function TurboQuantPaper() {
         ]}
         caption="* KIVI uses simple round-to-nearest quantization, which requires no training but also has no optimality guarantees."
       />
+
+      <Diagram caption={<><strong>KV Cache Memory Savings</strong> — Llama-3-70B at 128K context length: full precision vs TurboQuant compression</>}>
+        <svg viewBox="0 0 800 440" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+          <rect width="800" height="440" rx="12" fill="#0a0f1a" />
+
+          {/* Title */}
+          <text x="400" y="30" fill={A} fontSize="15" fontWeight="700" textAnchor="middle">
+            KV CACHE MEMORY: Llama-3-70B @ 128K Context
+          </text>
+          <text x="400" y="48" fill={GRAY} fontSize="11" textAnchor="middle">
+            Per-user GPU memory for Key-Value cache across quantization levels
+          </text>
+
+          {/* Model info box */}
+          <rect x="30" y="62" width="740" height="30" rx="6" fill={BLUE} fillOpacity="0.08" stroke={BLUE} strokeWidth="0.8" />
+          <text x="400" y="82" fill={GRAY} fontSize="10" textAnchor="middle">
+            80 layers × 8 KV heads × 128 head_dim × 128K tokens × 2 (K+V) = ~20.97B elements per user
+          </text>
+
+          {/* Bar chart */}
+          {/* 32-bit (FP32) */}
+          <text x="130" y="128" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">FP32 (32-bit)</text>
+          <text x="130" y="143" fill={GRAY} fontSize="10" textAnchor="end">Full precision</text>
+          <rect x="145" y="116" width="560" height="32" rx="6" fill={RED} fillOpacity="0.6" />
+          <text x="715" y="137" fill={FG} fontSize="13" fontWeight="700" textAnchor="start">78.0 GB</text>
+
+          {/* 16-bit (FP16/BF16) - typical baseline */}
+          <text x="130" y="178" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">FP16 (16-bit)</text>
+          <text x="130" y="193" fill={GRAY} fontSize="10" textAnchor="end">Standard inference</text>
+          <rect x="145" y="166" width="280" height="32" rx="6" fill="#f97316" fillOpacity="0.6" />
+          <text x="435" y="187" fill={FG} fontSize="13" fontWeight="700" textAnchor="start">39.0 GB</text>
+
+          {/* TurboQuant 4-bit */}
+          <text x="130" y="228" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">TQ 4-bit</text>
+          <text x="130" y="243" fill={GRAY} fontSize="10" textAnchor="end">PPL: 2.88 (↑0.02)</text>
+          <rect x="145" y="216" width="70" height="32" rx="6" fill={A} fillOpacity="0.7" />
+          <text x="225" y="237" fill={A3} fontSize="13" fontWeight="700" textAnchor="start">9.75 GB</text>
+          {/* Savings badge */}
+          <rect x="310" y="221" width="60" height="22" rx="6" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1" />
+          <text x="340" y="236" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">4× ↓</text>
+
+          {/* TurboQuant 3-bit */}
+          <text x="130" y="278" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">TQ 3-bit</text>
+          <text x="130" y="293" fill={GRAY} fontSize="10" textAnchor="end">PPL: 2.94 (↑0.08)</text>
+          <rect x="145" y="266" width="53" height="32" rx="6" fill={A} fillOpacity="0.8" />
+          <text x="208" y="287" fill={A3} fontSize="13" fontWeight="700" textAnchor="start">7.3 GB</text>
+          {/* Savings badge */}
+          <rect x="280" y="271" width="68" height="22" rx="6" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1" />
+          <text x="314" y="286" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">5.3× ↓</text>
+
+          {/* TurboQuant 2-bit */}
+          <text x="130" y="328" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">TQ 2-bit</text>
+          <text x="130" y="343" fill={GRAY} fontSize="10" textAnchor="end">NIAH: 0.91</text>
+          <rect x="145" y="316" width="35" height="32" rx="6" fill={A2} fillOpacity="0.8" />
+          <text x="190" y="337" fill={A3} fontSize="13" fontWeight="700" textAnchor="start">4.9 GB</text>
+          {/* Savings badge */}
+          <rect x="255" y="321" width="60" height="22" rx="6" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1" />
+          <text x="285" y="336" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">8× ↓</text>
+
+          {/* GPU capacity line */}
+          <line x1="717" y1="110" x2="717" y2="355" stroke={RED} strokeWidth="1.5" strokeDasharray="6 4" />
+          <text x="717" y="365" fill={RED} fontSize="10" fontWeight="600" textAnchor="middle">H100</text>
+          <text x="717" y="377" fill={RED} fontSize="10" textAnchor="middle">80 GB</text>
+
+          {/* A100 capacity line */}
+          <line x1={145 + (40 / 78) * 560} y1="110" x2={145 + (40 / 78) * 560} y2="355" stroke="#f97316" strokeWidth="1.5" strokeDasharray="6 4" />
+          <text x={145 + (40 / 78) * 560} y="365" fill="#f97316" fontSize="10" fontWeight="600" textAnchor="middle">A100</text>
+          <text x={145 + (40 / 78) * 560} y="377" fill="#f97316" fontSize="10" textAnchor="middle">40 GB</text>
+
+          {/* Insight boxes */}
+          <rect x="40" y="392" width="350" height="38" rx="8" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="1" />
+          <text x="215" y="408" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">
+            At 3-bit: fits on a single A100 (40 GB)
+          </text>
+          <text x="215" y="422" fill={GRAY} fontSize="10" textAnchor="middle">
+            FP16 requires 2× A100s or 1× H100 just for KV cache
+          </text>
+
+          <rect x="410" y="392" width="360" height="38" rx="8" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="1" />
+          <text x="590" y="408" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">
+            At 4-bit: serve 4× more concurrent users
+          </text>
+          <text x="590" y="422" fill={GRAY} fontSize="10" textAnchor="middle">
+            Or extend context to 512K on the same hardware
+          </text>
+        </svg>
+      </Diagram>
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 07 — MENTAL MODELS
@@ -971,18 +1153,18 @@ export default function TurboQuantPaper() {
 
       <Callout type="key">
         <strong>The takeaway:</strong> TurboQuant shows that for high-dimensional vectors, the
-        simplest approach -- random rotation followed by independent scalar quantization -- is
-        provably near-optimal. It achieves within 2.7x of the information-theoretic limit, works
+        simplest approach -- <H tip="Random rotation = multiplying by a Haar-random orthogonal matrix. Implemented efficiently as a product of random Hadamard transforms: y = D·H·D·H·...·x, where H is the Hadamard matrix and D is a random diagonal sign matrix. Cost: O(d log d) instead of O(d²) for a full matrix multiply." color={A}>random rotation</H> followed by independent <H tip="Scalar quantization = mapping each real number to the nearest element of a finite set of reconstruction points. The simplest form of quantization — no cross-coordinate dependencies. TurboQuant proves this is near-optimal after rotation, which is surprising because it ignores the vector structure." color={A}>scalar quantization</H> -- is
+        provably near-optimal. It achieves within 2.7x of the <H tip="Information-theoretic limit = Shannon's rate-distortion bound, the absolute minimum distortion achievable at a given bit rate by ANY compressor, no matter how complex or computationally expensive. Being within 2.7× of this limit with a simple algorithm is remarkable." color={A}>information-theoretic limit</H>, works
         in streaming/online settings with zero training, and matches or beats complex learned
         quantizers on real benchmarks. The key insight is that random rotations &ldquo;democratize&rdquo;
-        vector energy across coordinates, turning a hard vector problem into d easy scalar problems.
+        vector energy across coordinates, turning a hard <H tip="Vector quantization problem = given a continuous d-dimensional vector, find the best discrete representation using a fixed number of bits. Optimal vector quantization requires searching over 2^(b·d) possible codewords — exponential in dimension. TurboQuant reduces this to d independent scalar problems." color={A}>vector problem</H> into d easy scalar problems.
       </Callout>
 
       <ConceptCard title="What TurboQuant does NOT do (limitations)" color={GRAY} defaultOpen={false}>
         <Prose>
           <p>
-            <strong>1. Non-Euclidean metrics.</strong> TurboQuant is designed for L2 distance and
-            inner products. If your application uses cosine similarity (which normalizes to unit
+            <strong>1. Non-Euclidean metrics.</strong> TurboQuant is designed for <H tip="L2 distance (Euclidean distance) = ||x - y|| = √(Σ(x_i - y_i)²). The standard distance metric in vector spaces. TurboQuant's MSE guarantee directly translates to L2 distance preservation. Cosine similarity also works because it equals the inner product of unit vectors." color={GRAY}>L2 distance</H> and
+            inner products. If your application uses <H tip="Cosine similarity = cos(θ) = ⟨x,y⟩ / (||x|| · ||y||). Measures the angle between two vectors, ignoring magnitude. Since TurboQuant normalizes vectors to the unit sphere before quantization, cosine similarity reduces to inner product, which TurboQuant_prod estimates without bias." color={GRAY}>cosine similarity</H> (which normalizes to unit
             vectors first), it works perfectly. But for other metrics like L1, Hamming, or
             edit distance, the theory does not apply.
           </p>
@@ -993,13 +1175,13 @@ export default function TurboQuantPaper() {
           </p>
           <p>
             <strong>3. Structured sparsity.</strong> If vectors have known structure (e.g., they
-            are sparse in a known basis), exploiting that structure can beat TurboQuant. The random
+            are <H tip="Sparse vectors = vectors where most entries are zero or near-zero. If you know the sparsity pattern, you can compress by only storing the non-zero entries (run-length encoding, CSR format). Random rotation destroys sparsity by spreading energy across ALL coordinates, which is wasteful when the vector was sparse to begin with." color={GRAY}>sparse in a known basis</H>), exploiting that structure can beat TurboQuant. The random
             rotation deliberately destroys structure, which is optimal for arbitrary vectors but
             suboptimal for structured ones.
           </p>
           <p>
             <strong>4. The rotation cost.</strong> Applying the random rotation matrix costs O(d^2)
-            per vector (or O(d log d) with structured rotations like randomized Hadamard). For very
+            per vector (or O(d log d) with <H tip="Randomized Hadamard Transform (RHT) = an efficient implementation of approximate random rotation. Uses the Walsh-Hadamard matrix (which can be applied in O(d log d) via the butterfly algorithm) multiplied by random sign flips. Three rounds of RHT closely approximate a true Haar-random rotation." color={GRAY}>structured rotations like randomized Hadamard</H>). For very
             high throughput applications, this cost may matter.
           </p>
         </Prose>
