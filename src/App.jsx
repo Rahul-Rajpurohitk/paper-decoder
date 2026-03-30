@@ -7,11 +7,13 @@ import ReadingProgress from './components/ReadingProgress';
 import MSAPaper from './papers/msa/MSAPaper';
 import TurboQuantPaper from './papers/turboquant/TurboQuantPaper';
 import DINOv3Paper from './papers/dinov3/DINOv3Paper';
+import AttnResPaper from './papers/attnres/AttnResPaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
+import attnresConfig from './papers/attnres/config';
 
-const PAPERS = [msaConfig, tqConfig, dinov3Config, {
+const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, {
   id: 'placeholder_1',
   title: 'Next Paper',
   subtitle: 'Coming soon — suggest a paper!',
@@ -25,12 +27,14 @@ const PAPER_COMPONENTS = {
   msa: MSAPaper,
   turboquant: TurboQuantPaper,
   dinov3: DINOv3Paper,
+  attnres: AttnResPaper,
 };
 
 const PAPER_SECTIONS = {
   msa: ['The Core Problem', 'Architecture', 'Training Pipeline', 'Three-Stage Inference', 'Results', 'Mental Models'],
   turboquant: ['The Core Problem', 'Random Rotation', 'TurboQuant_mse', 'TurboQuant_prod', 'Lower Bounds', 'Results', 'Mental Models'],
   dinov3: ['Why DINOv3?', 'ViT-7B Architecture', 'Multi-Crop Strategy', 'Teacher-Student & Losses', 'Gram Anchoring', 'Training Pipeline', 'Distillation', 'Results'],
+  attnres: ['The Problem', 'Attention Residuals', 'Block AttnRes', 'Why It Works', 'Results', 'Architecture', 'Mental Models'],
 };
 
 export default function App() {
