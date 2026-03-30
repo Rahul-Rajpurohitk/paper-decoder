@@ -4,6 +4,7 @@ import './styles/reader.css';
 
 import PaperLibrary from './components/PaperLibrary';
 import ReadingProgress from './components/ReadingProgress';
+import TableOfContents from './components/TableOfContents';
 import MSAPaper from './papers/msa/MSAPaper';
 import TurboQuantPaper from './papers/turboquant/TurboQuantPaper';
 import DINOv3Paper from './papers/dinov3/DINOv3Paper';
@@ -48,9 +49,6 @@ export default function App() {
   if (!activePaper) {
     return <PaperLibrary papers={PAPERS} onSelect={setActivePaper} />;
   }
-
-  // Lazy-load TOC only in paper view
-  const TableOfContents = require('./components/TableOfContents').default;
 
   return (
     <div>
