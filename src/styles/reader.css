@@ -732,6 +732,19 @@
   margin-bottom: 0;
 }
 
+/* ── Visual Compare Mobile Fix ── */
+@media (max-width: 640px) {
+  .visual-compare-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .visual-compare-divider {
+    width: 100% !important;
+    height: 32px !important;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-left: none !important;
+  }
+}
+
 /* ── Scroll Reveal Animation ── */
 .reveal {
   opacity: 0;
@@ -756,15 +769,41 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .reader-main { padding: var(--space-md) var(--space-md) 80px; }
-  .section-title { font-size: 24px; }
-  .section-num { font-size: 40px; }
-  .section-subtitle { padding-left: 56px; }
+  .reader-main { padding: var(--space-md) var(--space-sm) 80px; }
+  .section-title { font-size: 22px; }
+  .section-num { font-size: 36px; }
+  .section-subtitle { padding-left: 50px; font-size: 13px; }
   .stat-bar { grid-template-columns: 1fr 1fr; }
-  .formula-math { padding: 16px 18px; }
-  .stat-value { font-size: 22px; }
+  .formula-math { padding: 14px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .formula-block { margin: 12px 0; }
+  .formula-glossary { padding: 10px 12px; gap: 6px; }
+  .formula-symbol { font-size: 10px; padding: 3px 8px; }
+  .stat-value { font-size: 20px; }
+  .stat-item { padding: 14px; }
+  .prose { font-size: 15px; }
+  .callout { padding: 14px 16px; font-size: 13.5px; }
+  .concept-card { padding: 16px; }
+  .mental-model { padding: 16px; }
+  .comparison-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .comparison-table table { min-width: 500px; }
+  .diagram-container { margin: var(--space-md) 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .diagram-container svg { min-width: 600px; }
+  .step-desc { font-size: 13px; }
+  .hover-term-tip { max-width: 280px; left: 0; transform: translateX(0); }
+  .hover-term-tip-arrow { left: 20px; }
+  .simple-explain-body { font-size: 13.5px; padding: 12px 14px; }
+  .reader-header-meta { display: none; }
+  .reader-venue-badge { display: none; }
+  .section-header { margin: 50px 0 var(--space-md); }
 }
 
 @media (max-width: 480px) {
   .stat-bar { grid-template-columns: 1fr; }
+  .reader-main { padding: var(--space-sm) var(--space-sm) 80px; }
+  .section-title { font-size: 20px; }
+  .section-num { font-size: 30px; }
+  .section-subtitle { padding-left: 42px; }
+  .formula-glossary { flex-direction: column; }
+  .step-item { gap: 10px; }
+  .step-dot { width: 26px; height: 26px; font-size: 10px; }
 }
