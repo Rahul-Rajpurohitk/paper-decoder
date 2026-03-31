@@ -100,6 +100,28 @@ export default function AttnResPaper() {
         </p>
       </Prose>
 
+      <Callout type="insight">
+        <strong>Why should you care?</strong> If you've ever trained a large model and noticed that making it deeper doesn't help as much as expected — this paper explains why. The residual connection, unchanged since ResNet (2015), was designed for 50-layer networks. Modern Transformers are 80-200+ layers deep, and the original design starts to crack. Attention Residuals is a one-line change to the residual formula that recovers 25% lost compute efficiency. If you build or deploy LLMs, this directly affects your scaling curves.
+      </Callout>
+
+      <Prose>
+        <p>
+          Before Attention Residuals, several approaches tried to fix depth-related issues:
+        </p>
+      </Prose>
+
+      <ComparisonTable
+        headers={['Approach', 'Idea', 'Limitation']}
+        rows={[
+          ['Standard Residual', 'h = h + f(h) — equal accumulation', 'Dilutes early layers at depth 40+'],
+          ['Weighted Residual', 'h = α·h + β·f(h) — fixed weights', 'Weights are input-independent, tuned per model'],
+          ['DenseNet (2017)', 'Concatenate all previous outputs', 'Memory scales as O(L²), impractical for Transformers'],
+          ['Highway Networks', 'Gated bypass: T(x)·f(x) + (1-T(x))·x', 'Gate is input-dependent but shallow (no attention)'],
+          ['Attention Residuals (this paper)', 'Softmax attention over all preceding layers', 'Input-dependent, learned, near-zero overhead'],
+        ]}
+        caption="Previous attempts at fixing residual connections — and why AttnRes succeeds"
+      />
+
       <FormulaSteps
         label="Standard Residual Connection"
         color={PK}
