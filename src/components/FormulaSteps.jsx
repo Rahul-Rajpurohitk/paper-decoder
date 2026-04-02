@@ -28,7 +28,20 @@ function KaTeX({ math, display = false }) {
  */
 export default function FormulaSteps({ label, color = 'var(--cyan)', steps = [], symbols = [] }) {
   return (
-    <div className="formula-block" style={{ borderColor: `color-mix(in srgb, ${color} 20%, transparent)` }}>
+    <div style={{
+      overflowX: 'auto',
+      WebkitOverflowScrolling: 'touch',
+      margin: 'var(--space-lg, 16px) 0',
+      borderRadius: 12,
+      border: `1px solid color-mix(in srgb, ${color} 20%, transparent)`,
+    }}>
+      <div className="formula-block" style={{
+        borderColor: 'transparent',
+        border: 'none',
+        margin: 0,
+        borderRadius: 0,
+        minWidth: 540,
+      }}>
       {label && (
         <div className="formula-label" style={{ color, background: `color-mix(in srgb, ${color} 8%, transparent)` }}>
           {label}
@@ -60,7 +73,7 @@ export default function FormulaSteps({ label, color = 'var(--cyan)', steps = [],
                 {isLast ? '✓' : i + 1}
               </div>
 
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 {/* Explanation */}
                 <div style={{
                   fontSize: 13, lineHeight: 1.6, marginBottom: 8,
@@ -78,6 +91,8 @@ export default function FormulaSteps({ label, color = 'var(--cyan)', steps = [],
                   borderRadius: 8,
                   border: isLast ? `1.5px solid color-mix(in srgb, ${color} 25%, transparent)` : '1px solid rgba(255,255,255,0.04)',
                   overflowX: 'auto',
+                  overflowY: 'hidden',
+                  WebkitOverflowScrolling: 'touch',
                 }}>
                   <KaTeX math={step.math} display={true} />
                 </div>
@@ -98,6 +113,7 @@ export default function FormulaSteps({ label, color = 'var(--cyan)', steps = [],
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

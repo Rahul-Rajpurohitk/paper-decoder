@@ -100,16 +100,27 @@ a:hover { text-decoration: underline; }
 /* ── Images ── */
 img, svg { max-width: 100%; display: block; }
 
-/* ── KaTeX Overrides ── */
+/* ── KaTeX Overrides — formulas scroll, never wrap ── */
 .katex-display {
   margin: 0 !important;
-  padding: 0 !important;
-  overflow-x: auto;
-  overflow-y: hidden;
+  padding: 4px 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch;
 }
 .katex-display > .katex {
   white-space: nowrap !important;
   text-align: left !important;
+}
+.katex-display > .katex > .katex-html {
+  white-space: nowrap !important;
+  display: inline-block !important;
+}
+.katex-display > .katex > .katex-html > .base {
+  white-space: nowrap !important;
+}
+.katex-display > .katex > .katex-html > .newline {
+  display: none !important;
 }
 .katex {
   font-size: 1.1em !important;
@@ -121,6 +132,8 @@ img, svg { max-width: 100%; display: block; }
 }
 .katex .mord.text { color: var(--text-secondary) !important; }
 .katex .mop { color: var(--cyan) !important; }
+/* Ensure formula containers allow scroll */
+.formula-math, .formula-block { min-width: 0; }
 
 /* ── Utility ── */
 .sr-only {

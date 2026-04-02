@@ -27,7 +27,9 @@ export default function FormulaBlock({ math, label, color = 'var(--cyan)', symbo
           {label}
         </div>
       )}
-      <div className="formula-math" ref={mathRef} />
+      <div className="formula-math" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', maxWidth: '100%' }}>
+        <div ref={mathRef} style={{ minWidth: 'fit-content' }} />
+      </div>
       {symbols.length > 0 && (
         <div className="formula-glossary">
           {symbols.map((s, i) => (
