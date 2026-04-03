@@ -672,20 +672,7 @@
   text-overflow: ellipsis;
 }
 
-@media (min-width: 1200px) {
-  .toc-toggle { display: none; }
-  .toc-panel {
-    position: fixed;
-    top: 80px;
-    right: 24px;
-    bottom: auto;
-    left: auto;
-    opacity: 1;
-    transform: none;
-    pointer-events: all;
-    max-height: calc(100vh - 120px);
-  }
-}
+/* TOC is always toggle-based — never auto-visible on any screen */
 
 /* ── Simple Explain (Psychology Layer) ── */
 .simple-explain {
