@@ -13,6 +13,8 @@ import DeepSeekMHCPaper from './papers/deepseek-mhc/DeepSeekMHCPaper';
 import DeepSeekR1Paper from './papers/deepseek-r1/DeepSeekR1Paper';
 import Llama4Paper from './papers/llama4/Llama4Paper';
 import FreeTransformerPaper from './papers/free-transformer/FreeTransformerPaper';
+import RLForLLMsPaper from './papers/rl-for-llms/RLForLLMsPaper';
+import RLVRPaper from './papers/rlvr/RLVRPaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
@@ -21,8 +23,10 @@ import mhcConfig from './papers/deepseek-mhc/config';
 import r1Config from './papers/deepseek-r1/config';
 import llama4Config from './papers/llama4/config';
 import ftConfig from './papers/free-transformer/config';
+import rlConfig from './papers/rl-for-llms/config';
+import rlvrConfig from './papers/rlvr/config';
 
-const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig];
+const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
@@ -33,6 +37,8 @@ const PAPER_COMPONENTS = {
   'deepseek-r1': DeepSeekR1Paper,
   llama4: Llama4Paper,
   'free-transformer': FreeTransformerPaper,
+  'rl-for-llms': RLForLLMsPaper,
+  rlvr: RLVRPaper,
 };
 
 const PAPER_SECTIONS = {
@@ -43,6 +49,8 @@ const PAPER_SECTIONS = {
   'deepseek-mhc': ['The Problem', 'Hyper-Connections', 'Manifold Constraint', 'Sinkhorn Algorithm', 'Scaling Results', 'Architecture', 'Mental Models'],
   'deepseek-r1': ['Why R1?', 'RL Without SFT', 'Chain-of-Thought Emergence', 'Training Pipeline', 'Distillation', 'Results', 'Mental Models'],
   llama4: ['Why Llama 4?', 'MoE Architecture', 'iRoPE & 10M Context', 'Early Fusion Multimodal', 'Training at Scale', 'Model Family', 'Mental Models'],
+  'rl-for-llms': ['What is RL?', 'Policy & Reward', 'PPO', 'RLHF', 'DPO', 'GRPO', 'RLVR & Beyond'],
+  rlvr: ['The Question', 'Verifiable Rewards', 'CoT-Pass@K', 'Does RL Teach Reasoning?', 'The Counter-Evidence', 'Practical Impact', 'Mental Models'],
   'free-transformer': ['The Idea', 'Latent Variable Z', 'ELBO Training', 'Reasoning Gains', 'Structured Generation', 'Results', 'Mental Models'],
 };
 
