@@ -9,26 +9,30 @@ import MSAPaper from './papers/msa/MSAPaper';
 import TurboQuantPaper from './papers/turboquant/TurboQuantPaper';
 import DINOv3Paper from './papers/dinov3/DINOv3Paper';
 import AttnResPaper from './papers/attnres/AttnResPaper';
+import DeepSeekMHCPaper from './papers/deepseek-mhc/DeepSeekMHCPaper';
+import DeepSeekR1Paper from './papers/deepseek-r1/DeepSeekR1Paper';
+import Llama4Paper from './papers/llama4/Llama4Paper';
+import FreeTransformerPaper from './papers/free-transformer/FreeTransformerPaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
 import attnresConfig from './papers/attnres/config';
+import mhcConfig from './papers/deepseek-mhc/config';
+import r1Config from './papers/deepseek-r1/config';
+import llama4Config from './papers/llama4/config';
+import ftConfig from './papers/free-transformer/config';
 
-const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, {
-  id: 'placeholder_1',
-  title: 'Next Paper',
-  subtitle: 'Coming soon — suggest a paper!',
-  venue: '—',
-  tags: [],
-  accent: '#475569',
-  status: 'upcoming',
-}];
+const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
   turboquant: TurboQuantPaper,
   dinov3: DINOv3Paper,
   attnres: AttnResPaper,
+  'deepseek-mhc': DeepSeekMHCPaper,
+  'deepseek-r1': DeepSeekR1Paper,
+  llama4: Llama4Paper,
+  'free-transformer': FreeTransformerPaper,
 };
 
 const PAPER_SECTIONS = {
@@ -36,6 +40,10 @@ const PAPER_SECTIONS = {
   turboquant: ['The Core Problem', 'Random Rotation', 'TurboQuant_mse', 'TurboQuant_prod', 'Lower Bounds', 'Results', 'Mental Models'],
   dinov3: ['Why DINOv3?', 'ViT-7B Architecture', 'Multi-Crop Strategy', 'Teacher-Student & Losses', 'Gram Anchoring', 'Training Pipeline', 'Distillation', 'Results'],
   attnres: ['The Problem', 'Attention Residuals', 'Block AttnRes', 'Why It Works', 'Results', 'Architecture', 'Mental Models'],
+  'deepseek-mhc': ['The Problem', 'Hyper-Connections', 'Manifold Constraint', 'Sinkhorn Algorithm', 'Scaling Results', 'Architecture', 'Mental Models'],
+  'deepseek-r1': ['Why R1?', 'RL Without SFT', 'Chain-of-Thought Emergence', 'Training Pipeline', 'Distillation', 'Results', 'Mental Models'],
+  llama4: ['Why Llama 4?', 'MoE Architecture', 'iRoPE & 10M Context', 'Early Fusion Multimodal', 'Training at Scale', 'Model Family', 'Mental Models'],
+  'free-transformer': ['The Idea', 'Latent Variable Z', 'ELBO Training', 'Reasoning Gains', 'Structured Generation', 'Results', 'Mental Models'],
 };
 
 export default function App() {
