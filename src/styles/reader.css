@@ -568,51 +568,52 @@
 /* ── Table of Contents ── */
 .toc-toggle {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 16px;
+  right: 16px;
   z-index: 200;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(15, 21, 37, 0.9);
-  backdrop-filter: blur(12px);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(255,255,255,0.1);
   color: var(--toc-color, var(--cyan));
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  transition: all 0.2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 .toc-toggle:hover {
-  background: rgba(15, 21, 37, 1);
-  border-color: var(--toc-color, var(--cyan));
+  background: rgba(15, 23, 42, 0.85);
+  border-color: color-mix(in srgb, var(--toc-color) 40%, transparent);
   transform: scale(1.05);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 12px color-mix(in srgb, var(--toc-color) 20%, transparent);
 }
 
 .toc-panel {
   position: fixed;
-  bottom: 74px;
-  right: 20px;
+  bottom: 64px;
+  right: 16px;
   z-index: 200;
-  width: 240px;
-  max-height: 60vh;
+  width: 200px;
+  max-height: 45vh;
   overflow-y: auto;
-  background: rgba(10, 15, 26, 0.95);
-  backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 12px 8px;
-  box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+  border-radius: 12px;
+  padding: 10px 6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   opacity: 0;
-  transform: translateY(10px) scale(0.95);
+  transform: translateY(8px) scale(0.95);
   pointer-events: none;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .toc-panel.toc-open {
   opacity: 1;
@@ -621,9 +622,9 @@
 }
 
 .toc-label {
-  padding: 4px 12px 8px;
+  padding: 3px 10px 6px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -633,35 +634,35 @@
 .toc-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 6px;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--text-muted);
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 11px;
   text-align: left;
   transition: all 0.15s;
   width: 100%;
 }
 .toc-item:hover {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.06);
   color: var(--text-secondary);
 }
 .toc-item.toc-active {
-  background: color-mix(in srgb, var(--toc-color) 10%, transparent);
+  background: color-mix(in srgb, var(--toc-color) 12%, transparent);
   color: var(--text-primary);
 }
 
 .toc-num {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   color: var(--toc-color, var(--cyan));
-  min-width: 20px;
-  opacity: 0.6;
+  min-width: 18px;
+  opacity: 0.5;
 }
 .toc-item.toc-active .toc-num { opacity: 1; }
 
