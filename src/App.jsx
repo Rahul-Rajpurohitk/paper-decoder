@@ -32,7 +32,7 @@ import dsv3Config from './papers/deepseek-v3/config';
 import rlConfig from './papers/rl-for-llms/config';
 import rlvrConfig from './papers/rlvr/config';
 
-const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig];
+const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
@@ -45,6 +45,9 @@ const PAPER_COMPONENTS = {
   'free-transformer': FreeTransformerPaper,
   'rl-for-llms': RLForLLMsPaper,
   rlvr: RLVRPaper,
+  mamba2: Mamba2Paper,
+  kan: KANPaper,
+  'deepseek-v3': DeepSeekV3Paper,
 };
 
 const PAPER_SECTIONS = {
