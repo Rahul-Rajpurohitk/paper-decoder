@@ -13,6 +13,9 @@ import DeepSeekMHCPaper from './papers/deepseek-mhc/DeepSeekMHCPaper';
 import DeepSeekR1Paper from './papers/deepseek-r1/DeepSeekR1Paper';
 import Llama4Paper from './papers/llama4/Llama4Paper';
 import FreeTransformerPaper from './papers/free-transformer/FreeTransformerPaper';
+import Mamba2Paper from './papers/mamba2/Mamba2Paper';
+import KANPaper from './papers/kan/KANPaper';
+import DeepSeekV3Paper from './papers/deepseek-v3/DeepSeekV3Paper';
 import RLForLLMsPaper from './papers/rl-for-llms/RLForLLMsPaper';
 import RLVRPaper from './papers/rlvr/RLVRPaper';
 import msaConfig from './papers/msa/config';
@@ -23,6 +26,9 @@ import mhcConfig from './papers/deepseek-mhc/config';
 import r1Config from './papers/deepseek-r1/config';
 import llama4Config from './papers/llama4/config';
 import ftConfig from './papers/free-transformer/config';
+import mamba2Config from './papers/mamba2/config';
+import kanConfig from './papers/kan/config';
+import dsv3Config from './papers/deepseek-v3/config';
 import rlConfig from './papers/rl-for-llms/config';
 import rlvrConfig from './papers/rlvr/config';
 
@@ -51,6 +57,9 @@ const PAPER_SECTIONS = {
   llama4: ['Why Llama 4?', 'MoE Architecture', 'iRoPE & 10M Context', 'Early Fusion Multimodal', 'Training at Scale', 'Model Family', 'Mental Models'],
   'rl-for-llms': ['What is RL?', 'Policy & Reward', 'PPO', 'RLHF', 'DPO', 'GRPO', 'RLVR & Beyond'],
   rlvr: ['The Question', 'Verifiable Rewards', 'CoT-Pass@K', 'Does RL Teach Reasoning?', 'The Counter-Evidence', 'Practical Impact', 'Mental Models'],
+  mamba2: ['Why Mamba?', 'State Space Models', 'Selective Scan', 'SSD Framework', 'Mamba-2 Architecture', 'Results', 'Mental Models'],
+  kan: ['Why KAN?', 'Kolmogorov-Arnold Theorem', 'Learnable Activations', 'B-Splines', 'Training & Pruning', 'Results', 'Mental Models'],
+  'deepseek-v3': ['Why V3?', 'MoE Architecture', 'Multi-Head Latent Attention', 'Multi-Token Prediction', 'FP8 Training', 'Results', 'Mental Models'],
   'free-transformer': ['The Idea', 'Latent Variable Z', 'ELBO Training', 'Reasoning Gains', 'Structured Generation', 'Results', 'Mental Models'],
 };
 
