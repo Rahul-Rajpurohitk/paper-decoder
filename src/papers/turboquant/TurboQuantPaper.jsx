@@ -66,89 +66,83 @@ export default function TurboQuantPaper() {
 
       {/* SVG 1: The Compression Problem */}
       <Diagram caption="The Compression Problem: a 128-d vector compressed from full precision to 4-bit quantized codes">
-        <svg viewBox="0 0 800 320" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 360" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-cp-arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="8" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
             </marker>
-            <linearGradient id="tq-cp-grad1" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor={A} stopOpacity="0.3" />
-              <stop offset="100%" stopColor={PURPLE} stopOpacity="0.15" />
-            </linearGradient>
-            <linearGradient id="tq-cp-grad2" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor={A} stopOpacity="0.25" />
-              <stop offset="100%" stopColor={A2} stopOpacity="0.1" />
-            </linearGradient>
           </defs>
-          <rect width="800" height="320" rx="12" fill={BG} />
+          <rect width="800" height="360" rx="12" fill={BG} />
 
           {/* Title */}
-          <text x="400" y="26" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">128-DIMENSIONAL VECTOR COMPRESSION</text>
+          <text x="400" y="30" fill={FG} fontSize="15" fontWeight="700" textAnchor="middle">128-DIMENSIONAL VECTOR COMPRESSION</text>
 
-          {/* LEFT: BEFORE label */}
-          <text x="155" y="52" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">BEFORE</text>
-          <text x="155" y="68" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Full Precision (FP32)</text>
-          <rect x="20" y="78" width="270" height="120" rx="8" fill="url(#tq-cp-grad1)" stroke={A} strokeWidth="0.8" strokeOpacity="0.3" />
-          {/* 128 cells — 16x8 grid at 20x14 each */}
+          {/* LEFT: BEFORE */}
+          <text x="175" y="58" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">BEFORE</text>
+          <text x="175" y="76" fill={A3} fontSize="11" fontWeight="500" textAnchor="middle">Full Precision (FP32)</text>
+          <rect x="30" y="86" width="290" height="138" rx="8" fill={A} fillOpacity="0.06" stroke={A} strokeWidth="0.8" strokeOpacity="0.3" />
+
+          {/* BEFORE grid: 128 cells, each a UNIQUE color — looks chaotic */}
           {(() => {
-            const fullColors = [
-              '#f59e0b','#d97706','#fbbf24','#22c55e','#3b82f6','#a855f7','#ef4444','#06b6d4',
-              '#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#e11d48','#8b5cf6','#facc15',
-              '#fb923c','#4ade80','#38bdf8','#c084fc','#f87171','#2dd4bf','#a3e635','#fca5a1',
-              '#818cf8','#34d399','#fcd34d','#fb7185','#67e8f9','#d946ef','#a78bfa','#f472b6',
-              '#fde68a','#bef264','#7dd3fc','#e879f9','#fca5a1','#86efac','#93c5fd','#d8b4fe',
-              '#f59e0b','#d97706','#fbbf24','#22c55e','#3b82f6','#a855f7','#ef4444','#06b6d4',
-              '#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#e11d48','#8b5cf6','#facc15',
-              '#fb923c','#4ade80','#38bdf8','#c084fc','#f87171','#2dd4bf','#a3e635','#fca5a1',
-              '#818cf8','#34d399','#fcd34d','#fb7185','#67e8f9','#d946ef','#a78bfa','#f472b6',
-              '#fde68a','#bef264','#7dd3fc','#e879f9','#fca5a1','#86efac','#93c5fd','#d8b4fe',
-              '#f59e0b','#d97706','#fbbf24','#22c55e','#3b82f6','#a855f7','#ef4444','#06b6d4',
-              '#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#e11d48','#8b5cf6','#facc15',
-              '#fb923c','#4ade80','#38bdf8','#c084fc','#f87171','#2dd4bf','#a3e635','#fca5a1',
-              '#818cf8','#34d399','#fcd34d','#fb7185','#67e8f9','#d946ef','#a78bfa','#f472b6',
-              '#fde68a','#bef264','#7dd3fc','#e879f9','#fca5a1','#86efac','#93c5fd','#d8b4fe',
-              '#f59e0b','#d97706','#fbbf24','#22c55e','#3b82f6','#a855f7','#ef4444','#06b6d4',
-            ];
-            return fullColors.map((c, i) => (
-              <rect key={`fp-${i}`} x={26 + (i % 16) * 16} y={84 + Math.floor(i / 16) * 14} width="14" height="11" rx="2" fill={c} opacity={0.85} />
-            ));
+            const hues = [];
+            for (let i = 0; i < 128; i++) hues.push(Math.round((i * 137.5 + i * i * 0.3) % 360));
+            return hues.map((h, i) => {
+              const col = Math.floor(i % 16);
+              const row = Math.floor(i / 16);
+              return <rect key={`fp-${i}`} x={36 + col * 17.5} y={92 + row * 16} width="15" height="13" rx="2" fill={`hsl(${h}, 70%, 55%)`} opacity={0.9} />;
+            });
           })()}
-          <text x="155" y="212" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128 unique float32 values</text>
+          <text x="175" y="240" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128 unique float32 values</text>
 
-          {/* Arrow in the middle — thicker and more prominent */}
-          <line x1="310" y1="135" x2="395" y2="135" stroke={A} strokeWidth="3" markerEnd="url(#tq-cp-arrow)" />
-          <rect x="320" y="108" width="66" height="24" rx="7" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.2" />
-          <text x="353" y="124" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">TurboQ</text>
-          <text x="353" y="152" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">4-bit quantize</text>
+          {/* ARROW */}
+          <rect x="345" y="130" width="80" height="30" rx="8" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
+          <text x="385" y="150" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">TurboQ</text>
+          <line x1="330" y1="160" x2="345" y2="160" stroke={A} strokeWidth="2.5" />
+          <line x1="425" y1="160" x2="450" y2="160" stroke={A} strokeWidth="2.5" markerEnd="url(#tq-cp-arrow)" />
+          <text x="385" y="175" fill={GRAY} fontSize="11" textAnchor="middle">4-bit quantize</text>
 
-          {/* RIGHT: AFTER label */}
-          <text x="555" y="52" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">AFTER</text>
-          <text x="555" y="68" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Quantized (4-bit = 16 levels)</text>
-          <rect x="420" y="78" width="270" height="120" rx="8" fill="url(#tq-cp-grad2)" stroke={GREEN} strokeWidth="0.8" strokeOpacity="0.3" />
+          {/* RIGHT: AFTER */}
+          <text x="610" y="58" fill={GREEN} fontSize="14" fontWeight="700" textAnchor="middle">AFTER</text>
+          <text x="610" y="76" fill={GREEN} fontSize="11" fontWeight="500" textAnchor="middle">Quantized (4-bit = 16 levels)</text>
+          <rect x="465" y="86" width="290" height="138" rx="8" fill={GREEN} fillOpacity="0.05" stroke={GREEN} strokeWidth="0.8" strokeOpacity="0.3" />
+
+          {/* AFTER grid: 128 cells but ONLY 16 colors — clearly grouped */}
+          {/* Each cell maps to one of 16 quantization levels — visible repetition */}
           {(() => {
-            const qColors = ['#ef4444','#f97316','#f59e0b','#eab308','#84cc16','#22c55e','#14b8a6','#06b6d4',
-                             '#3b82f6','#6366f1','#8b5cf6','#a855f7','#d946ef','#ec4899','#f43f5e','#78716c'];
-            return Array.from({ length: 128 }, (_, i) => (
-              <rect key={`q-${i}`} x={426 + (i % 16) * 16} y={84 + Math.floor(i / 16) * 14} width="14" height="11" rx="2" fill={qColors[i % 16]} opacity={0.75} />
-            ));
+            const q16 = ['#dc2626','#ea580c','#d97706','#ca8a04','#65a30d','#16a34a','#0d9488','#0891b2',
+                         '#2563eb','#4f46e5','#7c3aed','#9333ea','#c026d3','#db2777','#e11d48','#71717a'];
+            /* Deterministic assignment: each of 128 values snaps to nearest of 16 levels */
+            const assignments = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+                                 2,5,8,11,14,1,4,7,10,13,0,3,6,9,12,15,
+                                 7,7,3,3,11,11,0,0,5,5,14,14,9,9,2,2,
+                                 12,6,1,8,15,4,10,3,13,7,0,5,11,2,9,14,
+                                 0,0,3,3,6,6,9,9,12,12,15,15,2,2,5,5,
+                                 8,8,11,11,14,14,1,1,4,4,7,7,10,10,13,13,
+                                 5,10,0,15,3,8,13,2,7,12,1,6,11,4,9,14,
+                                 6,6,6,9,9,9,12,12,12,3,3,3,0,0,0,15];
+            return assignments.map((lvl, i) => {
+              const col = i % 16;
+              const row = Math.floor(i / 16);
+              return <rect key={`q-${i}`} x={471 + col * 17.5} y={92 + row * 16} width="15" height="13" rx="2" fill={q16[lvl]} opacity={0.85} />;
+            });
           })()}
-          <text x="555" y="212" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Only 16 distinct levels</text>
+          <text x="610" y="240" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Only 16 distinct levels</text>
 
-          {/* Storage comparison bar */}
-          <rect x="50" y="234" width="700" height="72" rx="8" fill={A} fillOpacity="0.04" stroke={A} strokeWidth="0.5" strokeOpacity="0.3" />
-          <text x="400" y="254" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">STORAGE PER VECTOR</text>
+          {/* Storage comparison */}
+          <rect x="50" y="260" width="700" height="88" rx="8" fill={A} fillOpacity="0.04" stroke={A} strokeWidth="0.5" strokeOpacity="0.2" />
+          <text x="400" y="280" fill={FG} fontSize="13" fontWeight="600" textAnchor="middle">STORAGE PER VECTOR</text>
 
-          {/* Full precision bar */}
-          <rect x="80" y="264" width="300" height="14" rx="3" fill={RED} fillOpacity="0.6" />
-          <text x="80" y="292" fill={RED} fontSize="11" fontWeight="600" fontFamily="'JetBrains Mono', monospace">512 bytes (128 x 4B)</text>
+          {/* Full precision bar — wide */}
+          <rect x="70" y="292" width="440" height="16" rx="4" fill={RED} fillOpacity="0.55" />
+          <text x="70" y="322" fill={RED} fontSize="11" fontWeight="600" fontFamily="'JetBrains Mono', monospace">512 bytes (128 dims x 4 bytes each)</text>
 
-          {/* Quantized bar */}
-          <rect x="480" y="264" width={300 * 68 / 512} height="14" rx="3" fill={GREEN} fillOpacity="0.7" />
-          <text x="480" y="292" fill={GREEN} fontSize="11" fontWeight="600" fontFamily="'JetBrains Mono', monospace">68 bytes (128 x 4b + 4B norm)</text>
+          {/* Quantized bar — proportionally shorter */}
+          <rect x="70" y="336" width={Math.round(440 * 68 / 512)} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
+          <text x={76 + Math.round(440 * 68 / 512)} y="349" fill={GREEN} fontSize="11" fontWeight="600" fontFamily="'JetBrains Mono', monospace">68 bytes</text>
 
-          {/* Compression ratio badge */}
-          <rect x="650" y="258" width="80" height="26" rx="7" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.2" />
-          <text x="690" y="276" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">7.5x smaller</text>
+          {/* 7.5x badge */}
+          <rect x="620" y="310" width="110" height="32" rx="8" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.5" />
+          <text x="675" y="331" fill={GREEN} fontSize="15" fontWeight="800" textAnchor="middle">7.5x smaller</text>
         </svg>
       </Diagram>
 
