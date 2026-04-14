@@ -66,9 +66,9 @@ export default function TurboQuantPaper() {
 
       {/* SVG 1: The Compression Problem */}
       <Diagram caption="The Compression Problem: a 128-d vector compressed from full precision to 4-bit quantized codes">
-        <svg viewBox="0 0 800 250" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 320" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
-            <marker id="tq-cp-arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
+            <marker id="tq-cp-arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="10" markerHeight="8" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
             </marker>
             <linearGradient id="tq-cp-grad1" x1="0" y1="0" x2="1" y2="1">
@@ -80,15 +80,16 @@ export default function TurboQuantPaper() {
               <stop offset="100%" stopColor={A2} stopOpacity="0.1" />
             </linearGradient>
           </defs>
-          <rect width="800" height="250" rx="12" fill={BG} />
+          <rect width="800" height="320" rx="12" fill={BG} />
 
           {/* Title */}
-          <text x="400" y="24" fill={FG} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">128-DIMENSIONAL VECTOR COMPRESSION</text>
+          <text x="400" y="26" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">128-DIMENSIONAL VECTOR COMPRESSION</text>
 
-          {/* LEFT: Full precision grid */}
-          <text x="145" y="50" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">FULL PRECISION (FP32)</text>
-          <rect x="20" y="58" width="250" height="100" rx="8" fill="url(#tq-cp-grad1)" stroke={A} strokeWidth="0.8" strokeOpacity="0.3" />
-          {/* 128 tiny colored squares — 16x8 grid with many distinct colors */}
+          {/* LEFT: BEFORE label */}
+          <text x="155" y="52" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">BEFORE</text>
+          <text x="155" y="68" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Full Precision (FP32)</text>
+          <rect x="20" y="78" width="270" height="120" rx="8" fill="url(#tq-cp-grad1)" stroke={A} strokeWidth="0.8" strokeOpacity="0.3" />
+          {/* 128 cells — 16x8 grid at 20x14 each */}
           {(() => {
             const fullColors = [
               '#f59e0b','#d97706','#fbbf24','#22c55e','#3b82f6','#a855f7','#ef4444','#06b6d4',
@@ -109,45 +110,45 @@ export default function TurboQuantPaper() {
               '#f59e0b','#d97706','#fbbf24','#22c55e','#3b82f6','#a855f7','#ef4444','#06b6d4',
             ];
             return fullColors.map((c, i) => (
-              <rect key={`fp-${i}`} x={28 + (i % 16) * 15} y={64 + Math.floor(i / 16) * 11.5} width="12" height="9" rx="1.5" fill={c} opacity={0.85} />
+              <rect key={`fp-${i}`} x={26 + (i % 16) * 16} y={84 + Math.floor(i / 16) * 14} width="14" height="11" rx="2" fill={c} opacity={0.85} />
             ));
           })()}
-          <text x="145" y="172" fill={GRAY} fontSize="10" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128 unique float32 values</text>
+          <text x="155" y="212" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128 unique float32 values</text>
 
-          {/* Arrow in the middle */}
-          <line x1="290" y1="105" x2="370" y2="105" stroke={A} strokeWidth="2" markerEnd="url(#tq-cp-arrow)" />
-          <rect x="302" y="82" width="56" height="20" rx="6" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1" />
-          <text x="330" y="96" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">TurboQ</text>
-          <text x="330" y="120" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">4-bit quantize</text>
+          {/* Arrow in the middle — thicker and more prominent */}
+          <line x1="310" y1="135" x2="395" y2="135" stroke={A} strokeWidth="3" markerEnd="url(#tq-cp-arrow)" />
+          <rect x="320" y="108" width="66" height="24" rx="7" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.2" />
+          <text x="353" y="124" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">TurboQ</text>
+          <text x="353" y="152" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">4-bit quantize</text>
 
-          {/* RIGHT: Quantized grid — only 16 distinct colors */}
-          <text x="530" y="50" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">QUANTIZED (4-BIT = 16 LEVELS)</text>
-          <rect x="405" y="58" width="250" height="100" rx="8" fill="url(#tq-cp-grad2)" stroke={GREEN} strokeWidth="0.8" strokeOpacity="0.3" />
+          {/* RIGHT: AFTER label */}
+          <text x="555" y="52" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">AFTER</text>
+          <text x="555" y="68" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Quantized (4-bit = 16 levels)</text>
+          <rect x="420" y="78" width="270" height="120" rx="8" fill="url(#tq-cp-grad2)" stroke={GREEN} strokeWidth="0.8" strokeOpacity="0.3" />
           {(() => {
             const qColors = ['#f59e0b','#d97706','#fbbf24','#22c55e','#3b82f6','#a855f7','#ef4444','#06b6d4',
                              '#ec4899','#84cc16','#f97316','#6366f1','#14b8a6','#e11d48','#8b5cf6','#facc15'];
-            // Map 128 cells to only 16 colors
             return Array.from({ length: 128 }, (_, i) => (
-              <rect key={`q-${i}`} x={413 + (i % 16) * 15} y={64 + Math.floor(i / 16) * 11.5} width="12" height="9" rx="1.5" fill={qColors[i % 16]} opacity={0.75} />
+              <rect key={`q-${i}`} x={426 + (i % 16) * 16} y={84 + Math.floor(i / 16) * 14} width="14" height="11" rx="2" fill={qColors[i % 16]} opacity={0.75} />
             ));
           })()}
-          <text x="530" y="172" fill={GRAY} fontSize="10" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Only 16 distinct levels</text>
+          <text x="555" y="212" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Only 16 distinct levels</text>
 
           {/* Storage comparison bar */}
-          <rect x="50" y="190" width="700" height="50" rx="8" fill={A} fillOpacity="0.04" stroke={A} strokeWidth="0.5" strokeOpacity="0.3" />
-          <text x="400" y="206" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">STORAGE PER VECTOR</text>
+          <rect x="50" y="234" width="700" height="72" rx="8" fill={A} fillOpacity="0.04" stroke={A} strokeWidth="0.5" strokeOpacity="0.3" />
+          <text x="400" y="254" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">STORAGE PER VECTOR</text>
 
           {/* Full precision bar */}
-          <rect x="80" y="213" width="300" height="12" rx="3" fill={RED} fillOpacity="0.6" />
-          <text x="80" y="236" fill={RED} fontSize="10" fontWeight="600" fontFamily="'JetBrains Mono', monospace">512 bytes (128 × 4B)</text>
+          <rect x="80" y="264" width="300" height="14" rx="3" fill={RED} fillOpacity="0.6" />
+          <text x="80" y="292" fill={RED} fontSize="11" fontWeight="600" fontFamily="'JetBrains Mono', monospace">512 bytes (128 x 4B)</text>
 
           {/* Quantized bar */}
-          <rect x="480" y="213" width={300 * 68 / 512} height="12" rx="3" fill={GREEN} fillOpacity="0.7" />
-          <text x="480" y="236" fill={GREEN} fontSize="10" fontWeight="600" fontFamily="'JetBrains Mono', monospace">68 bytes (128 × 4b + 4B norm)</text>
+          <rect x="480" y="264" width={300 * 68 / 512} height="14" rx="3" fill={GREEN} fillOpacity="0.7" />
+          <text x="480" y="292" fill={GREEN} fontSize="11" fontWeight="600" fontFamily="'JetBrains Mono', monospace">68 bytes (128 x 4b + 4B norm)</text>
 
           {/* Compression ratio badge */}
-          <rect x="660" y="207" width="70" height="22" rx="6" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1" />
-          <text x="695" y="222" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">7.5× smaller</text>
+          <rect x="650" y="258" width="80" height="26" rx="7" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.2" />
+          <text x="690" y="276" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">7.5x smaller</text>
         </svg>
       </Diagram>
 
@@ -181,7 +182,7 @@ export default function TurboQuantPaper() {
 
       {/* SVG 2: Why Vectors Are Hard */}
       <Diagram caption="Why Vectors Are Hard: real data has correlated coordinates — random rotation decorrelates them">
-        <svg viewBox="0 0 800 300" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 380" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-wv-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="9" markerHeight="7" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
@@ -190,75 +191,85 @@ export default function TurboQuantPaper() {
               <polygon points="0 0, 10 3.5, 0 7" fill={GREEN} />
             </marker>
           </defs>
-          <rect width="800" height="300" rx="12" fill={BG} />
+          <rect width="800" height="380" rx="12" fill={BG} />
 
           {/* LEFT: Correlated 2D scatter */}
-          <text x="190" y="28" fill={RED} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">BEFORE: CORRELATED DATA</text>
+          <text x="195" y="28" fill={RED} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">CORRELATED</text>
+          <text x="195" y="46" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif" opacity="0.8">Before rotation</text>
 
-          {/* Axis lines */}
-          <line x1="50" y1="250" x2="350" y2="250" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
-          <line x1="50" y1="250" x2="50" y2="45" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
-          <text x="200" y="270" fill={GRAY} fontSize="10" textAnchor="middle">x₁</text>
-          <text x="35" y="150" fill={GRAY} fontSize="10" textAnchor="middle">x₂</text>
+          {/* Axis lines — left plot */}
+          <line x1="50" y1="290" x2="340" y2="290" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
+          <line x1="50" y1="290" x2="50" y2="60" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
+          <text x="195" y="310" fill={GRAY} fontSize="11" textAnchor="middle">x&#x2081;</text>
+          <text x="34" y="178" fill={GRAY} fontSize="11" textAnchor="middle">x&#x2082;</text>
 
           {/* Tilted ellipse cloud of data points */}
           {(() => {
-            // Simulated correlated 2D data forming a tilted ellipse
+            // Simulated correlated 2D data forming a tilted ellipse — shifted down
             const pts = [
-              [95,215],[105,205],[120,195],[130,185],[115,200],[140,178],[150,170],[155,162],
-              [165,155],[175,148],[185,140],[195,135],[200,128],[210,120],[215,115],[225,110],
-              [230,105],[240,98],[250,92],[255,88],[260,82],[270,78],[275,72],[285,68],
-              [100,210],[110,198],[125,190],[135,180],[145,172],[160,158],[170,150],[180,142],
-              [190,132],[205,125],[220,112],[235,100],[245,95],[265,80],[280,70],[290,65],
-              [108,208],[122,192],[138,182],[152,168],[168,152],[178,145],[188,138],[198,130],
-              [208,122],[218,118],[228,108],[238,102],[248,90],[258,85],[268,75],[288,62],
+              [95,255],[105,245],[120,235],[130,225],[115,240],[140,218],[150,210],[155,202],
+              [165,195],[175,188],[185,180],[195,175],[200,168],[210,160],[215,155],[225,150],
+              [230,145],[240,138],[250,132],[255,128],[260,122],[270,118],[275,112],[285,108],
+              [100,250],[110,238],[125,230],[135,220],[145,212],[160,198],[170,190],[180,182],
+              [190,172],[205,165],[220,152],[235,140],[245,135],[265,120],[280,110],[290,105],
+              [108,248],[122,232],[138,222],[152,208],[168,192],[178,185],[188,178],[198,170],
+              [208,162],[218,158],[228,148],[238,142],[248,130],[258,125],[268,115],[288,102],
             ];
             return pts.map((p, i) => (
-              <circle key={`cp-${i}`} cx={p[0]} cy={p[1]} r="3" fill={A} opacity={0.6 + (i % 3) * 0.1} />
+              <circle key={`cp-${i}`} cx={p[0]} cy={p[1]} r="3.5" fill={A} opacity={0.6 + (i % 3) * 0.1} />
             ));
           })()}
 
           {/* Principal axis line */}
-          <line x1="80" y1="225" x2="300" y2="60" stroke={RED} strokeWidth="1.5" strokeDasharray="6 3" strokeOpacity="0.7" />
-          <text x="310" y="55" fill={RED} fontSize="9" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">principal axis</text>
+          <line x1="80" y1="263" x2="295" y2="97" stroke={RED} strokeWidth="1.5" strokeDasharray="6 3" strokeOpacity="0.7" />
+          <text x="305" y="93" fill={RED} fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">principal axis</text>
+
+          {/* Correlation coefficient */}
+          <rect x="65" y="320" width="100" height="24" rx="6" fill={RED} fillOpacity="0.12" stroke={RED} strokeWidth="0.8" />
+          <text x="115" y="337" fill={RED} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">r = 0.85</text>
 
           {/* Label */}
-          <rect x="60" y="272" width="260" height="20" rx="5" fill={RED} fillOpacity="0.1" />
-          <text x="190" y="286" fill={RED} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Coordinates are correlated — naive quantization wastes bits</text>
+          <rect x="50" y="350" width="290" height="24" rx="6" fill={RED} fillOpacity="0.08" />
+          <text x="195" y="367" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Correlated -- naive quantization wastes bits</text>
 
           {/* Arrow: rotation transform */}
-          <line x1="360" y1="150" x2="430" y2="150" stroke={A} strokeWidth="2" markerEnd="url(#tq-wv-arr)" />
-          <rect x="366" y="128" width="52" height="18" rx="5" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="0.8" />
-          <text x="392" y="141" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">{'Π ·'}</text>
-          <text x="392" y="168" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">rotate</text>
+          <line x1="365" y1="178" x2="435" y2="178" stroke={A} strokeWidth="2.5" markerEnd="url(#tq-wv-arr)" />
+          <rect x="370" y="152" width="58" height="22" rx="6" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1" />
+          <text x="399" y="168" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">{'Π ·'}</text>
+          <text x="399" y="198" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">rotate</text>
 
           {/* RIGHT: Decorrelated circular scatter */}
-          <text x="610" y="28" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">AFTER: DECORRELATED DATA</text>
+          <text x="605" y="28" fill={GREEN} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">DECORRELATED</text>
+          <text x="605" y="46" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif" opacity="0.8">After rotation</text>
 
-          {/* Axis lines */}
-          <line x1="460" y1="250" x2="760" y2="250" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
-          <line x1="460" y1="250" x2="460" y2="45" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
-          <text x="610" y="270" fill={GRAY} fontSize="10" textAnchor="middle">y₁</text>
-          <text x="445" y="150" fill={GRAY} fontSize="10" textAnchor="middle">y₂</text>
+          {/* Axis lines — right plot */}
+          <line x1="460" y1="290" x2="750" y2="290" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
+          <line x1="460" y1="290" x2="460" y2="60" stroke={GRAY} strokeWidth="1" strokeOpacity="0.4" />
+          <text x="605" y="310" fill={GRAY} fontSize="11" textAnchor="middle">y&#x2081;</text>
+          <text x="445" y="178" fill={GRAY} fontSize="11" textAnchor="middle">y&#x2082;</text>
 
           {/* Circular cloud of data points */}
           {(() => {
             const pts2 = [
-              [580,120],[620,130],[640,145],[590,160],[610,110],[570,140],[650,140],[600,170],
-              [560,150],[630,170],[620,100],[580,180],[640,115],[560,130],[650,160],[570,170],
-              [610,175],[590,100],[630,120],[600,145],[580,155],[620,160],[640,130],[560,145],
-              [650,150],[570,115],[590,135],[610,140],[630,155],[600,125],[580,110],[640,170],
-              [570,160],[620,145],[590,150],[610,130],[560,140],[650,130],[600,160],[580,140],
-              [630,140],[590,120],[620,155],[640,155],[570,135],[610,165],[560,155],[650,120],
+              [580,145],[620,155],[640,170],[590,185],[610,135],[570,165],[650,165],[600,195],
+              [560,175],[630,195],[620,125],[580,205],[640,140],[560,155],[650,185],[570,195],
+              [610,200],[590,125],[630,145],[600,170],[580,180],[620,185],[640,155],[560,170],
+              [650,175],[570,140],[590,160],[610,165],[630,180],[600,150],[580,135],[640,195],
+              [570,185],[620,170],[590,175],[610,155],[560,165],[650,155],[600,185],[580,165],
+              [630,165],[590,145],[620,180],[640,180],[570,160],[610,190],[560,180],[650,145],
             ];
             return pts2.map((p, i) => (
-              <circle key={`dc-${i}`} cx={p[0]} cy={p[1]} r="3" fill={GREEN} opacity={0.55 + (i % 4) * 0.1} />
+              <circle key={`dc-${i}`} cx={p[0]} cy={p[1]} r="3.5" fill={GREEN} opacity={0.55 + (i % 4) * 0.1} />
             ));
           })()}
 
+          {/* Correlation coefficient */}
+          <rect x="548" y="320" width="114" height="24" rx="6" fill={GREEN} fillOpacity="0.12" stroke={GREEN} strokeWidth="0.8" />
+          <text x="605" y="337" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{`r \u2248 0`}</text>
+
           {/* Label */}
-          <rect x="470" y="272" width="280" height="20" rx="5" fill={GREEN} fillOpacity="0.1" />
-          <text x="610" y="286" fill={GREEN} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Coordinates independent — scalar quantization is near-optimal</text>
+          <rect x="460" y="350" width="290" height="24" rx="6" fill={GREEN} fillOpacity="0.08" />
+          <text x="605" y="367" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Independent -- scalar quantization is near-optimal</text>
         </svg>
       </Diagram>
 
@@ -293,7 +304,7 @@ export default function TurboQuantPaper() {
       </Prose>
 
       <Diagram caption="Random Rotation Insight: arbitrary vector on the sphere becomes uniformly spread across coordinates after random rotation">
-        <svg viewBox="0 0 800 380" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 440" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-arrow-amber" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
@@ -305,7 +316,7 @@ export default function TurboQuantPaper() {
           </defs>
 
           {/* Background */}
-          <rect width="800" height="380" rx="12" fill={BG} />
+          <rect width="800" height="440" rx="12" fill={BG} />
 
           {/* LEFT: Before rotation */}
           <text x="140" y="32" fill={A} fontSize="14" fontWeight="700" textAnchor="middle">BEFORE ROTATION</text>
@@ -319,20 +330,20 @@ export default function TurboQuantPaper() {
           <text x="222" y="88" fill={A3} fontSize="12" fontWeight="600">x</text>
 
           {/* Coordinate bars (skewed) */}
-          <text x="50" y="322" fill={GRAY} fontSize="10">Coordinates:</text>
+          <text x="50" y="322" fill={GRAY} fontSize="11">Coordinates:</text>
           {[0.82, 0.55, 0.12, 0.04, 0.01, 0.01].map((v, i) => (
             <g key={i}>
-              <rect x={115 + i * 22} y={320 - v * 40} width="16" height={v * 40} rx="2" fill={A} opacity={0.5 + v * 0.5} />
-              <text x={123 + i * 22} y={335} fill={GRAY} fontSize="8" textAnchor="middle">x{i + 1}</text>
+              <rect x={115 + i * 24} y={320 - v * 45} width="18" height={v * 45} rx="2" fill={A} opacity={0.5 + v * 0.5} />
+              <text x={124 + i * 24} y={340} fill={GRAY} fontSize="11" textAnchor="middle">x{i + 1}</text>
             </g>
           ))}
-          <text x="140" y="360" fill={FG} fontSize="10" textAnchor="middle" opacity="0.7">Energy concentrated</text>
+          <text x="140" y="368" fill={FG} fontSize="11" textAnchor="middle" opacity="0.7">Energy concentrated</text>
 
           {/* Arrow: rotation */}
           <line x1="290" y1="170" x2="390" y2="170" stroke={A} strokeWidth="2" markerEnd="url(#tq-arrow-amber)" />
           <rect x="305" y="147" width="70" height="24" rx="6" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1" />
           <text x="340" y="163" fill={A} fontSize="12" fontWeight="700" textAnchor="middle">{'Π · x'}</text>
-          <text x="340" y="135" fill={FG} fontSize="10" textAnchor="middle" opacity="0.6">Random rotation</text>
+          <text x="340" y="135" fill={FG} fontSize="11" textAnchor="middle" opacity="0.6">Random rotation</text>
 
           {/* RIGHT: After rotation */}
           <text x="560" y="32" fill={GREEN} fontSize="14" fontWeight="700" textAnchor="middle">AFTER ROTATION</text>
@@ -346,24 +357,24 @@ export default function TurboQuantPaper() {
           <text x="637" y="100" fill={GREEN} fontSize="12" fontWeight="600">{'Πx'}</text>
 
           {/* Coordinate bars (uniform-ish) */}
-          <text x="470" y="322" fill={GRAY} fontSize="10">Coordinates:</text>
+          <text x="470" y="322" fill={GRAY} fontSize="11">Coordinates:</text>
           {[0.41, 0.38, 0.42, 0.39, 0.40, 0.37].map((v, i) => (
             <g key={i}>
-              <rect x={535 + i * 22} y={320 - v * 40} width="16" height={v * 40} rx="2" fill={GREEN} opacity="0.7" />
-              <text x={543 + i * 22} y={335} fill={GRAY} fontSize="8" textAnchor="middle">y{i + 1}</text>
+              <rect x={535 + i * 24} y={320 - v * 45} width="18" height={v * 45} rx="2" fill={GREEN} opacity="0.7" />
+              <text x={544 + i * 24} y={340} fill={GRAY} fontSize="11" textAnchor="middle">y{i + 1}</text>
             </g>
           ))}
-          <text x="560" y="360" fill={FG} fontSize="10" textAnchor="middle" opacity="0.7">Energy spread uniformly</text>
+          <text x="560" y="368" fill={FG} fontSize="11" textAnchor="middle" opacity="0.7">Energy spread uniformly</text>
 
           {/* Bottom insight — centered below both charts */}
-          <rect x="270" y="348" width="260" height="26" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1" />
-          <text x="400" y="366" fill={A} fontSize="11" fontWeight="700" textAnchor="middle">Each y_i ~ Beta(½, (d-1)/2)</text>
+          <rect x="230" y="392" width="340" height="34" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.2" />
+          <text x="400" y="414" fill={A} fontSize="13" fontWeight="700" textAnchor="middle">Each y_i ~ Beta(1/2, (d-1)/2)</text>
         </svg>
       </Diagram>
 
       {/* SVG 3: The Random Rotation — Step by Step */}
       <Diagram caption="The Random Rotation — Step by Step: direction changes but length (information) is perfectly preserved">
-        <svg viewBox="0 0 800 280" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 340" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-rr-vec" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A3} />
@@ -379,12 +390,12 @@ export default function TurboQuantPaper() {
               <stop offset="100%" stopColor={A} stopOpacity="0.02" />
             </linearGradient>
           </defs>
-          <rect width="800" height="280" rx="12" fill={BG} />
+          <rect width="800" height="340" rx="12" fill={BG} />
 
           {/* STEP 1 */}
-          <circle cx="48" cy="30" r="14" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
-          <text x="48" y="35" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">1</text>
-          <text x="72" y="35" fill={FG} fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Original Vector</text>
+          <circle cx="48" cy="30" r="16" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
+          <text x="48" y="36" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">1</text>
+          <text x="74" y="36" fill={FG} fontSize="13" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Original Vector</text>
 
           {/* Circle representing unit sphere */}
           <circle cx="140" cy="155" r="85" fill="none" stroke={A} strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.3" />
@@ -394,16 +405,20 @@ export default function TurboQuantPaper() {
           {/* Projections on axes */}
           <line x1="210" y1="85" x2="210" y2="155" stroke={A} strokeWidth="1" strokeDasharray="3 2" strokeOpacity="0.4" />
           <line x1="210" y1="85" x2="140" y2="85" stroke={A} strokeWidth="1" strokeDasharray="3 2" strokeOpacity="0.4" />
-          <text x="212" y="168" fill={GRAY} fontSize="9" fontFamily="'JetBrains Mono', monospace">x₁=0.82</text>
-          <text x="112" y="82" fill={GRAY} fontSize="9" fontFamily="'JetBrains Mono', monospace">x₂=0.57</text>
+          <text x="212" y="170" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">x&#x2081;=0.82</text>
+          <text x="100" y="80" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">x&#x2082;=0.57</text>
+
+          {/* LENGTH annotation */}
+          <rect x="80" y="192" width="120" height="22" rx="6" fill={PURPLE} fillOpacity="0.12" stroke={PURPLE} strokeWidth="0.8" />
+          <text x="140" y="208" fill={PURPLE} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">LENGTH = 1.0</text>
 
           {/* Step arrow */}
           <line x1="248" y1="145" x2="288" y2="145" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-rr-step)" />
 
           {/* STEP 2 */}
-          <circle cx="318" cy="30" r="14" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
-          <text x="318" y="35" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">2</text>
-          <text x="342" y="35" fill={FG} fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Apply Rotation {'Π'}</text>
+          <circle cx="318" cy="30" r="16" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
+          <text x="318" y="36" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">2</text>
+          <text x="344" y="36" fill={FG} fontSize="13" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">Apply Rotation {'Π'}</text>
 
           {/* Same circle */}
           <circle cx="410" cy="155" r="85" fill="none" stroke={A} strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.3" />
@@ -411,20 +426,20 @@ export default function TurboQuantPaper() {
           <line x1="410" y1="155" x2="480" y2="85" stroke={A3} strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.25" />
           {/* Rotation arc */}
           <path d="M 475 90 A 80 80 0 0 1 490 143" fill="none" stroke={A} strokeWidth="1.5" strokeDasharray="4 2" />
-          <text x="498" y="115" fill={A} fontSize="10" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">{'Π'}</text>
+          <text x="498" y="115" fill={A} fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">{'Π'}</text>
           {/* New rotated vector */}
           <line x1="410" y1="155" x2="490" y2="140" stroke={GREEN} strokeWidth="2.5" markerEnd="url(#tq-rr-vec2)" />
           <text x="498" y="137" fill={GREEN} fontSize="12" fontWeight="700" fontFamily="Inter, system-ui, sans-serif">{'Πx'}</text>
           {/* Same radius highlight */}
-          <text x="445" y="115" fill={GRAY} fontSize="9" fontFamily="Inter, system-ui, sans-serif">same ||x||</text>
+          <text x="445" y="115" fill={GRAY} fontSize="11" fontFamily="Inter, system-ui, sans-serif">same ||x||</text>
 
           {/* Step arrow */}
           <line x1="518" y1="145" x2="558" y2="145" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-rr-step)" />
 
           {/* STEP 3 */}
-          <circle cx="588" cy="30" r="14" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
-          <text x="588" y="35" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">3</text>
-          <text x="612" y="35" fill={FG} fontSize="12" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">New Coordinates</text>
+          <circle cx="588" cy="30" r="16" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
+          <text x="588" y="36" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">3</text>
+          <text x="614" y="36" fill={FG} fontSize="13" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">New Coordinates</text>
 
           {/* Same circle */}
           <circle cx="680" cy="155" r="85" fill="none" stroke={GREEN} strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.3" />
@@ -434,12 +449,22 @@ export default function TurboQuantPaper() {
           {/* New projections on axes — more balanced */}
           <line x1="760" y1="140" x2="760" y2="155" stroke={GREEN} strokeWidth="1" strokeDasharray="3 2" strokeOpacity="0.5" />
           <line x1="760" y1="140" x2="680" y2="140" stroke={GREEN} strokeWidth="1" strokeDasharray="3 2" strokeOpacity="0.5" />
-          <text x="762" y="168" fill={GREEN} fontSize="9" fontFamily="'JetBrains Mono', monospace">y₁=0.98</text>
-          <text x="700" y="137" fill={GREEN} fontSize="9" fontFamily="'JetBrains Mono', monospace">y₂=0.15</text>
+          <text x="762" y="170" fill={GREEN} fontSize="11" fontFamily="'JetBrains Mono', monospace">y&#x2081;=0.98</text>
+          <text x="696" y="135" fill={GREEN} fontSize="11" fontFamily="'JetBrains Mono', monospace">y&#x2082;=0.15</text>
 
-          {/* Bottom insight bar */}
-          <rect x="80" y="248" width="640" height="24" rx="8" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="0.8" />
-          <text x="400" y="264" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">
+          {/* LENGTH annotation for step 3 */}
+          <rect x="620" y="192" width="120" height="22" rx="6" fill={PURPLE} fillOpacity="0.12" stroke={PURPLE} strokeWidth="0.8" />
+          <text x="680" y="208" fill={PURPLE} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">LENGTH = 1.0</text>
+
+          {/* KEY INSIGHT box */}
+          <rect x="200" y="250" width="400" height="36" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.2" />
+          <text x="400" y="273" fill={FG} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">
+            {'Same length, different direction -- that is the whole trick'}
+          </text>
+
+          {/* Bottom formula bar */}
+          <rect x="80" y="300" width="640" height="28" rx="8" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="0.8" />
+          <text x="400" y="320" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">
             {'||x|| = ||Πx|| — length preserved exactly. Only the DIRECTION is randomized.'}
           </text>
         </svg>
@@ -516,23 +541,23 @@ export default function TurboQuantPaper() {
 
       {/* SVG 10: The Hypersphere Intuition */}
       <Diagram caption="The Hypersphere Intuition: a point on the sphere keeps its length after rotation, but coordinate projections redistribute uniformly">
-        <svg viewBox="0 0 800 350" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <svg viewBox="0 0 800 420" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
           <defs>
             <marker id="tq-hyp-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="7" markerHeight="5" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
             </marker>
-            <radialGradient id="tq-sph-L" cx="40%" cy="35%" r="55%">
-              <stop offset="0%" stopColor={A} stopOpacity="0.18" />
-              <stop offset="70%" stopColor={A} stopOpacity="0.04" />
+            <radialGradient id="tq-sph-L" cx="35%" cy="30%" r="60%">
+              <stop offset="0%" stopColor={A} stopOpacity="0.25" />
+              <stop offset="50%" stopColor={A} stopOpacity="0.08" />
               <stop offset="100%" stopColor={A} stopOpacity="0" />
             </radialGradient>
-            <radialGradient id="tq-sph-R" cx="40%" cy="35%" r="55%">
-              <stop offset="0%" stopColor={GREEN} stopOpacity="0.18" />
-              <stop offset="70%" stopColor={GREEN} stopOpacity="0.04" />
+            <radialGradient id="tq-sph-R" cx="35%" cy="30%" r="60%">
+              <stop offset="0%" stopColor={GREEN} stopOpacity="0.25" />
+              <stop offset="50%" stopColor={GREEN} stopOpacity="0.08" />
               <stop offset="100%" stopColor={GREEN} stopOpacity="0" />
             </radialGradient>
           </defs>
-          <rect width="800" height="350" rx="12" fill={BG} />
+          <rect width="800" height="420" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="24" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">The Hypersphere Intuition</text>
@@ -540,17 +565,17 @@ export default function TurboQuantPaper() {
 
           {/* === LEFT: Before rotation === */}
           <text x="175" y="62" fill={A} fontSize="12" fontWeight="700" textAnchor="middle">BEFORE ROTATION</text>
-          <ellipse cx="175" cy="178" rx="95" ry="95" fill="url(#tq-sph-L)" stroke={A} strokeWidth="1" strokeDasharray="4 3" />
-          <ellipse cx="175" cy="178" rx="95" ry="28" fill="none" stroke={A} strokeWidth="0.6" strokeDasharray="3 3" opacity="0.4" />
+          <ellipse cx="175" cy="178" rx="95" ry="95" fill="url(#tq-sph-L)" stroke={A} strokeWidth="1.5" strokeDasharray="4 3" />
+          <ellipse cx="175" cy="178" rx="95" ry="28" fill="none" stroke={A} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.5" />
           <ellipse cx="175" cy="178" rx="28" ry="95" fill="none" stroke={A} strokeWidth="0.6" strokeDasharray="3 3" opacity="0.3" />
 
-          {/* Axes */}
-          <line x1="175" y1="178" x2="282" y2="178" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
-          <text x="288" y="182" fill={GRAY} fontSize="10" fontFamily="'JetBrains Mono', monospace">x</text>
-          <line x1="175" y1="178" x2="175" y2="76" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
-          <text x="175" y="70" fill={GRAY} fontSize="10" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">y</text>
-          <line x1="175" y1="178" x2="122" y2="230" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
-          <text x="114" y="238" fill={GRAY} fontSize="10" fontFamily="'JetBrains Mono', monospace">z</text>
+          {/* Axes — further from sphere */}
+          <line x1="175" y1="178" x2="290" y2="178" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
+          <text x="298" y="182" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">x</text>
+          <line x1="175" y1="178" x2="175" y2="70" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
+          <text x="175" y="62" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">y</text>
+          <line x1="175" y1="178" x2="115" y2="238" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
+          <text x="106" y="248" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">z</text>
 
           {/* Point on sphere (concentrated: large x, small y, z) */}
           <line x1="175" y1="178" x2="260" y2="118" stroke={A3} strokeWidth="2" />
@@ -560,33 +585,33 @@ export default function TurboQuantPaper() {
           <line x1="260" y1="118" x2="175" y2="118" stroke={A} strokeWidth="0.8" strokeDasharray="3 2" opacity="0.5" />
 
           {/* Projection bars */}
-          <text x="108" y="298" fill={GRAY} fontSize="9">Projections:</text>
-          <rect x="108" y="302" width="50" height="9" rx="2" fill={A} opacity="0.9" />
-          <text x="133" y="324" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">x=.85</text>
-          <rect x="168" y="305" width="16" height="6" rx="2" fill={A} opacity="0.6" />
-          <text x="176" y="324" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">y=.28</text>
-          <rect x="218" y="306" width="8" height="5" rx="1" fill={A} opacity="0.4" />
-          <text x="222" y="324" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">z=.10</text>
+          <text x="108" y="298" fill={GRAY} fontSize="11">Projections:</text>
+          <rect x="108" y="304" width="55" height="10" rx="2" fill={A} opacity="0.9" />
+          <text x="135" y="330" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">x=.85</text>
+          <rect x="175" y="307" width="18" height="7" rx="2" fill={A} opacity="0.6" />
+          <text x="184" y="330" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">y=.28</text>
+          <rect x="230" y="308" width="10" height="6" rx="1" fill={A} opacity="0.4" />
+          <text x="235" y="330" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">z=.10</text>
 
           {/* Arrow between spheres */}
           <line x1="310" y1="178" x2="390" y2="178" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-hyp-arr)" />
           <rect x="322" y="160" width="56" height="20" rx="6" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="0.8" />
           <text x="350" y="174" fill={A} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'\u03A0·p'}</text>
-          <text x="350" y="148" fill={GRAY} fontSize="9" textAnchor="middle">Random rotate</text>
+          <text x="350" y="148" fill={GRAY} fontSize="11" textAnchor="middle">Random rotate</text>
 
           {/* === RIGHT: After rotation === */}
           <text x="575" y="62" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">AFTER ROTATION</text>
-          <ellipse cx="575" cy="178" rx="95" ry="95" fill="url(#tq-sph-R)" stroke={GREEN} strokeWidth="1" strokeDasharray="4 3" />
-          <ellipse cx="575" cy="178" rx="95" ry="28" fill="none" stroke={GREEN} strokeWidth="0.6" strokeDasharray="3 3" opacity="0.4" />
+          <ellipse cx="575" cy="178" rx="95" ry="95" fill="url(#tq-sph-R)" stroke={GREEN} strokeWidth="1.5" strokeDasharray="4 3" />
+          <ellipse cx="575" cy="178" rx="95" ry="28" fill="none" stroke={GREEN} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.5" />
           <ellipse cx="575" cy="178" rx="28" ry="95" fill="none" stroke={GREEN} strokeWidth="0.6" strokeDasharray="3 3" opacity="0.3" />
 
-          {/* Axes */}
-          <line x1="575" y1="178" x2="682" y2="178" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
-          <text x="688" y="182" fill={GRAY} fontSize="10" fontFamily="'JetBrains Mono', monospace">x</text>
-          <line x1="575" y1="178" x2="575" y2="76" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
-          <text x="575" y="70" fill={GRAY} fontSize="10" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">y</text>
-          <line x1="575" y1="178" x2="522" y2="230" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
-          <text x="514" y="238" fill={GRAY} fontSize="10" fontFamily="'JetBrains Mono', monospace">z</text>
+          {/* Axes — further from sphere */}
+          <line x1="575" y1="178" x2="690" y2="178" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
+          <text x="698" y="182" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">x</text>
+          <line x1="575" y1="178" x2="575" y2="70" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
+          <text x="575" y="62" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">y</text>
+          <line x1="575" y1="178" x2="515" y2="238" stroke={GRAY} strokeWidth="0.7" strokeDasharray="3 2" />
+          <text x="506" y="248" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">z</text>
 
           {/* Rotated point (spread evenly) */}
           <line x1="575" y1="178" x2="628" y2="110" stroke={GREEN} strokeWidth="2" />
@@ -596,22 +621,23 @@ export default function TurboQuantPaper() {
           <line x1="628" y1="110" x2="575" y2="110" stroke={GREEN} strokeWidth="0.8" strokeDasharray="3 2" opacity="0.5" />
 
           {/* Projection bars (uniform) */}
-          <text x="508" y="298" fill={GRAY} fontSize="9">Projections:</text>
-          <rect x="508" y="302" width="30" height="8" rx="2" fill={GREEN} opacity="0.8" />
-          <text x="523" y="324" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">x=.55</text>
-          <rect x="566" y="303" width="27" height="7" rx="2" fill={GREEN} opacity="0.8" />
-          <text x="580" y="324" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">y=.51</text>
-          <rect x="624" y="303" width="25" height="7" rx="2" fill={GREEN} opacity="0.8" />
-          <text x="637" y="324" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">z=.47</text>
+          <text x="508" y="298" fill={GRAY} fontSize="11">Projections:</text>
+          <rect x="508" y="304" width="33" height="9" rx="2" fill={GREEN} opacity="0.8" />
+          <text x="525" y="330" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">x=.55</text>
+          <rect x="570" y="305" width="30" height="8" rx="2" fill={GREEN} opacity="0.8" />
+          <text x="585" y="330" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">y=.51</text>
+          <rect x="632" y="305" width="28" height="8" rx="2" fill={GREEN} opacity="0.8" />
+          <text x="646" y="330" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">z=.47</text>
 
           {/* Radius preserved */}
-          <rect x="316" y="196" width="120" height="26" rx="8" fill={PURPLE} fillOpacity="0.1" stroke={PURPLE} strokeWidth="0.8" />
-          <text x="376" y="210" fill={PURPLE} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"||p||=||p'||=1"}</text>
-          <text x="376" y="220" fill={GRAY} fontSize="8" textAnchor="middle">length preserved</text>
+          <rect x="316" y="196" width="120" height="30" rx="8" fill={PURPLE} fillOpacity="0.12" stroke={PURPLE} strokeWidth="1" />
+          <text x="376" y="212" fill={PURPLE} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"||p||=||p'||=1"}</text>
+          <text x="376" y="224" fill={GRAY} fontSize="11" textAnchor="middle">length preserved</text>
 
-          {/* Bottom insight */}
-          <rect x="180" y="334" width="440" height="12" rx="5" fill={A} fillOpacity="0.08" />
-          <text x="400" y="344" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle" opacity="0.8">{'In high-d: ALL projections cluster near 1/\u221Ad \u2014 the Beta distribution in action'}</text>
+          {/* KEY INSIGHT box */}
+          <rect x="100" y="350" width="600" height="54" rx="10" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1.2" />
+          <text x="400" y="368" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle">KEY INSIGHT</text>
+          <text x="400" y="390" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">{'On a high-d sphere, all coordinate projections \u2248 Gaussian(0, 1/d) -- the Beta distribution in action'}</text>
         </svg>
       </Diagram>
       <ConceptCard title="From Beta Distribution to Lloyd-Max Quantizer" color={A2} defaultOpen={false}>
@@ -639,100 +665,198 @@ export default function TurboQuantPaper() {
 
       {/* SVG 4: Beta Distribution → Quantization Levels */}
       <Diagram caption="Beta Distribution to Quantization Levels: density-aware placement puts more levels where data concentrates">
+        <svg viewBox="0 0 800 520" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+          <defs>
+            <linearGradient id="tq-beta-fill" x1="0.5" y1="1" x2="0.5" y2="0">
+              <stop offset="0%" stopColor={A} stopOpacity="0.0" />
+              <stop offset="50%" stopColor={A} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={A} stopOpacity="0.45" />
+            </linearGradient>
+          </defs>
+          <rect width="800" height="520" rx="12" fill={BG} />
+
+          {/* Title */}
+          <text x="400" y="24" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">BETA DISTRIBUTION AND OPTIMAL QUANTIZATION LEVELS</text>
+          <text x="400" y="42" fill={GRAY} fontSize="11" textAnchor="middle">Beta(64, 64) for d=128 -- levels placed at equal-probability region centroids</text>
+
+          {/* === MAIN CURVE === */}
+          <text x="400" y="62" fill={A} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Beta(64, 64)</text>
+
+          {/* Bell curve with gradient fill */}
+          <path d={`M 80 195
+            C 80 195, 120 193, 160 186
+            C 200 178, 240 148, 280 112
+            C 320 86, 360 74, 400 71
+            C 440 74, 480 86, 520 112
+            C 560 148, 600 178, 640 186
+            C 680 193, 720 195, 720 195
+            L 720 195 L 80 195 Z`}
+            fill="url(#tq-beta-fill)" stroke={A3} strokeWidth="2.5" />
+
+          {/* Axis */}
+          <line x1="80" y1="195" x2="720" y2="195" stroke={GRAY} strokeWidth="1" strokeOpacity="0.5" />
+          <text x="80" y="212" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">-1</text>
+          <text x="400" y="212" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">0</text>
+          <text x="720" y="212" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="end">+1</text>
+
+          {/* 16 quantization thresholds as LABELED vertical lines */}
+          {(() => {
+            const thresholds = [95, 140, 175, 210, 245, 275, 305, 335, 365, 395, 425, 455, 490, 525, 565, 610, 700];
+            const heights = [5, 12, 24, 42, 60, 74, 84, 88, 88, 84, 74, 60, 42, 24, 12, 5, 5];
+            return thresholds.map((x, i) => (
+              <line key={`th-${i}`} x1={x} y1={195 - Math.max(heights[i] || 3, 3) * 1.4} x2={x} y2={198} stroke={GRAY} strokeWidth="1" strokeDasharray="3 2" strokeOpacity="0.6" />
+            ));
+          })()}
+
+          {/* Label: thresholds */}
+          <text x="106" y="84" fill={GRAY} fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">{'<-- SPARSE (wide intervals)'}</text>
+          <text x="580" y="84" fill={GRAY} fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">{'SPARSE (wide intervals) -->'}</text>
+          <text x="400" y="68" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">DENSE (narrow intervals)</text>
+
+          {/* === RECONSTRUCTION POINTS ROW === */}
+          <text x="400" y="234" fill={FG} fontSize="12" fontWeight="700" textAnchor="middle">16 RECONSTRUCTION POINTS (centroids)</text>
+
+          {(() => {
+            const centroids = [118, 158, 193, 228, 260, 290, 320, 350, 380, 410, 440, 473, 508, 545, 588, 655];
+            const vals = ['-0.88','-0.75','-0.61','-0.46','-0.31','-0.17','-0.05','0.05','0.14','0.23','0.34','0.46','0.59','0.72','0.86','0.95'];
+            const colors = [BLUE, BLUE, PURPLE, PURPLE, A, A, GREEN, GREEN, GREEN, GREEN, A, A, PURPLE, PURPLE, BLUE, BLUE];
+            return centroids.map((x, i) => (
+              <g key={`rc-${i}`}>
+                <circle cx={x} cy={250} r="5" fill={colors[i]} opacity="0.9" />
+                <text x={x} y={272} fill={colors[i]} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{vals[i]}</text>
+              </g>
+            ));
+          })()}
+          <line x1="80" y1="250" x2="720" y2="250" stroke={GRAY} strokeWidth="0.6" strokeOpacity="0.3" />
+
+          {/* Spacing annotations */}
+          <line x1="320" y1="280" x2="380" y2="280" stroke={GREEN} strokeWidth="2" />
+          <text x="350" y="294" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">narrow</text>
+          <line x1="95" y1="280" x2="158" y2="280" stroke={BLUE} strokeWidth="2" />
+          <text x="127" y="294" fill={BLUE} fontSize="11" fontWeight="700" textAnchor="middle">wide</text>
+
+          {/* === ZOOMED INSET: Center vs Tail === */}
+          <rect x="50" y="310" width="330" height="110" rx="8" fill={GREEN} fillOpacity="0.05" stroke={GREEN} strokeWidth="1" />
+          <text x="215" y="328" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">CENTER (dense region)</text>
+          {/* Dense reconstruction points zoomed */}
+          {[90, 130, 170, 210, 250, 290, 330].map((x, i) => (
+            <g key={`zc-${i}`}>
+              <circle cx={x} cy={360} r="6" fill={GREEN} opacity="0.8" />
+              <line x1={x} y1={340} x2={x} y2={354} stroke={GREEN} strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
+            </g>
+          ))}
+          <line x1="70" y1="360" x2="350" y2="360" stroke={GRAY} strokeWidth="0.8" strokeOpacity="0.4" />
+          <text x="215" y="390" fill={GREEN} fontSize="11" textAnchor="middle">7 levels in center 40% of range</text>
+          <text x="215" y="406" fill={GRAY} fontSize="11" textAnchor="middle">Small spacing = small error</text>
+
+          <rect x="420" y="310" width="330" height="110" rx="8" fill={BLUE} fillOpacity="0.05" stroke={BLUE} strokeWidth="1" />
+          <text x="585" y="328" fill={BLUE} fontSize="12" fontWeight="700" textAnchor="middle">TAILS (sparse region)</text>
+          {/* Sparse reconstruction points zoomed */}
+          {[470, 570, 700].map((x, i) => (
+            <g key={`zt-${i}`}>
+              <circle cx={x} cy={360} r="6" fill={BLUE} opacity="0.8" />
+              <line x1={x} y1={340} x2={x} y2={354} stroke={BLUE} strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
+            </g>
+          ))}
+          <line x1="440" y1="360" x2="720" y2="360" stroke={GRAY} strokeWidth="0.8" strokeOpacity="0.4" />
+          <text x="585" y="390" fill={BLUE} fontSize="11" textAnchor="middle">3 levels in outer 40% of range</text>
+          <text x="585" y="406" fill={GRAY} fontSize="11" textAnchor="middle">Wide spacing = OK (rare data here)</text>
+
+          {/* === KEY INSIGHT BOX === */}
+          <rect x="60" y="440" width="680" height="60" rx="10" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
+          <text x="400" y="462" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">WHY UNEVEN SPACING?</text>
+          <text x="400" y="484" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">More data in the middle = more quantization levels there = less error where it matters</text>
+        </svg>
+      </Diagram>
+
+      {/* SVG A: Rotation = Shuffling Information */}
+      <Diagram caption="Rotation = Shuffling Information: a random rotation redistributes which coordinate carries which piece of energy, like shuffling a sorted deck of cards">
         <svg viewBox="0 0 800 300" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
-            <linearGradient id="tq-beta-fill" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor={A} stopOpacity="0.0" />
-              <stop offset="100%" stopColor={A} stopOpacity="0.35" />
-            </linearGradient>
-            <linearGradient id="tq-beta-fill2" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor={PURPLE} stopOpacity="0.0" />
-              <stop offset="100%" stopColor={PURPLE} stopOpacity="0.25" />
-            </linearGradient>
+            <marker id="tq-shuf-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+              <polygon points="0 0, 10 3.5, 0 7" fill={A} />
+            </marker>
           </defs>
           <rect width="800" height="300" rx="12" fill={BG} />
 
           {/* Title */}
-          <text x="400" y="24" fill={FG} fontSize="13" fontWeight="700" textAnchor="middle">BETA DISTRIBUTION AND OPTIMAL QUANTIZATION LEVELS</text>
-          <text x="400" y="42" fill={GRAY} fontSize="10" textAnchor="middle">Beta(d/2, d/2) for d=128 — levels placed at equal-probability region centroids</text>
+          <text x="400" y="26" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">Rotation = Shuffling Information Across Coordinates</text>
+          <text x="400" y="46" fill={GRAY} fontSize="11" textAnchor="middle">Before: energy clustered (correlated). After: energy spread evenly (independent).</text>
 
-          {/* Beta distribution curve (bell-shaped for high d) */}
-          {/* Approximated as a smooth bell curve */}
-          <path d={`M 80 180
-            C 80 180, 120 178, 160 170
-            C 200 162, 240 130, 280 95
-            C 320 70, 360 58, 400 55
-            C 440 58, 480 70, 520 95
-            C 560 130, 600 162, 640 170
-            C 680 178, 720 180, 720 180
-            L 720 180 L 80 180 Z`}
-            fill="url(#tq-beta-fill)" stroke={A} strokeWidth="2" />
+          {/* LEFT: Before — sorted cards */}
+          <text x="170" y="72" fill={RED} fontSize="13" fontWeight="700" textAnchor="middle">BEFORE ROTATION</text>
+          <text x="170" y="90" fill={GRAY} fontSize="11" textAnchor="middle">Cards sorted by suit (correlated)</text>
 
-          {/* Curve outline only (above fill) */}
-          <path d={`M 80 180
-            C 80 180, 120 178, 160 170
-            C 200 162, 240 130, 280 95
-            C 320 70, 360 58, 400 55
-            C 440 58, 480 70, 520 95
-            C 560 130, 600 162, 640 170
-            C 680 178, 720 180, 720 180`}
-            fill="none" stroke={A3} strokeWidth="2" />
+          {/* 8 cards — sorted by color group */}
+          {[
+            { x: 42, label: 'x\u2081', val: '0.82', color: A, h: 60 },
+            { x: 82, label: 'x\u2082', val: '0.71', color: A, h: 52 },
+            { x: 122, label: 'x\u2083', val: '0.55', color: A2, h: 40 },
+            { x: 162, label: 'x\u2084', val: '0.38', color: A2, h: 28 },
+            { x: 202, label: 'x\u2085', val: '0.12', color: GRAY, h: 9 },
+            { x: 242, label: 'x\u2086', val: '0.04', color: GRAY, h: 3 },
+            { x: 282, label: 'x\u2087', val: '0.02', color: GRAY, h: 2 },
+            { x: 312, label: 'x\u2088', val: '0.01', color: GRAY, h: 1 },
+          ].map((c, i) => (
+            <g key={`bcard-${i}`}>
+              <rect x={c.x} y={108} width="32" height="70" rx="5" fill={c.color} fillOpacity="0.15" stroke={c.color} strokeWidth="1.2" />
+              <text x={c.x + 16} y="128" fill={c.color} fontSize="12" fontWeight="700" textAnchor="middle">{c.label}</text>
+              <text x={c.x + 16} y="146" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">{c.val}</text>
+              <rect x={c.x + 6} y={178 - c.h} width="20" height={c.h} rx="3" fill={c.color} fillOpacity="0.6" />
+            </g>
+          ))}
 
-          {/* Axis line */}
-          <line x1="80" y1="180" x2="720" y2="180" stroke={GRAY} strokeWidth="1" strokeOpacity="0.5" />
-          <text x="80" y="196" fill={GRAY} fontSize="9" fontFamily="'JetBrains Mono', monospace">-1</text>
-          <text x="400" y="196" fill={GRAY} fontSize="9" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">0</text>
-          <text x="720" y="196" fill={GRAY} fontSize="9" fontFamily="'JetBrains Mono', monospace" textAnchor="end">+1</text>
+          {/* Bracket: "high energy" group */}
+          <line x1="42" y1="186" x2="195" y2="186" stroke={A} strokeWidth="1.5" />
+          <text x="118" y="202" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">High energy</text>
 
-          {/* Distribution label */}
-          <text x="400" y="48" fill={A} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Beta(64, 64)</text>
+          {/* Bracket: "near zero" group */}
+          <line x1="202" y1="186" x2="344" y2="186" stroke={GRAY} strokeWidth="1" />
+          <text x="273" y="202" fill={GRAY} fontSize="11" textAnchor="middle">Near zero</text>
 
-          {/* 16 quantization levels (4-bit) — denser in center, sparser at tails */}
-          {(() => {
-            // Non-uniform thresholds: denser near center
-            const thresholds = [95, 140, 175, 210, 245, 275, 305, 335, 365, 395, 425, 455, 490, 525, 565, 610, 700];
-            // Reconstruction points (centroids) between thresholds
-            const centroids = [118, 158, 193, 228, 260, 290, 320, 350, 380, 410, 440, 473, 508, 545, 588, 655];
-            // Heights at centroids (approximating the bell curve)
-            const heights = [4, 10, 22, 40, 58, 72, 82, 86, 86, 82, 72, 58, 40, 22, 10, 4];
-            const regionColors = [BLUE, PURPLE, A, GREEN, BLUE, PURPLE, A, GREEN, BLUE, PURPLE, A, GREEN, BLUE, PURPLE, A, GREEN];
+          {/* Arrow: shuffle */}
+          <line x1="358" y1="148" x2="426" y2="148" stroke={A} strokeWidth="2" markerEnd="url(#tq-shuf-arr)" />
+          <rect x="362" y="122" width="56" height="22" rx="6" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1" />
+          <text x="390" y="137" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle">{'\u03A0 \u00b7'}</text>
+          <text x="390" y="168" fill={GRAY} fontSize="11" textAnchor="middle">Shuffle!</text>
 
+          {/* RIGHT: After — randomly mixed cards */}
+          <text x="610" y="72" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">AFTER ROTATION</text>
+          <text x="610" y="90" fill={GRAY} fontSize="11" textAnchor="middle">Cards randomly mixed (independent)</text>
+
+          {/* 8 cards — shuffled, roughly equal values */}
+          {[
+            { x: 440, label: 'y\u2081', val: '0.37' },
+            { x: 480, label: 'y\u2082', val: '0.34' },
+            { x: 520, label: 'y\u2083', val: '0.40' },
+            { x: 560, label: 'y\u2084', val: '0.36' },
+            { x: 600, label: 'y\u2085', val: '0.33' },
+            { x: 640, label: 'y\u2086', val: '0.39' },
+            { x: 680, label: 'y\u2087', val: '0.35' },
+            { x: 720, label: 'y\u2088', val: '0.38' },
+          ].map((c, i) => {
+            const h = 24 + (i % 3) * 2;
             return (
-              <>
-                {/* Threshold lines */}
-                {thresholds.map((x, i) => (
-                  <line key={`th-${i}`} x1={x} y1={180 - Math.max(heights[Math.min(i, 15)] || 2, 2) * 1.4} x2={x} y2={183} stroke={GRAY} strokeWidth="0.8" strokeDasharray="3 2" strokeOpacity="0.5" />
-                ))}
-                {/* Reconstruction dots at centroids */}
-                {centroids.map((x, i) => (
-                  <g key={`rc-${i}`}>
-                    <circle cx={x} cy={180} r="3.5" fill={regionColors[i]} opacity="0.85" />
-                    <line x1={x} y1={180} x2={x} y2={180 - heights[i] * 1.4} stroke={regionColors[i]} strokeWidth="1" strokeOpacity="0.4" strokeDasharray="2 2" />
-                  </g>
-                ))}
-              </>
+            <g key={`acard-${i}`}>
+              <rect x={c.x} y={108} width="32" height="70" rx="5" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.2" />
+              <text x={c.x + 16} y="128" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">{c.label}</text>
+              <text x={c.x + 16} y="146" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">{c.val}</text>
+              <rect x={c.x + 6} y={178 - h} width="20" height={h} rx="3" fill={GREEN} fillOpacity="0.6" />
+            </g>
             );
-          })()}
+          })}
 
-          {/* Labels for the detail area */}
-          <rect x="50" y="208" width="700" height="82" rx="8" fill={A} fillOpacity="0.04" stroke={A} strokeWidth="0.5" strokeOpacity="0.2" />
+          {/* Bracket: "all ~ equal" */}
+          <line x1="440" y1="186" x2="752" y2="186" stroke={GREEN} strokeWidth="1.5" />
+          <text x="596" y="202" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">{'All \u2248 equal energy (each \u2248 1/\u221Ad)'}</text>
 
-          {/* Legend items */}
-          <line x1="80" y1="225" x2="80" y2="240" stroke={GRAY} strokeWidth="1" strokeDasharray="3 2" />
-          <text x="92" y="236" fill={GRAY} fontSize="10" fontFamily="Inter, system-ui, sans-serif">Thresholds (region boundaries)</text>
+          {/* Bottom insight */}
+          <rect x="80" y="222" width="640" height="26" rx="8" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1" />
+          <text x="400" y="240" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">{'\u2016x\u2016 = \u2016\u03A0x\u2016 \u2014 same total energy, just redistributed uniformly'}</text>
 
-          <circle cx="270" cy="233" r="3.5" fill={A} />
-          <text x="282" y="237" fill={FG} fontSize="10" fontFamily="Inter, system-ui, sans-serif">Reconstruction points (centroids)</text>
-
-          {/* Key insight row */}
-          <rect x="70" y="250" width="180" height="28" rx="6" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="0.8" />
-          <text x="160" y="268" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">4-bit = 16 levels</text>
-
-          <rect x="270" y="250" width="260" height="28" rx="6" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="0.8" />
-          <text x="400" y="268" fill={GREEN} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Dense in center (high probability mass)</text>
-
-          <rect x="550" y="250" width="210" height="28" rx="6" fill={PURPLE} fillOpacity="0.08" stroke={PURPLE} strokeWidth="0.8" />
-          <text x="655" y="268" fill={PURPLE} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">Sparse at tails (low probability)</text>
+          {/* Key takeaway */}
+          <rect x="140" y="258" width="520" height="30" rx="8" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="1" />
+          <text x="400" y="278" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">Uniform energy = every coordinate quantizes the same way = EASY</text>
         </svg>
       </Diagram>
 
@@ -746,7 +870,7 @@ export default function TurboQuantPaper() {
       />
 
       <Diagram caption="TurboQuant Pipeline: from input vector to compressed code and back">
-        <svg viewBox="0 0 800 340" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 400" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-arr2" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
@@ -755,92 +879,92 @@ export default function TurboQuantPaper() {
               <polygon points="0 0, 10 3.5, 0 7" fill={BLUE} />
             </marker>
           </defs>
-          <rect width="800" height="340" rx="12" fill={BG} />
+          <rect width="800" height="400" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="28" fill={A} fontSize="14" fontWeight="700" textAnchor="middle">QUANTIZATION (Encode)</text>
 
-          {/* Step boxes -- encode path */}
+          {/* Step boxes -- encode path — more spacing */}
           {/* Input x */}
-          <rect x="20" y="55" width="100" height="50" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
-          <text x="70" y="76" fill={FG} fontSize="13" fontWeight="600" textAnchor="middle">Input x</text>
-          <text x="70" y="92" fill={GRAY} fontSize="10" textAnchor="middle">d-dim vector</text>
+          <rect x="15" y="55" width="108" height="55" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
+          <text x="69" y="78" fill={FG} fontSize="13" fontWeight="600" textAnchor="middle">Input x</text>
+          <text x="69" y="96" fill={GRAY} fontSize="11" textAnchor="middle">d-dim vector</text>
 
           {/* Arrow */}
-          <line x1="125" y1="80" x2="155" y2="80" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
+          <line x1="128" y1="82" x2="158" y2="82" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
 
           {/* Normalize */}
-          <rect x="160" y="55" width="110" height="50" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
-          <text x="215" y="76" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Normalize</text>
-          <text x="215" y="92" fill={GRAY} fontSize="10" textAnchor="middle">{'x/||x|| + store ||x||'}</text>
+          <rect x="163" y="55" width="115" height="55" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
+          <text x="220" y="78" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Normalize</text>
+          <text x="220" y="96" fill={GRAY} fontSize="11" textAnchor="middle">{'x/||x|| + store ||x||'}</text>
 
           {/* Arrow */}
-          <line x1="275" y1="80" x2="305" y2="80" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
+          <line x1="283" y1="82" x2="313" y2="82" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
 
           {/* Random rotation */}
-          <rect x="310" y="55" width="120" height="50" rx="8" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="2" />
-          <text x="370" y="76" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle">Random Rotate</text>
-          <text x="370" y="92" fill={GRAY} fontSize="10" textAnchor="middle">{'y = Π · (x/||x||)'}</text>
+          <rect x="318" y="55" width="125" height="55" rx="8" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="2" />
+          <text x="380" y="78" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle">Random Rotate</text>
+          <text x="380" y="96" fill={GRAY} fontSize="11" textAnchor="middle">{'y = Π · (x/||x||)'}</text>
 
           {/* Arrow */}
-          <line x1="435" y1="80" x2="465" y2="80" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
+          <line x1="448" y1="82" x2="478" y2="82" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
 
           {/* Scalar quantize */}
-          <rect x="470" y="55" width="130" height="50" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
-          <text x="535" y="76" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Scalar Quantize</text>
-          <text x="535" y="92" fill={GRAY} fontSize="10" textAnchor="middle">Lloyd-Max per coord</text>
+          <rect x="483" y="55" width="130" height="55" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
+          <text x="548" y="78" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Scalar Quantize</text>
+          <text x="548" y="96" fill={GRAY} fontSize="11" textAnchor="middle">Lloyd-Max per coord</text>
 
           {/* Arrow */}
-          <line x1="605" y1="80" x2="635" y2="80" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
+          <line x1="618" y1="82" x2="648" y2="82" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-arr2)" />
 
           {/* Output code */}
-          <rect x="640" y="55" width="140" height="50" rx="8" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="2" />
-          <text x="710" y="76" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">b-bit indices</text>
-          <text x="710" y="92" fill={GRAY} fontSize="10" textAnchor="middle">{'d indices + ||x|| = b·d+32 bits'}</text>
+          <rect x="653" y="55" width="130" height="55" rx="8" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="2" />
+          <text x="718" y="78" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">b-bit indices</text>
+          <text x="718" y="96" fill={GRAY} fontSize="11" textAnchor="middle">{'d indices + ||x|| = b·d+32 bits'}</text>
 
-          {/* DEQUANTIZATION path */}
-          <text x="400" y="155" fill={BLUE} fontSize="14" fontWeight="700" textAnchor="middle">DEQUANTIZATION (Decode)</text>
+          {/* DEQUANTIZATION path — shifted down for breathing room */}
+          <text x="400" y="165" fill={BLUE} fontSize="14" fontWeight="700" textAnchor="middle">DEQUANTIZATION (Decode)</text>
 
           {/* Code */}
-          <rect x="640" y="175" width="140" height="50" rx="8" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1.5" />
-          <text x="710" y="196" fill={FG} fontSize="13" fontWeight="600" textAnchor="middle">b-bit indices</text>
-          <text x="710" y="212" fill={GRAY} fontSize="10" textAnchor="middle">{'+ stored ||x||'}</text>
+          <rect x="653" y="185" width="130" height="55" rx="8" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1.5" />
+          <text x="718" y="208" fill={FG} fontSize="13" fontWeight="600" textAnchor="middle">b-bit indices</text>
+          <text x="718" y="226" fill={GRAY} fontSize="11" textAnchor="middle">{'+ stored ||x||'}</text>
 
           {/* Arrow left */}
-          <line x1="635" y1="200" x2="605" y2="200" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
+          <line x1="648" y1="212" x2="618" y2="212" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
 
           {/* Lookup */}
-          <rect x="470" y="175" width="130" height="50" rx="8" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1.5" />
-          <text x="535" y="196" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Lookup r_i</text>
-          <text x="535" y="212" fill={GRAY} fontSize="10" textAnchor="middle">Reconstruction points</text>
+          <rect x="483" y="185" width="130" height="55" rx="8" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1.5" />
+          <text x="548" y="208" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Lookup r_i</text>
+          <text x="548" y="226" fill={GRAY} fontSize="11" textAnchor="middle">Reconstruction points</text>
 
-          <line x1="465" y1="200" x2="435" y2="200" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
+          <line x1="478" y1="212" x2="448" y2="212" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
 
           {/* Inverse rotation */}
-          <rect x="310" y="175" width="120" height="50" rx="8" fill={BLUE} fillOpacity="0.2" stroke={BLUE} strokeWidth="2" />
-          <text x="370" y="196" fill="#60a5fa" fontSize="12" fontWeight="700" textAnchor="middle">Inverse Rotate</text>
-          <text x="370" y="212" fill={GRAY} fontSize="10" textAnchor="middle">{'Πᵀ · ŷ'}</text>
+          <rect x="318" y="185" width="125" height="55" rx="8" fill={BLUE} fillOpacity="0.2" stroke={BLUE} strokeWidth="2" />
+          <text x="380" y="208" fill="#60a5fa" fontSize="12" fontWeight="700" textAnchor="middle">Inverse Rotate</text>
+          <text x="380" y="226" fill={GRAY} fontSize="11" textAnchor="middle">{'Πᵀ · ŷ'}</text>
 
-          <line x1="305" y1="200" x2="275" y2="200" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
+          <line x1="313" y1="212" x2="283" y2="212" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
 
           {/* Rescale */}
-          <rect x="160" y="175" width="110" height="50" rx="8" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1.5" />
-          <text x="215" y="196" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Rescale</text>
-          <text x="215" y="212" fill={GRAY} fontSize="10" textAnchor="middle">{'||x|| · ŷ'}</text>
+          <rect x="163" y="185" width="115" height="55" rx="8" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1.5" />
+          <text x="220" y="208" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Rescale</text>
+          <text x="220" y="226" fill={GRAY} fontSize="11" textAnchor="middle">{'||x|| · ŷ'}</text>
 
-          <line x1="155" y1="200" x2="125" y2="200" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
+          <line x1="158" y1="212" x2="128" y2="212" stroke={BLUE} strokeWidth="1.5" markerEnd="url(#tq-arr2-blue)" />
 
           {/* Output */}
-          <rect x="20" y="175" width="100" height="50" rx="8" fill={BLUE} fillOpacity="0.15" stroke={BLUE} strokeWidth="2" />
-          <text x="70" y="196" fill="#60a5fa" fontSize="13" fontWeight="700" textAnchor="middle">{'\u0078\u0302'}</text>
-          <text x="70" y="212" fill={GRAY} fontSize="10" textAnchor="middle">Reconstructed</text>
+          <rect x="15" y="185" width="108" height="55" rx="8" fill={BLUE} fillOpacity="0.15" stroke={BLUE} strokeWidth="2" />
+          <text x="69" y="208" fill="#60a5fa" fontSize="13" fontWeight="700" textAnchor="middle">{'\u0078\u0302'}</text>
+          <text x="69" y="226" fill={GRAY} fontSize="11" textAnchor="middle">Reconstructed</text>
 
           {/* Bottom note */}
-          <rect x="100" y="265" width="600" height="55" rx="10" fill={A} fillOpacity="0.06" stroke={A} strokeWidth="1" strokeDasharray="4 3" />
-          <text x="400" y="285" fill={FG} fontSize="12" textAnchor="middle">
+          <rect x="80" y="280" width="640" height="60" rx="10" fill={A} fillOpacity="0.06" stroke={A} strokeWidth="1" strokeDasharray="4 3" />
+          <text x="400" y="302" fill={FG} fontSize="12" textAnchor="middle">
             Key property: the random rotation matrix Π is shared (seeded), not stored per-vector.
           </text>
-          <text x="400" y="305" fill={GRAY} fontSize="11" textAnchor="middle">
+          <text x="400" y="324" fill={GRAY} fontSize="11" textAnchor="middle">
             {'Total storage per vector: b · d bits (indices) + 32 bits (norm) = b · d + 32 bits'}
           </text>
         </svg>
@@ -848,7 +972,7 @@ export default function TurboQuantPaper() {
 
       {/* SVG 5: TurboQuant_mse Pipeline — Full Flow */}
       <Diagram caption="TurboQuant_mse Full Pipeline: encode path (top) and decode path (bottom) with step numbers">
-        <svg viewBox="0 0 800 350" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 420" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-pf-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
@@ -865,123 +989,130 @@ export default function TurboQuantPaper() {
               <stop offset="100%" stopColor={BLUE} stopOpacity="0.04" />
             </linearGradient>
           </defs>
-          <rect width="800" height="350" rx="12" fill={BG} />
+          <rect width="800" height="420" rx="12" fill={BG} />
 
-          {/* ENCODE PATH */}
-          <rect x="10" y="10" width="780" height="140" rx="8" fill="url(#tq-pf-enc)" stroke={A} strokeWidth="0.5" strokeOpacity="0.3" />
+          {/* ENCODE PATH — solid border */}
+          <rect x="10" y="10" width="780" height="160" rx="8" fill="url(#tq-pf-enc)" stroke={A} strokeWidth="1.2" />
           <text x="400" y="30" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">ENCODE</text>
 
           {/* Step 1: Input */}
           <circle cx="48" cy="56" r="10" fill={A} fillOpacity="0.25" stroke={A} strokeWidth="1.2" />
-          <text x="48" y="60" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle">1</text>
+          <text x="48" y="60" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">1</text>
           <rect x="22" y="70" width="52" height="40" rx="6" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1" />
-          <text x="48" y="86" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">Input</text>
-          <text x="48" y="100" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">x (128-d)</text>
+          <text x="48" y="86" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Input</text>
+          <text x="48" y="100" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">x (128-d)</text>
 
           <line x1="78" y1="90" x2="102" y2="90" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-pf-arr)" />
 
           {/* Step 2: Compute norm */}
           <circle cx="136" cy="56" r="10" fill={A} fillOpacity="0.25" stroke={A} strokeWidth="1.2" />
-          <text x="136" y="60" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle">2</text>
+          <text x="136" y="60" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">2</text>
           <rect x="106" y="70" width="60" height="40" rx="6" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1" />
-          <text x="136" y="86" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">Norm</text>
-          <text x="136" y="100" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'||x||'}</text>
+          <text x="136" y="86" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Norm</text>
+          <text x="136" y="100" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'||x||'}</text>
 
           <line x1="170" y1="90" x2="194" y2="90" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-pf-arr)" />
 
           {/* Step 3: Normalize */}
           <circle cx="234" cy="56" r="10" fill={A} fillOpacity="0.25" stroke={A} strokeWidth="1.2" />
-          <text x="234" y="60" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle">3</text>
+          <text x="234" y="60" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">3</text>
           <rect x="198" y="70" width="72" height="40" rx="6" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1" />
-          <text x="234" y="86" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">Normalize</text>
-          <text x="234" y="100" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'x/||x||'}</text>
+          <text x="234" y="86" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Normalize</text>
+          <text x="234" y="100" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'x/||x||'}</text>
 
           <line x1="274" y1="90" x2="298" y2="90" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-pf-arr)" />
 
           {/* Step 4: Random rotate — highlighted */}
           <circle cx="352" cy="56" r="10" fill={A} fillOpacity="0.35" stroke={A3} strokeWidth="1.5" />
-          <text x="352" y="60" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle">4</text>
+          <text x="352" y="60" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">4</text>
           <rect x="302" y="70" width="100" height="40" rx="6" fill={A} fillOpacity="0.2" stroke={A3} strokeWidth="1.5" />
           <text x="352" y="86" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">Random Rotate</text>
-          <text x="352" y="100" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'y = Π · (x/||x||)'}</text>
+          <text x="352" y="100" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'y = Π · (x/||x||)'}</text>
 
           <line x1="406" y1="90" x2="430" y2="90" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-pf-arr)" />
 
           {/* Step 5: Scalar quantize */}
           <circle cx="490" cy="56" r="10" fill={A} fillOpacity="0.25" stroke={A} strokeWidth="1.2" />
-          <text x="490" y="60" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle">5</text>
+          <text x="490" y="60" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">5</text>
           <rect x="434" y="70" width="112" height="40" rx="6" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1" />
-          <text x="490" y="86" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">Scalar Quantize</text>
-          <text x="490" y="100" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Lloyd-Max per y_i</text>
+          <text x="490" y="86" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Scalar Quantize</text>
+          <text x="490" y="100" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Lloyd-Max per y_i</text>
 
           <line x1="550" y1="90" x2="574" y2="90" stroke={A} strokeWidth="1.2" markerEnd="url(#tq-pf-arr)" />
 
           {/* Step 6: Store */}
           <circle cx="644" cy="56" r="10" fill={A} fillOpacity="0.25" stroke={A} strokeWidth="1.2" />
-          <text x="644" y="60" fill={A3} fontSize="10" fontWeight="700" textAnchor="middle">6</text>
+          <text x="644" y="60" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">6</text>
           <rect x="578" y="70" width="132" height="40" rx="6" fill={A} fillOpacity="0.18" stroke={A} strokeWidth="1.5" />
           <text x="644" y="86" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">Store Codes</text>
-          <text x="644" y="100" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'{||x||, q₁..q_d}'}</text>
+          <text x="644" y="100" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'{||x||, q₁..q_d}'}</text>
 
           {/* Norm side-branch annotation */}
-          <line x1="136" y1="112" x2="136" y2="130" stroke={A2} strokeWidth="1" strokeDasharray="3 2" />
-          <line x1="136" y1="130" x2="644" y2="130" stroke={A2} strokeWidth="1" strokeDasharray="3 2" />
-          <line x1="644" y1="130" x2="644" y2="112" stroke={A2} strokeWidth="1" strokeDasharray="3 2" />
-          <text x="390" y="142" fill={A2} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'||x|| stored as 32-bit float alongside quantized codes'}</text>
+          <line x1="136" y1="112" x2="136" y2="140" stroke={A2} strokeWidth="1" strokeDasharray="3 2" />
+          <line x1="136" y1="140" x2="644" y2="140" stroke={A2} strokeWidth="1" strokeDasharray="3 2" />
+          <line x1="644" y1="140" x2="644" y2="112" stroke={A2} strokeWidth="1" strokeDasharray="3 2" />
+          <text x="390" y="156" fill={A2} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'||x|| stored as 32-bit float (4 bytes) alongside quantized codes'}</text>
 
-          {/* DECODE PATH */}
-          <rect x="10" y="160" width="780" height="140" rx="8" fill="url(#tq-pf-dec)" stroke={BLUE} strokeWidth="0.5" strokeOpacity="0.3" />
-          <text x="400" y="180" fill="#60a5fa" fontSize="14" fontWeight="700" textAnchor="middle">DECODE</text>
+          {/* DECODE PATH — dashed border to distinguish from encode */}
+          <rect x="10" y="180" width="780" height="160" rx="8" fill="url(#tq-pf-dec)" stroke={BLUE} strokeWidth="1.2" strokeDasharray="8 4" />
+          <text x="400" y="200" fill="#60a5fa" fontSize="14" fontWeight="700" textAnchor="middle">DECODE</text>
 
           {/* Step A: Load codes */}
-          <circle cx="680" cy="206" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
-          <text x="680" y="210" fill="#60a5fa" fontSize="10" fontWeight="700" textAnchor="middle">A</text>
-          <rect x="610" y="220" width="140" height="40" rx="6" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1" />
-          <text x="680" y="236" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">Load Codes</text>
-          <text x="680" y="250" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'{||x||, q₁..q_d}'}</text>
+          <circle cx="680" cy="224" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
+          <text x="680" y="228" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">A</text>
+          <rect x="610" y="238" width="140" height="44" rx="6" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1" strokeDasharray="6 3" />
+          <text x="680" y="256" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Load Codes</text>
+          <text x="680" y="272" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'{||x||, q₁..q_d}'}</text>
 
-          <line x1="606" y1="240" x2="582" y2="240" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
+          <line x1="606" y1="260" x2="582" y2="260" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
 
           {/* Step B: Dequantize */}
-          <circle cx="520" cy="206" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
-          <text x="520" y="210" fill="#60a5fa" fontSize="10" fontWeight="700" textAnchor="middle">B</text>
-          <rect x="458" y="220" width="120" height="40" rx="6" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1" />
-          <text x="518" y="236" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">Dequantize</text>
-          <text x="518" y="250" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'q_i → r_i (lookup)'}</text>
+          <circle cx="520" cy="224" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
+          <text x="520" y="228" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">B</text>
+          <rect x="458" y="238" width="120" height="44" rx="6" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1" strokeDasharray="6 3" />
+          <text x="518" y="256" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Dequantize</text>
+          <text x="518" y="272" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'q_i → r_i (lookup)'}</text>
 
-          <line x1="454" y1="240" x2="430" y2="240" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
+          <line x1="454" y1="260" x2="430" y2="260" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
 
           {/* Step C: Inverse rotation — highlighted */}
-          <circle cx="362" cy="206" r="10" fill={BLUE} fillOpacity="0.35" stroke="#60a5fa" strokeWidth="1.5" />
-          <text x="362" y="210" fill="#60a5fa" fontSize="10" fontWeight="700" textAnchor="middle">C</text>
-          <rect x="306" y="220" width="120" height="40" rx="6" fill={BLUE} fillOpacity="0.2" stroke="#60a5fa" strokeWidth="1.5" />
-          <text x="366" y="236" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">{'Inverse Rotate'}</text>
-          <text x="366" y="250" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Πᵀ · ŷ'}</text>
+          <circle cx="362" cy="224" r="10" fill={BLUE} fillOpacity="0.35" stroke="#60a5fa" strokeWidth="1.5" />
+          <text x="362" y="228" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">C</text>
+          <rect x="306" y="238" width="120" height="44" rx="6" fill={BLUE} fillOpacity="0.2" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="6 3" />
+          <text x="366" y="256" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">{'Inverse Rotate'}</text>
+          <text x="366" y="272" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Πᵀ · ŷ'}</text>
 
-          <line x1="302" y1="240" x2="278" y2="240" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
+          <line x1="302" y1="260" x2="278" y2="260" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
 
           {/* Step D: Rescale */}
-          <circle cx="212" cy="206" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
-          <text x="212" y="210" fill="#60a5fa" fontSize="10" fontWeight="700" textAnchor="middle">D</text>
-          <rect x="154" y="220" width="120" height="40" rx="6" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1" />
-          <text x="214" y="236" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">Rescale</text>
-          <text x="214" y="250" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'||x|| · Πᵀŷ'}</text>
+          <circle cx="212" cy="224" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
+          <text x="212" y="228" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">D</text>
+          <rect x="154" y="238" width="120" height="44" rx="6" fill={BLUE} fillOpacity="0.12" stroke={BLUE} strokeWidth="1" strokeDasharray="6 3" />
+          <text x="214" y="256" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Rescale</text>
+          <text x="214" y="272" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'||x|| · Πᵀŷ'}</text>
 
-          <line x1="150" y1="240" x2="126" y2="240" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
+          <line x1="150" y1="260" x2="126" y2="260" stroke={BLUE} strokeWidth="1.2" markerEnd="url(#tq-pf-arr-b)" />
 
           {/* Step E: Output */}
-          <circle cx="62" cy="206" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
-          <text x="62" y="210" fill="#60a5fa" fontSize="10" fontWeight="700" textAnchor="middle">E</text>
-          <rect x="22" y="220" width="80" height="40" rx="6" fill={BLUE} fillOpacity="0.18" stroke={BLUE} strokeWidth="1.5" />
-          <text x="62" y="236" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">{'\u0078\u0302'}</text>
-          <text x="62" y="250" fill={GRAY} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">reconstructed</text>
+          <circle cx="62" cy="224" r="10" fill={BLUE} fillOpacity="0.25" stroke={BLUE} strokeWidth="1.2" />
+          <text x="62" y="228" fill="#60a5fa" fontSize="11" fontWeight="700" textAnchor="middle">E</text>
+          <rect x="22" y="238" width="80" height="44" rx="6" fill={BLUE} fillOpacity="0.18" stroke={BLUE} strokeWidth="1.5" strokeDasharray="6 3" />
+          <text x="62" y="256" fill="#60a5fa" fontSize="12" fontWeight="700" textAnchor="middle">{'\u0078\u0302'}</text>
+          <text x="62" y="272" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">reconstructed</text>
+
+          {/* Byte annotations along top */}
+          <text x="48" y="124" fill={A2} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">512B</text>
+          <text x="234" y="124" fill={A2} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">512B</text>
+          <text x="352" y="124" fill={A2} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">512B</text>
+          <text x="490" y="124" fill={A2} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">64B</text>
+          <text x="644" y="124" fill={A2} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">68B</text>
 
           {/* Bottom summary */}
-          <rect x="60" y="310" width="320" height="30" rx="6" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="0.6" />
-          <text x="220" y="330" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Encode: O(d log d) — rotate + d binary searches'}</text>
+          <rect x="60" y="370" width="320" height="34" rx="6" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="0.6" />
+          <text x="220" y="392" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Encode: O(d log d) — rotate + d binary searches'}</text>
 
-          <rect x="420" y="310" width="320" height="30" rx="6" fill={BLUE} fillOpacity="0.08" stroke={BLUE} strokeWidth="0.6" />
-          <text x="580" y="330" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Decode: O(d log d) — d lookups + inverse rotate'}</text>
+          <rect x="420" y="370" width="320" height="34" rx="6" fill={BLUE} fillOpacity="0.08" stroke={BLUE} strokeWidth="0.6" />
+          <text x="580" y="392" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Decode: O(d log d) — d lookups + inverse rotate'}</text>
         </svg>
       </Diagram>
 
@@ -1065,111 +1196,179 @@ export default function TurboQuantPaper() {
 
       {/* SVG 6: Scalar Quantization Close-up */}
       <Diagram caption="Scalar Quantization Close-up: more bits = more levels = smaller quantization error">
-        <svg viewBox="0 0 800 280" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 350" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-sq-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="7" markerHeight="5" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
             </marker>
           </defs>
-          <rect width="800" height="280" rx="12" fill={BG} />
-          <text x="400" y="24" fill={FG} fontSize="13" fontWeight="700" textAnchor="middle">SCALAR QUANTIZATION: ONE COORDINATE CLOSE-UP</text>
+          <rect width="800" height="350" rx="12" fill={BG} />
+          <text x="400" y="24" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">SCALAR QUANTIZATION: ONE COORDINATE CLOSE-UP</text>
 
-          {/* 2-bit (4 levels) */}
-          <text x="130" y="52" fill={BLUE} fontSize="12" fontWeight="700" textAnchor="middle">2-BIT (4 levels)</text>
-          {/* Number line */}
-          <line x1="20" y1="80" x2="240" y2="80" stroke={GRAY} strokeWidth="1.2" />
-          <text x="20" y="96" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace">-1</text>
-          <text x="240" y="96" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace" textAnchor="end">+1</text>
-          {/* 4 threshold lines */}
-          {[20, 75, 130, 185, 240].map((x, i) => (
-            <line key={`t2-${i}`} x1={x} y1={72} x2={x} y2={88} stroke={GRAY} strokeWidth="1" strokeDasharray="3 2" />
+          {/* === 2-BIT (stacked vertically with more space) === */}
+          <text x="400" y="52" fill={BLUE} fontSize="13" fontWeight="700" textAnchor="middle">2-BIT (4 levels)</text>
+          <line x1="80" y1="72" x2="720" y2="72" stroke={GRAY} strokeWidth="1.5" />
+          <text x="72" y="76" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="end">-1</text>
+          <text x="728" y="76" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">+1</text>
+          {[80, 240, 400, 560, 720].map((x, i) => (
+            <line key={`t2-${i}`} x1={x} y1={62} x2={x} y2={82} stroke={GRAY} strokeWidth="1" strokeDasharray="3 2" />
           ))}
-          {/* 4 reconstruction points */}
-          {[48, 103, 158, 213].map((x, i) => (
+          {[160, 320, 480, 640].map((x, i) => (
             <g key={`r2-${i}`}>
-              <circle cx={x} cy={80} r="4" fill={BLUE} opacity="0.8" />
-              <text x={x} y={108} fill={BLUE} fontSize="7" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">r{i + 1}</text>
+              <circle cx={x} cy={72} r="5" fill={BLUE} opacity="0.8" />
+              <text x={x} y={97} fill={BLUE} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">r{i + 1}</text>
             </g>
           ))}
           {/* Original value */}
-          <line x1="145" y1="60" x2="145" y2="76" stroke={A3} strokeWidth="2" />
-          <circle cx="145" cy="57" r="3" fill={A3} />
-          <text x="145" y="50" fill={A3} fontSize="8" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">0.15</text>
-          {/* Error bracket */}
-          <line x1="145" y1="115" x2="158" y2="115" stroke={RED} strokeWidth="1.5" />
-          <line x1="145" y1="112" x2="145" y2="118" stroke={RED} strokeWidth="1" />
-          <line x1="158" y1="112" x2="158" y2="118" stroke={RED} strokeWidth="1" />
-          <text x="152" y="128" fill={RED} fontSize="8" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">err</text>
+          <line x1="435" y1="56" x2="435" y2="68" stroke={A3} strokeWidth="2.5" />
+          <circle cx="435" cy="53" r="4" fill={A3} />
+          <text x="435" y="44" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">0.15</text>
+          {/* Error bracket — thick and red */}
+          <line x1="435" y1="107" x2="480" y2="107" stroke={RED} strokeWidth="2.5" />
+          <line x1="435" y1="102" x2="435" y2="112" stroke={RED} strokeWidth="2" />
+          <line x1="480" y1="102" x2="480" y2="112" stroke={RED} strokeWidth="2" />
+          <text x="458" y="126" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Error = 0.35</text>
 
-          {/* 3-bit (8 levels) */}
-          <text x="400" y="52" fill={PURPLE} fontSize="12" fontWeight="700" textAnchor="middle">3-BIT (8 levels)</text>
-          <line x1="290" y1="80" x2="510" y2="80" stroke={GRAY} strokeWidth="1.2" />
-          <text x="290" y="96" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace">-1</text>
-          <text x="510" y="96" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace" textAnchor="end">+1</text>
-          {/* 8+1 threshold lines */}
-          {[290, 317.5, 345, 372.5, 400, 427.5, 455, 482.5, 510].map((x, i) => (
-            <line key={`t3-${i}`} x1={x} y1={72} x2={x} y2={88} stroke={GRAY} strokeWidth="1" strokeDasharray="3 2" />
+          {/* === 3-BIT === */}
+          <text x="400" y="152" fill={PURPLE} fontSize="13" fontWeight="700" textAnchor="middle">3-BIT (8 levels)</text>
+          <line x1="80" y1="172" x2="720" y2="172" stroke={GRAY} strokeWidth="1.5" />
+          <text x="72" y="176" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="end">-1</text>
+          <text x="728" y="176" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">+1</text>
+          {Array.from({ length: 9 }, (_, i) => 80 + i * 80).map((x, i) => (
+            <line key={`t3-${i}`} x1={x} y1={162} x2={x} y2={182} stroke={GRAY} strokeWidth="1" strokeDasharray="3 2" />
           ))}
-          {/* 8 reconstruction points */}
-          {[303.75, 331.25, 358.75, 386.25, 413.75, 441.25, 468.75, 496.25].map((x, i) => (
+          {Array.from({ length: 8 }, (_, i) => 120 + i * 80).map((x, i) => (
             <g key={`r3-${i}`}>
-              <circle cx={x} cy={80} r="3.5" fill={PURPLE} opacity="0.8" />
+              <circle cx={x} cy={172} r="4.5" fill={PURPLE} opacity="0.8" />
             </g>
           ))}
-          {/* Original value at same relative position */}
-          <line x1="416" y1="60" x2="416" y2="76" stroke={A3} strokeWidth="2" />
-          <circle cx="416" cy="57" r="3" fill={A3} />
-          <text x="416" y="50" fill={A3} fontSize="8" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">0.15</text>
-          {/* Smaller error */}
-          <line x1="413.75" y1="115" x2="416" y2="115" stroke={RED} strokeWidth="1.5" />
-          <line x1="413.75" y1="112" x2="413.75" y2="118" stroke={RED} strokeWidth="1" />
-          <line x1="416" y1="112" x2="416" y2="118" stroke={RED} strokeWidth="1" />
-          <text x="415" y="128" fill={RED} fontSize="8" fontWeight="500" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">err</text>
+          {/* Original value */}
+          <line x1="435" y1="156" x2="435" y2="168" stroke={A3} strokeWidth="2.5" />
+          <circle cx="435" cy="153" r="4" fill={A3} />
+          <text x="435" y="144" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">0.15</text>
+          {/* Error bracket */}
+          <line x1="435" y1="195" x2="440" y2="195" stroke={RED} strokeWidth="2.5" />
+          <line x1="435" y1="190" x2="435" y2="200" stroke={RED} strokeWidth="2" />
+          <line x1="440" y1="190" x2="440" y2="200" stroke={RED} strokeWidth="2" />
+          <text x="468" y="200" fill={RED} fontSize="11" fontWeight="700" fontFamily="'JetBrains Mono', monospace">Error = 0.10</text>
 
-          {/* 4-bit (16 levels) */}
-          <text x="670" y="52" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">4-BIT (16 levels)</text>
-          <line x1="560" y1="80" x2="780" y2="80" stroke={GRAY} strokeWidth="1.2" />
-          <text x="560" y="96" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace">-1</text>
-          <text x="780" y="96" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace" textAnchor="end">+1</text>
-          {/* 16+1 threshold lines */}
-          {Array.from({ length: 17 }, (_, i) => 560 + i * (220 / 16)).map((x, i) => (
-            <line key={`t4-${i}`} x1={x} y1={74} x2={x} y2={86} stroke={GRAY} strokeWidth="0.8" strokeDasharray="2 2" />
+          {/* === 4-BIT === */}
+          <text x="400" y="232" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">4-BIT (16 levels)</text>
+          <line x1="80" y1="252" x2="720" y2="252" stroke={GRAY} strokeWidth="1.5" />
+          <text x="72" y="256" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="end">-1</text>
+          <text x="728" y="256" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">+1</text>
+          {Array.from({ length: 17 }, (_, i) => 80 + i * 40).map((x, i) => (
+            <line key={`t4-${i}`} x1={x} y1={244} x2={x} y2={260} stroke={GRAY} strokeWidth="0.8" strokeDasharray="2 2" />
           ))}
-          {/* 16 reconstruction points */}
-          {Array.from({ length: 16 }, (_, i) => 560 + (i + 0.5) * (220 / 16)).map((x, i) => (
-            <circle key={`r4-${i}`} cx={x} cy={80} r="2.5" fill={GREEN} opacity="0.75" />
+          {Array.from({ length: 16 }, (_, i) => 100 + i * 40).map((x, i) => (
+            <circle key={`r4-${i}`} cx={x} cy={252} r="3.5" fill={GREEN} opacity="0.75" />
           ))}
           {/* Original value */}
-          <line x1="686" y1="60" x2="686" y2="76" stroke={A3} strokeWidth="2" />
-          <circle cx="686" cy="57" r="3" fill={A3} />
-          <text x="686" y="50" fill={A3} fontSize="8" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">0.15</text>
+          <line x1="435" y1="236" x2="435" y2="248" stroke={A3} strokeWidth="2.5" />
+          <circle cx="435" cy="233" r="4" fill={A3} />
+          <text x="435" y="224" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">0.15</text>
           {/* Tiny error */}
-          <rect x="683" y="112" width="6" height="6" rx="1" fill={RED} fillOpacity="0.4" />
-          <text x="686" y="128" fill={RED} fontSize="7" fontWeight="500" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">tiny</text>
+          <rect x="434" y="265" width="4" height="8" rx="1" fill={RED} fillOpacity="0.6" />
+          <text x="468" y="276" fill={RED} fontSize="11" fontWeight="700" fontFamily="'JetBrains Mono', monospace">Error = 0.03</text>
 
-          {/* Error comparison bars at bottom */}
-          <rect x="30" y="148" width="740" height="122" rx="8" fill={A} fillOpacity="0.03" stroke={A} strokeWidth="0.5" strokeOpacity="0.2" />
-          <text x="400" y="168" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">QUANTIZATION ERROR COMPARISON</text>
+          {/* === Bottom insight === */}
+          <rect x="150" y="300" width="500" height="38" rx="8" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="1" />
+          <text x="400" y="320" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">Each extra bit = ~4x less error</text>
+          <text x="400" y="336" fill={GRAY} fontSize="11" textAnchor="middle">{'2-bit: 0.35  |  3-bit: 0.10  |  4-bit: 0.03'}</text>
+        </svg>
+      </Diagram>
 
-          {/* 2-bit error bar */}
-          <text x="120" y="194" fill={BLUE} fontSize="10" fontWeight="600" textAnchor="end">2-bit</text>
-          <rect x="130" y="184" width={220} height="14" rx="3" fill={BLUE} fillOpacity="0.5" />
-          <text x={358} y="195" fill={BLUE} fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono', monospace">{'α₂ = 0.1175'}</text>
+      {/* SVG B: Why Beta Distribution? — Visual Proof */}
+      <Diagram caption="Why Beta Distribution? The geometric reason: projecting a sphere onto one axis gives a Beta distribution, which approaches Gaussian as dimension grows">
+        <svg viewBox="0 0 800 380" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+          <defs>
+            <marker id="tq-beta-proof-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+              <polygon points="0 0, 10 3.5, 0 7" fill={A} />
+            </marker>
+            <radialGradient id="tq-beta-sph" cx="45%" cy="40%" r="50%">
+              <stop offset="0%" stopColor={A} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={A} stopOpacity="0.02" />
+            </radialGradient>
+          </defs>
+          <rect width="800" height="380" rx="12" fill={BG} />
 
-          {/* 3-bit error bar */}
-          <text x="120" y="218" fill={PURPLE} fontSize="10" fontWeight="600" textAnchor="end">3-bit</text>
-          <rect x="130" y="208" width={220 * 0.03454 / 0.1175} height="14" rx="3" fill={PURPLE} fillOpacity="0.5" />
-          <text x={130 + 220 * 0.03454 / 0.1175 + 8} y="219" fill={PURPLE} fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono', monospace">{'α₃ = 0.0345'}</text>
+          {/* Title */}
+          <text x="400" y="26" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">Why Beta Distribution? A Visual Proof in 4 Steps</text>
 
-          {/* 4-bit error bar */}
-          <text x="120" y="242" fill={GREEN} fontSize="10" fontWeight="600" textAnchor="end">4-bit</text>
-          <rect x="130" y="232" width={Math.max(220 * 0.009497 / 0.1175, 6)} height="14" rx="3" fill={GREEN} fillOpacity="0.5" />
-          <text x={130 + 220 * 0.009497 / 0.1175 + 8} y="243" fill={GREEN} fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono', monospace">{'α₄ = 0.0095'}</text>
+          {/* Step 1: Unit vector on sphere */}
+          <circle cx="30" cy="72" r="13" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
+          <text x="30" y="77" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">1</text>
+          <text x="50" y="77" fill={FG} fontSize="12" fontWeight="600">Start: unit vector on S^(d-1)</text>
 
-          {/* Insight badge */}
-          <rect x="520" y="195" width="220" height="50" rx="8" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="0.8" />
-          <text x="630" y="214" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">Each extra bit ≈ 4× less error</text>
-          <text x="630" y="230" fill={GRAY} fontSize="9" textAnchor="middle">{'2→3 bit: 3.4×  |  3→4 bit: 3.6×'}</text>
+          <circle cx="100" cy="162" r="65" fill="url(#tq-beta-sph)" stroke={A} strokeWidth="1.2" strokeDasharray="4 3" />
+          <line x1="100" y1="162" x2="148" y2="118" stroke={A3} strokeWidth="2.5" markerEnd="url(#tq-beta-proof-arr)" />
+          <circle cx="148" cy="118" r="4" fill={A3} />
+          <text x="156" y="112" fill={A3} fontSize="12" fontWeight="700">x</text>
+          <text x="100" y="244" fill={GRAY} fontSize="11" textAnchor="middle">{'\u2016x\u2016 = 1'}</text>
+
+          {/* Step 2: Random rotation */}
+          <circle cx="222" cy="72" r="13" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
+          <text x="222" y="77" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">2</text>
+          <text x="242" y="77" fill={FG} fontSize="12" fontWeight="600">Random rotation {'\u03A0'}</text>
+
+          <circle cx="300" cy="162" r="65" fill="url(#tq-beta-sph)" stroke={GREEN} strokeWidth="1.2" strokeDasharray="4 3" />
+          {/* Show the rotated vector and its projection onto the vertical axis */}
+          <line x1="300" y1="162" x2="338" y2="118" stroke={GREEN} strokeWidth="2.5" markerEnd="url(#tq-beta-proof-arr)" />
+          <circle cx="338" cy="118" r="4" fill={GREEN} />
+          <text x="346" y="112" fill={GREEN} fontSize="12" fontWeight="700">{'\u03A0x'}</text>
+
+          {/* Vertical axis for projection */}
+          <line x1="300" y1="95" x2="300" y2="230" stroke={GRAY} strokeWidth="1" strokeDasharray="3 2" />
+          <text x="288" y="90" fill={GRAY} fontSize="11" textAnchor="end">axis i</text>
+
+          {/* Horizontal projection line */}
+          <line x1="338" y1="118" x2="300" y2="118" stroke={PURPLE} strokeWidth="1.5" strokeDasharray="3 2" />
+          <circle cx="300" cy="118" r="3.5" fill={PURPLE} />
+          <text x="310" y="108" fill={PURPLE} fontSize="11" fontWeight="600">y_i</text>
+
+          <text x="300" y="250" fill={GRAY} fontSize="11" textAnchor="middle">Projection onto one axis</text>
+
+          {/* Step 3: Projection = Beta */}
+          <circle cx="436" cy="72" r="13" fill={A} fillOpacity="0.2" stroke={A} strokeWidth="1.5" />
+          <text x="436" y="77" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">3</text>
+          <text x="456" y="77" fill={FG} fontSize="12" fontWeight="600">Projection {'\u2192'} Beta distribution</text>
+
+          {/* U-shaped Beta distribution for low d */}
+          <rect x="430" y="102" width="150" height="120" rx="6" fill={A} fillOpacity="0.04" stroke={A} strokeWidth="0.6" />
+          <text x="505" y="118" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">d = 4</text>
+          {/* U-shaped curve */}
+          <path d="M 445 212 C 445 180, 455 165, 470 155 C 480 149, 490 147, 505 150 C 520 147, 530 149, 540 155 C 555 165, 565 180, 565 212" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1.5" />
+          <line x1="440" y1="212" x2="570" y2="212" stroke={GRAY} strokeWidth="0.8" />
+          <text x="505" y="228" fill={GRAY} fontSize="11" textAnchor="middle">{'y_i\u00B2 ~ Beta(1/2, 3/2)'}</text>
+          <text x="505" y="244" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">U-shaped (low d)</text>
+
+          {/* Step 4: High d -> Gaussian */}
+          <circle cx="626" cy="72" r="13" fill={GREEN} fillOpacity="0.2" stroke={GREEN} strokeWidth="1.5" />
+          <text x="626" y="77" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">4</text>
+          <text x="646" y="77" fill={FG} fontSize="12" fontWeight="600">High d {'\u2192'} Gaussian</text>
+
+          {/* Bell-shaped curve for high d */}
+          <rect x="620" y="102" width="160" height="120" rx="6" fill={GREEN} fillOpacity="0.04" stroke={GREEN} strokeWidth="0.6" />
+          <text x="700" y="118" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">d = 128</text>
+          {/* Bell curve */}
+          <path d="M 635 212 C 640 210, 650 208, 660 198 C 670 182, 680 155, 700 140 C 720 155, 730 182, 740 198 C 750 208, 760 210, 765 212" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.5" />
+          <line x1="630" y1="212" x2="770" y2="212" stroke={GRAY} strokeWidth="0.8" />
+          <text x="700" y="228" fill={GRAY} fontSize="11" textAnchor="middle">{'y_i ~ N(0, 1/d)'}</text>
+          <text x="700" y="244" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">Bell curve (high d)</text>
+
+          {/* Convergence arrow between step 3 and step 4 */}
+          <line x1="585" y1="170" x2="615" y2="170" stroke={A} strokeWidth="1.5" markerEnd="url(#tq-beta-proof-arr)" />
+          <text x="600" y="162" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">d{'\u2192\u221E'}</text>
+
+          {/* Bottom: Geometric intuition */}
+          <rect x="60" y="270" width="680" height="46" rx="10" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="1" />
+          <text x="400" y="290" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Geometry: projecting a d-sphere onto one axis concentrates mass near zero as d grows</text>
+          <text x="400" y="308" fill={GRAY} fontSize="11" textAnchor="middle">This is why TurboQuant can use a FIXED quantizer for ALL inputs after rotation</text>
+
+          {/* The punchline badge */}
+          <rect x="180" y="328" width="440" height="38" rx="10" fill={GREEN} fillOpacity="0.1" stroke={GREEN} strokeWidth="1.2" />
+          <text x="400" y="346" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">Known distribution = known optimal quantizer = no training!</text>
+          <text x="400" y="362" fill={GRAY} fontSize="11" textAnchor="middle">{'Beta(d/2, d/2) for d=128 is sharply peaked \u2014 Lloyd-Max exploits this perfectly'}</text>
         </svg>
       </Diagram>
 
@@ -1254,7 +1453,7 @@ export default function TurboQuantPaper() {
 
       {/* SVG 7: MSE vs Inner Product: The Bias Problem */}
       <Diagram caption="The Bias Problem: MSE-optimal quantization systematically shrinks inner products toward zero">
-        <svg viewBox="0 0 800 300" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 370" style={{ width: '100%', height: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-bp-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
@@ -1267,10 +1466,10 @@ export default function TurboQuantPaper() {
               <stop offset="100%" stopColor={RED} stopOpacity="0.05" />
             </linearGradient>
           </defs>
-          <rect width="800" height="300" rx="12" fill={BG} />
+          <rect width="800" height="370" rx="12" fill={BG} />
 
           {/* LEFT: Vector angle diagram */}
-          <text x="200" y="24" fill={FG} fontSize="13" fontWeight="700" textAnchor="middle">TRUE vs QUANTIZED INNER PRODUCT</text>
+          <text x="200" y="24" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">TRUE vs QUANTIZED INNER PRODUCT</text>
 
           {/* Origin point */}
           <circle cx="120" cy="200" r="2.5" fill={GRAY} />
@@ -1286,46 +1485,46 @@ export default function TurboQuantPaper() {
 
           {/* Angle arc for true inner product */}
           <path d="M 200 152 A 85 85 0 0 1 222 168" fill="none" stroke={GREEN} strokeWidth="1.8" />
-          <text x="218" y="147" fill={GREEN} fontSize="10" fontWeight="600" fontFamily="'JetBrains Mono', monospace">{'⟨x,y⟩'}</text>
+          <text x="218" y="147" fill={GREEN} fontSize="11" fontWeight="600" fontFamily="'JetBrains Mono', monospace">{'⟨x,y⟩'}</text>
 
           {/* Quantized vector Q(x) - shorter, slightly different angle */}
           <line x1="120" y1="200" x2="252" y2="118" stroke={A} strokeWidth="1.5" strokeDasharray="5 3" strokeOpacity="0.6" />
           <circle cx="252" cy="118" r="3.5" fill={A} fillOpacity="0.5" stroke={A} strokeWidth="1" />
-          <text x="260" y="116" fill={A} fontSize="10" opacity="0.7" fontFamily="Inter, system-ui, sans-serif">Q(x)</text>
+          <text x="260" y="116" fill={A} fontSize="11" opacity="0.7" fontFamily="Inter, system-ui, sans-serif">Q(x)</text>
 
           {/* Quantized vector Q(y) - shorter */}
           <line x1="120" y1="200" x2="278" y2="170" stroke={BLUE} strokeWidth="1.5" strokeDasharray="5 3" strokeOpacity="0.6" />
           <circle cx="278" cy="170" r="3.5" fill={BLUE} fillOpacity="0.5" stroke={BLUE} strokeWidth="1" />
-          <text x="286" y="180" fill={BLUE} fontSize="10" opacity="0.7" fontFamily="Inter, system-ui, sans-serif">Q(y)</text>
+          <text x="286" y="180" fill={BLUE} fontSize="11" opacity="0.7" fontFamily="Inter, system-ui, sans-serif">Q(y)</text>
 
           {/* "Shrunk" annotation arrows */}
-          <line x1="268" y1="108" x2="256" y2="116" stroke={RED} strokeWidth="1" markerEnd="url(#tq-bp-arr-r)" strokeOpacity="0.7" />
-          <text x="278" y="108" fill={RED} fontSize="8" fontFamily="Inter, system-ui, sans-serif">shrunk</text>
+          <line x1="268" y1="108" x2="256" y2="116" stroke={RED} strokeWidth="1.5" markerEnd="url(#tq-bp-arr-r)" strokeOpacity="0.8" />
+          <text x="280" y="108" fill={RED} fontSize="11" fontWeight="600" fontFamily="Inter, system-ui, sans-serif">shrunk</text>
 
           {/* Label: true IP */}
           <rect x="20" y="230" width="160" height="22" rx="5" fill={GREEN} fillOpacity="0.1" stroke={GREEN} strokeWidth="0.8" />
-          <text x="100" y="245" fill={GREEN} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'True: ⟨x,y⟩ = 0.80'}</text>
+          <text x="100" y="245" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'True: ⟨x,y⟩ = 0.80'}</text>
 
           {/* Label: biased IP */}
           <rect x="200" y="230" width="180" height="22" rx="5" fill={RED} fillOpacity="0.1" stroke={RED} strokeWidth="0.8" />
-          <text x="290" y="245" fill={RED} fontSize="10" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Biased: ⟨Q(x),Q(y)⟩ = 0.68'}</text>
+          <text x="290" y="245" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'Biased: ⟨Q(x),Q(y)⟩ = 0.68'}</text>
 
           {/* Divider */}
           <line x1="410" y1="20" x2="410" y2="280" stroke={GRAY} strokeWidth="0.8" strokeDasharray="6 4" strokeOpacity="0.3" />
 
           {/* RIGHT: Error distribution diagram */}
           <text x="600" y="24" fill={FG} fontSize="13" fontWeight="700" textAnchor="middle">BIAS DISTRIBUTION</text>
-          <text x="600" y="42" fill={GRAY} fontSize="10" textAnchor="middle">Inner product estimates across many vector pairs</text>
+          <text x="600" y="42" fill={GRAY} fontSize="11" textAnchor="middle">Inner product estimates across many vector pairs</text>
 
           {/* Horizontal number line */}
           <line x1="440" y1="180" x2="760" y2="180" stroke={GRAY} strokeWidth="1" />
-          <text x="440" y="196" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace">0.0</text>
-          <text x="600" y="196" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">0.5</text>
-          <text x="760" y="196" fill={GRAY} fontSize="8" fontFamily="'JetBrains Mono', monospace" textAnchor="end">1.0</text>
+          <text x="440" y="196" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace">0.0</text>
+          <text x="600" y="196" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="middle">0.5</text>
+          <text x="760" y="196" fill={GRAY} fontSize="11" fontFamily="'JetBrains Mono', monospace" textAnchor="end">1.0</text>
 
           {/* True value marker */}
           <line x1="696" y1="60" x2="696" y2="184" stroke={GREEN} strokeWidth="2" />
-          <text x="696" y="54" fill={GREEN} fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'true ⟨x,y⟩'}</text>
+          <text x="696" y="54" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'true ⟨x,y⟩'}</text>
 
           {/* Biased distribution - shifted left (bell curve) */}
           <path d={`M 520 180
@@ -1339,19 +1538,23 @@ export default function TurboQuantPaper() {
 
           {/* Mean of biased distribution */}
           <line x1="640" y1="66" x2="640" y2="184" stroke={RED} strokeWidth="1.5" strokeDasharray="4 2" />
-          <text x="640" y="58" fill={RED} fontSize="9" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'E[⟨Q(x),Q(y)⟩]'}</text>
+          <text x="640" y="58" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{'E[⟨Q(x),Q(y)⟩]'}</text>
 
           {/* Bias bracket */}
           <line x1="640" y1="205" x2="696" y2="205" stroke={RED} strokeWidth="2" />
           <line x1="640" y1="200" x2="640" y2="210" stroke={RED} strokeWidth="1.5" />
           <line x1="696" y1="200" x2="696" y2="210" stroke={RED} strokeWidth="1.5" />
-          <text x="668" y="222" fill={RED} fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">BIAS</text>
-          <text x="668" y="236" fill={RED} fontSize="8" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">systematic underestimate</text>
+          <text x="668" y="224" fill={RED} fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="Inter, system-ui, sans-serif">BIAS</text>
+          <text x="668" y="240" fill={RED} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">systematic underestimate</text>
 
           {/* Bottom insight */}
-          <rect x="430" y="252" width="360" height="36" rx="8" fill={RED} fillOpacity="0.06" stroke={RED} strokeWidth="0.8" />
-          <text x="610" y="268" fill={FG} fontSize="10" fontWeight="600" textAnchor="middle">MSE-optimal shrinks vectors toward centroids</text>
-          <text x="610" y="282" fill={GRAY} fontSize="9" textAnchor="middle">{'⟨Q(x), Q(y)⟩ < ⟨x, y⟩ — systematically, not randomly'}</text>
+          <rect x="430" y="260" width="360" height="40" rx="8" fill={RED} fillOpacity="0.06" stroke={RED} strokeWidth="0.8" />
+          <text x="610" y="278" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">MSE-optimal shrinks vectors toward centroids</text>
+          <text x="610" y="294" fill={GRAY} fontSize="11" textAnchor="middle">{'⟨Q(x), Q(y)⟩ < ⟨x, y⟩ -- systematically, not randomly'}</text>
+
+          {/* Formula at bottom */}
+          <rect x="120" y="316" width="560" height="40" rx="8" fill={RED} fillOpacity="0.08" stroke={RED} strokeWidth="1.2" />
+          <text x="400" y="340" fill={FG} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{`E[\u27E8Q(x),Q(y)\u27E9] = \u03B1\u00B2 \u00B7 \u27E8x,y\u27E9  where \u03B1 < 1 \u2192 systematic shrinkage`}</text>
         </svg>
       </Diagram>
 
@@ -1376,7 +1579,7 @@ export default function TurboQuantPaper() {
       />
 
       <Diagram caption="Two Algorithms Comparison: TurboQuant_mse (direct) vs TurboQuant_prod (with QJL residual correction)">
-        <svg viewBox="0 0 800 420" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 500" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
           <defs>
             <marker id="tq-a3" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
@@ -1388,7 +1591,7 @@ export default function TurboQuantPaper() {
               <polygon points="0 0, 10 3.5, 0 7" fill={GREEN} />
             </marker>
           </defs>
-          <rect width="800" height="420" rx="12" fill={BG} />
+          <rect width="800" height="500" rx="12" fill={BG} />
 
           {/* LEFT SIDE: TurboQuant_mse */}
           <text x="200" y="28" fill={A} fontSize="15" fontWeight="700" textAnchor="middle">TurboQuant_mse</text>
@@ -1446,7 +1649,7 @@ export default function TurboQuantPaper() {
           <line x1="600" y1="175" x2="660" y2="190" stroke={GREEN} strokeWidth="1.2" markerEnd="url(#tq-a3-g)" />
           <rect x="625" y="192" width="150" height="38" rx="7" fill={GREEN} fillOpacity="0.12" stroke={GREEN} strokeWidth="1.2" />
           <text x="700" y="210" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">{'Residual r = y - ŷ'}</text>
-          <text x="700" y="224" fill={GRAY} fontSize="10" textAnchor="middle">{'1-bit QJL: sign(S·r)'}</text>
+          <text x="700" y="224" fill={GRAY} fontSize="11" textAnchor="middle">{'1-bit QJL: sign(S·r)'}</text>
 
           {/* Merge */}
           <line x1="540" y1="232" x2="600" y2="260" stroke={PURPLE} strokeWidth="1.2" />
@@ -1462,8 +1665,12 @@ export default function TurboQuantPaper() {
           <text x="600" y="358" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">BUT: UNBIASED inner products</text>
 
           {/* Bottom labels */}
-          <text x="200" y="400" fill={GRAY} fontSize="10" textAnchor="middle">Best for: reconstruction, perplexity</text>
-          <text x="600" y="400" fill={GRAY} fontSize="10" textAnchor="middle">Best for: attention, NN search, ranking</text>
+          <text x="200" y="410" fill={GRAY} fontSize="11" textAnchor="middle">Best for: reconstruction, perplexity</text>
+          <text x="600" y="410" fill={GRAY} fontSize="11" textAnchor="middle">Best for: attention, NN search, ranking</text>
+
+          {/* Shared budget badge */}
+          <rect x="200" y="440" width="400" height="30" rx="8" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="0.8" />
+          <text x="400" y="460" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Same bit budget (b bits/coord) — different allocation strategy</text>
         </svg>
       </Diagram>
 
@@ -1486,7 +1693,7 @@ export default function TurboQuantPaper() {
         </Prose>
 
         <Diagram caption="QJL (Quantized Johnson-Lindenstrauss): 1-bit sketching for inner-product estimation">
-          <svg viewBox="0 0 780 300" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+          <svg viewBox="0 0 800 380" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
             <defs>
               <marker id="tq-a4" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
                 <polygon points="0 0, 10 3.5, 0 7" fill={GREEN} />
@@ -1495,7 +1702,7 @@ export default function TurboQuantPaper() {
                 <polygon points="0 0, 10 3.5, 0 7" fill={BLUE} />
               </marker>
             </defs>
-            <rect width="780" height="300" rx="12" fill={BG} />
+            <rect width="800" height="380" rx="12" fill={BG} />
 
             {/* Title */}
             <text x="390" y="24" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">QJL: Asymmetric Inner Product Estimation</text>
@@ -1513,14 +1720,15 @@ export default function TurboQuantPaper() {
 
             <line x1="316" y1="87" x2="344" y2="87" stroke={GREEN} strokeWidth="1.2" markerEnd="url(#tq-a4)" />
 
-            <rect x="348" y="70" width="100" height="35" rx="6" fill={GREEN} fillOpacity="0.2" stroke={GREEN} strokeWidth="2" />
-            <text x="398" y="92" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">{'sign(S·k)'}</text>
+            <rect x="348" y="70" width="100" height="35" rx="6" fill={GREEN} fillOpacity="0.25" stroke={GREEN} strokeWidth="2.5" />
+            <text x="398" y="92" fill={GREEN} fontSize="14" fontWeight="700" textAnchor="middle">{'sign(S·k)'}</text>
+            <text x="398" y="58" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">{'±1 only'}</text>
 
             <line x1="452" y1="87" x2="480" y2="87" stroke={GREEN} strokeWidth="1.2" markerEnd="url(#tq-a4)" />
 
             <rect x="484" y="70" width="130" height="35" rx="6" fill={GREEN} fillOpacity="0.1" stroke={GREEN} strokeWidth="1" strokeDasharray="3 3" />
             <text x="549" y="86" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">1-bit codes</text>
-            <text x="549" y="100" fill={GRAY} fontSize="9" textAnchor="middle">d bits total</text>
+            <text x="549" y="100" fill={GRAY} fontSize="11" textAnchor="middle">d bits total</text>
 
             {/* QUERY side (unquantized) */}
             <text x="200" y="150" fill={BLUE} fontSize="13" fontWeight="700" textAnchor="middle">Query q (online — full precision)</text>
@@ -1545,12 +1753,17 @@ export default function TurboQuantPaper() {
 
             <rect x="395" y="240" width="230" height="45" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
             <text x="510" y="258" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">{'Estimate: (S·q) · sign(S·k) / d'}</text>
-            <text x="510" y="274" fill={GRAY} fontSize="10" textAnchor="middle">{'Unbiased: E[est] = <q, k> · √(2/πd)'}</text>
+            <text x="510" y="274" fill={GRAY} fontSize="11" textAnchor="middle">{'Unbiased: E[est] = <q, k> · √(2/πd)'}</text>
 
             {/* Asymmetric label */}
             <rect x="30" y="240" width="180" height="45" rx="8" fill={PURPLE} fillOpacity="0.08" stroke={PURPLE} strokeWidth="1" />
             <text x="120" y="258" fill={PURPLE} fontSize="11" fontWeight="600" textAnchor="middle">ASYMMETRIC</text>
-            <text x="120" y="274" fill={GRAY} fontSize="10" textAnchor="middle">key=1bit, query=full precision</text>
+            <text x="120" y="274" fill={GRAY} fontSize="11" textAnchor="middle">key=1bit, query=full precision</text>
+
+            {/* Bottom insight with breathing room */}
+            <rect x="120" y="320" width="560" height="40" rx="8" fill={GREEN} fillOpacity="0.06" stroke={GREEN} strokeWidth="0.8" />
+            <text x="400" y="338" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">Continuous signal {'→'} sign() crushes to {'±1'} {'→'} 1 bit per dimension</text>
+            <text x="400" y="354" fill={GRAY} fontSize="11" textAnchor="middle">Asymmetric trick: key is 1-bit, query stays full precision</text>
           </svg>
         </Diagram>
       </ConceptCard>
@@ -1632,7 +1845,7 @@ export default function TurboQuantPaper() {
 
       {/* SVG 8: QJL Residual Correction — How It Works */}
       <Diagram caption="QJL Residual Correction: the complete TurboQuant_prod pipeline showing how (b-1)-bit MSE quantization combines with 1-bit QJL sketching">
-        <svg viewBox="0 0 800 320" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <svg viewBox="0 0 800 400" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
           <defs>
             <marker id="tq-rc-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="7" markerHeight="5" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
@@ -1644,7 +1857,7 @@ export default function TurboQuantPaper() {
               <polygon points="0 0, 10 3.5, 0 7" fill={PURPLE} />
             </marker>
           </defs>
-          <rect width="800" height="320" rx="12" fill={BG} />
+          <rect width="800" height="400" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="22" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">QJL Residual Correction Pipeline</text>
@@ -1655,7 +1868,7 @@ export default function TurboQuantPaper() {
           <text x="42" y="83" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">1</text>
           <rect x="64" y="58" width="155" height="42" rx="8" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.2" />
           <text x="141" y="76" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">MSE Quantize</text>
-          <text x="141" y="92" fill={GRAY} fontSize="10" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"Q(x) = (b-1)-bit"}</text>
+          <text x="141" y="92" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"Q(x) = (b-1)-bit"}</text>
 
           {/* Arrow */}
           <line x1="224" y1="79" x2="256" y2="79" stroke={A} strokeWidth="1.3" markerEnd="url(#tq-rc-arr)" />
@@ -1665,7 +1878,7 @@ export default function TurboQuantPaper() {
           <text x="272" y="83" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">2</text>
           <rect x="294" y="58" width="175" height="42" rx="8" fill={GREEN} fillOpacity="0.12" stroke={GREEN} strokeWidth="1.2" />
           <text x="381" y="76" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">Compute Residual</text>
-          <text x="381" y="92" fill={GRAY} fontSize="10" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"r = x - \u03B1·Q(x)"}</text>
+          <text x="381" y="92" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"r = x - \u03B1·Q(x)"}</text>
 
           {/* Arrow */}
           <line x1="474" y1="79" x2="506" y2="79" stroke={GREEN} strokeWidth="1.3" markerEnd="url(#tq-rc-arr-g)" />
@@ -1675,11 +1888,11 @@ export default function TurboQuantPaper() {
           <text x="522" y="83" fill={PURPLE} fontSize="13" fontWeight="700" textAnchor="middle">3</text>
           <rect x="544" y="58" width="165" height="42" rx="8" fill={PURPLE} fillOpacity="0.12" stroke={PURPLE} strokeWidth="1.2" />
           <text x="626" y="76" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">QJL Sketch</text>
-          <text x="626" y="92" fill={GRAY} fontSize="10" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"S·sign(\u03A6·r)"}</text>
+          <text x="626" y="92" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"S·sign(\u03A6·r)"}</text>
 
           {/* Shrinkage factor callout */}
           <rect x="270" y="112" width="200" height="24" rx="6" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="0.8" strokeDasharray="3 2" />
-          <text x="370" y="128" fill={A} fontSize="10" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"\u03B1 = shrinkage factor (debias)"}</text>
+          <text x="370" y="128" fill={A} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"\u03B1 = shrinkage factor (debias)"}</text>
 
           {/* Step 4: Final Estimate — centered below */}
           <circle cx="250" cy="172" r="14" fill={A} fillOpacity="0.25" stroke={A} strokeWidth="1.5" />
@@ -1692,7 +1905,7 @@ export default function TurboQuantPaper() {
           {/* Term 1 */}
           <rect x="100" y="206" width="250" height="36" rx="8" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1" />
           <text x="225" y="222" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"\u03B1·\u27E8Q(x), Q(y)\u27E9"}</text>
-          <text x="225" y="238" fill={GRAY} fontSize="9" textAnchor="middle">MSE quantizer term</text>
+          <text x="225" y="238" fill={GRAY} fontSize="11" textAnchor="middle">MSE quantizer term</text>
 
           {/* Plus sign */}
           <text x="375" y="228" fill={FG} fontSize="18" fontWeight="700" textAnchor="middle">+</text>
@@ -1700,12 +1913,17 @@ export default function TurboQuantPaper() {
           {/* Term 2 */}
           <rect x="400" y="206" width="300" height="36" rx="8" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1" />
           <text x="550" y="222" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">{"\u27E8sketch(r_x), sketch(r_y)\u27E9"}</text>
-          <text x="550" y="238" fill={GRAY} fontSize="9" textAnchor="middle">QJL residual correction term</text>
+          <text x="550" y="238" fill={GRAY} fontSize="11" textAnchor="middle">QJL residual correction term</text>
 
           {/* Unbiased result */}
           <rect x="200" y="270" width="400" height="38" rx="10" fill={PURPLE} fillOpacity="0.1" stroke={PURPLE} strokeWidth="1.2" />
           <text x="400" y="286" fill={PURPLE} fontSize="12" fontWeight="700" textAnchor="middle">{"\u2261 Unbiased estimate of \u27E8x, y\u27E9"}</text>
-          <text x="400" y="300" fill={GRAY} fontSize="10" textAnchor="middle">Both terms add up: bias from MSE quantization is exactly cancelled by QJL correction</text>
+          <text x="400" y="300" fill={GRAY} fontSize="11" textAnchor="middle">Bias from MSE quantization is exactly cancelled by QJL correction</text>
+
+          {/* UNBIASED badge */}
+          <rect x="280" y="326" width="240" height="36" rx="10" fill={GREEN} fillOpacity="0.12" stroke={GREEN} strokeWidth="1.5" />
+          <text x="400" y="346" fill={GREEN} fontSize="16" fontWeight="700" textAnchor="middle">UNBIASED</text>
+          <text x="400" y="360" fill={GRAY} fontSize="11" textAnchor="middle">{'E[estimate] = ⟨x, y⟩ exactly'}</text>
 
           {/* Arrow down from formula to result */}
           <line x1="400" y1="254" x2="400" y2="268" stroke={PURPLE} strokeWidth="1.3" markerEnd="url(#tq-rc-arr-p)" />
@@ -1866,13 +2084,13 @@ export default function TurboQuantPaper() {
 
       {/* SVG 9: Information-Theoretic Bound — Visual */}
       <Diagram caption="Information-Theoretic Bound: TurboQuant tracks remarkably close to Shannon's theoretical minimum across all bit rates">
-        <svg viewBox="0 0 800 320" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <svg viewBox="0 0 800 400" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
           <defs>
             <marker id="tq-it-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="6" markerHeight="4" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={GRAY} />
             </marker>
           </defs>
-          <rect width="800" height="320" rx="12" fill={BG} />
+          <rect width="800" height="400" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="24" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">MSE vs Bits Per Dimension (Log Scale)</text>
@@ -1888,20 +2106,20 @@ export default function TurboQuantPaper() {
           <text x="544" y="48" fill={FG} fontSize="11">Naive quantization</text>
 
           {/* Y-axis */}
-          <line x1="100" y1="70" x2="100" y2="270" stroke={GRAY} strokeWidth="1" />
+          <line x1="100" y1="70" x2="100" y2="270" stroke={GRAY} strokeWidth="1.5" />
           <text x="50" y="170" fill={GRAY} fontSize="11" textAnchor="middle" transform="rotate(-90, 50, 170)">MSE (log scale)</text>
           {/* Y ticks */}
-          <text x="90" y="82" fill={GRAY} fontSize="9" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻¹</text>
+          <text x="90" y="82" fill={GRAY} fontSize="11" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻¹</text>
           <line x1="95" y1="78" x2="105" y2="78" stroke={GRAY} strokeWidth="0.6" />
-          <text x="90" y="142" fill={GRAY} fontSize="9" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻²</text>
+          <text x="90" y="142" fill={GRAY} fontSize="11" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻²</text>
           <line x1="95" y1="138" x2="105" y2="138" stroke={GRAY} strokeWidth="0.6" />
-          <text x="90" y="202" fill={GRAY} fontSize="9" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻³</text>
+          <text x="90" y="202" fill={GRAY} fontSize="11" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻³</text>
           <line x1="95" y1="198" x2="105" y2="198" stroke={GRAY} strokeWidth="0.6" />
-          <text x="90" y="262" fill={GRAY} fontSize="9" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻⁴</text>
+          <text x="90" y="262" fill={GRAY} fontSize="11" textAnchor="end" fontFamily="'JetBrains Mono', monospace">10⁻⁴</text>
           <line x1="95" y1="258" x2="105" y2="258" stroke={GRAY} strokeWidth="0.6" />
 
           {/* X-axis */}
-          <line x1="100" y1="270" x2="720" y2="270" stroke={GRAY} strokeWidth="1" />
+          <line x1="100" y1="270" x2="720" y2="270" stroke={GRAY} strokeWidth="1.5" />
           <text x="410" y="298" fill={GRAY} fontSize="11" textAnchor="middle">Bits per dimension</text>
           {/* X ticks */}
           {[1,2,3,4,5].map((b, i) => (
@@ -1933,20 +2151,23 @@ export default function TurboQuantPaper() {
 
           {/* Gap annotation at b=2 */}
           <line x1="342" y1="138" x2="342" y2="152" stroke={RED} strokeWidth="1" strokeDasharray="2 2" />
-          <rect x="348" y="138" width="52" height="18" rx="5" fill={RED} fillOpacity="0.15" stroke={RED} strokeWidth="0.8" />
-          <text x="374" y="151" fill={RED} fontSize="10" fontWeight="700" textAnchor="middle">{"≤2.7×"}</text>
+          <rect x="345" y="135" width="64" height="22" rx="6" fill={RED} fillOpacity="0.2" stroke={RED} strokeWidth="1.2" />
+          <text x="377" y="151" fill={RED} fontSize="13" fontWeight="700" textAnchor="middle">{"≤2.7×"}</text>
+          {/* Arrow bracket */}
+          <line x1="342" y1="140" x2="342" y2="154" stroke={RED} strokeWidth="1.5" />
 
           {/* Gap annotation showing naive is much worse */}
           <line x1="462" y1="148" x2="462" y2="196" stroke={GRAY} strokeWidth="0.8" strokeDasharray="2 2" />
-          <text x="478" y="176" fill={GRAY} fontSize="9" fontWeight="600">{"~10× worse"}</text>
+          <text x="478" y="176" fill={GRAY} fontSize="11" fontWeight="600">{"~10× worse"}</text>
 
           {/* Bottom insight */}
-          <rect x="150" y="305" width="500" height="12" rx="4" fill={GREEN} fillOpacity="0.06" />
-          <text x="400" y="315" fill={GREEN} fontSize="10" fontWeight="600" textAnchor="middle">TurboQuant stays within 2.7× of Shannon bound at every bit rate</text>
+          <rect x="120" y="330" width="560" height="40" rx="8" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="0.8" />
+          <text x="400" y="350" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">TurboQuant stays within 2.7× of Shannon bound at every bit rate</text>
+          <text x="400" y="366" fill={GRAY} fontSize="11" textAnchor="middle">No practical quantizer can beat the Shannon bound</text>
         </svg>
       </Diagram>
       <Diagram caption={<><strong>Shannon Bound Gap</strong> — TurboQuant distortion vs the information-theoretic minimum at each bit rate</>}>
-        <svg viewBox="0 0 800 420" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+        <svg viewBox="0 0 800 480" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
           <defs>
             <linearGradient id="tq-shannon-grad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor={A} stopOpacity="0.25" />
@@ -1957,7 +2178,7 @@ export default function TurboQuantPaper() {
               <stop offset="100%" stopColor={RED} stopOpacity="0.06" />
             </linearGradient>
           </defs>
-          <rect width="800" height="420" rx="12" fill="#0a0f1a" />
+          <rect width="800" height="480" rx="12" fill="#0a0f1a" />
 
           {/* Title */}
           <text x="400" y="30" fill={A} fontSize="15" fontWeight="700" textAnchor="middle">
@@ -1979,7 +2200,7 @@ export default function TurboQuantPaper() {
 
           {/* b=1 row */}
           <text x="60" y="140" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 1</text>
-          <text x="60" y="155" fill={GRAY} fontSize="10" textAnchor="middle">32× compress</text>
+          <text x="60" y="155" fill={GRAY} fontSize="11" textAnchor="middle">32× compress</text>
           {/* Shannon bound bar */}
           <rect x="120" y="124" width={0.1175 / 0.3634 * 520} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
           <text x={120 + 0.1175 / 0.3634 * 520 + 6} y="137" fill={GREEN} fontSize="11" fontWeight="600">0.1175</text>
@@ -1992,7 +2213,7 @@ export default function TurboQuantPaper() {
 
           {/* b=2 row */}
           <text x="60" y="205" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 2</text>
-          <text x="60" y="220" fill={GRAY} fontSize="10" textAnchor="middle">16× compress</text>
+          <text x="60" y="220" fill={GRAY} fontSize="11" textAnchor="middle">16× compress</text>
           {/* Shannon bound bar */}
           <rect x="120" y="189" width={0.0448 / 0.3634 * 520} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
           <text x={120 + 0.0448 / 0.3634 * 520 + 6} y="202" fill={GREEN} fontSize="11" fontWeight="600">0.0448</text>
@@ -2005,7 +2226,7 @@ export default function TurboQuantPaper() {
 
           {/* b=3 row */}
           <text x="60" y="270" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 3</text>
-          <text x="60" y="285" fill={GRAY} fontSize="10" textAnchor="middle">10.7× compress</text>
+          <text x="60" y="285" fill={GRAY} fontSize="11" textAnchor="middle">10.7× compress</text>
           {/* Shannon bound bar - very small */}
           <rect x="120" y="254" width={Math.max(0.01305 / 0.3634 * 520, 12)} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
           <text x={120 + 0.01305 / 0.3634 * 520 + 10} y="267" fill={GREEN} fontSize="11" fontWeight="600">0.0131</text>
@@ -2018,7 +2239,7 @@ export default function TurboQuantPaper() {
 
           {/* b=4 row */}
           <text x="60" y="335" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">b = 4</text>
-          <text x="60" y="350" fill={GRAY} fontSize="10" textAnchor="middle">8× compress</text>
+          <text x="60" y="350" fill={GRAY} fontSize="11" textAnchor="middle">8× compress</text>
           {/* Shannon bound bar */}
           <rect x="120" y="319" width={Math.max(0.003575 / 0.3634 * 520, 8)} height="16" rx="4" fill={GREEN} fillOpacity="0.7" />
           <text x={120 + 0.003575 / 0.3634 * 520 + 10} y="332" fill={GREEN} fontSize="11" fontWeight="600">0.0036</text>
@@ -2030,11 +2251,11 @@ export default function TurboQuantPaper() {
           <text x={120 + 0.009497 / 0.3634 * 520 + 77} y="337" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle">2.66×</text>
 
           {/* Bottom insight box */}
-          <rect x="140" y="375" width="520" height="36" rx="10" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1.2" />
-          <text x="400" y="393" fill={FG} fontSize="12" textAnchor="middle">
+          <rect x="100" y="400" width="600" height="50" rx="10" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1.2" />
+          <text x="400" y="420" fill={FG} fontSize="14" fontWeight="600" textAnchor="middle">
             Worst-case gap ≤ 2.7× — constant across all bit rates and dimensions
           </text>
-          <text x="400" y="407" fill={GRAY} fontSize="10" textAnchor="middle">
+          <text x="400" y="440" fill={GRAY} fontSize="11" textAnchor="middle">
             No practical quantizer can beat the Shannon bound; TurboQuant is remarkably close
           </text>
         </svg>
@@ -2089,7 +2310,7 @@ export default function TurboQuantPaper() {
 
       {/* SVG 11: KV Cache Compression — Real-World Impact */}
       <Diagram caption="KV Cache Compression Impact: how TurboQuant at 4 bits transforms GPU memory economics for LLM serving">
-        <svg viewBox="0 0 800 280" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <svg viewBox="0 0 800 350" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
           <defs>
             <linearGradient id="tq-kv-red" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor={RED} stopOpacity="0.7" />
@@ -2100,18 +2321,19 @@ export default function TurboQuantPaper() {
               <stop offset="100%" stopColor={GREEN} stopOpacity="0.3" />
             </linearGradient>
           </defs>
-          <rect width="800" height="280" rx="12" fill={BG} />
+          <rect width="800" height="350" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="22" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">KV Cache: Before vs After TurboQuant</text>
           <text x="400" y="38" fill={GRAY} fontSize="11" textAnchor="middle">H100 GPU (80 GB) serving Llama-3-70B at 128K context</text>
 
           {/* === LEFT: Before === */}
-          <text x="200" y="62" fill={RED} fontSize="12" fontWeight="700" textAnchor="middle">BEFORE (FP16)</text>
+          <rect x="100" y="50" width="200" height="24" rx="6" fill={RED} fillOpacity="0.12" stroke={RED} strokeWidth="1" />
+          <text x="200" y="67" fill={RED} fontSize="14" fontWeight="700" textAnchor="middle">BEFORE (FP16)</text>
 
           {/* GPU memory bar — full */}
           <rect x="60" y="76" width="280" height="50" rx="8" fill={GRAY} fillOpacity="0.1" stroke={GRAY} strokeWidth="1" />
-          <text x="200" y="70" fill={GRAY} fontSize="9" textAnchor="middle">H100 — 80 GB Total</text>
+          <text x="200" y="70" fill={GRAY} fontSize="11" textAnchor="middle">H100 — 80 GB Total</text>
 
           {/* KV cache portion = 39 GB out of 80 */}
           <rect x="62" y="78" width={39/80 * 276} height="46" rx="6" fill="url(#tq-kv-red)" />
@@ -2120,50 +2342,54 @@ export default function TurboQuantPaper() {
 
           {/* Model weights portion */}
           <rect x={62 + 39/80 * 276 + 2} y="78" width={35/80 * 276} height="46" rx="6" fill={BLUE} fillOpacity="0.3" />
-          <text x={62 + 39/80 * 276 + 2 + 35/80 * 276 / 2} y="106" fill={BLUE} fontSize="10" textAnchor="middle">Weights 35GB</text>
+          <text x={62 + 39/80 * 276 + 2 + 35/80 * 276 / 2} y="106" fill={BLUE} fontSize="11" textAnchor="middle">Weights 35GB</text>
 
           {/* Single user icon */}
           <rect x="140" y="140" width="120" height="30" rx="8" fill={RED} fillOpacity="0.1" stroke={RED} strokeWidth="1" />
-          <text x="200" y="160" fill={RED} fontSize="12" fontWeight="600" textAnchor="middle">1 user max</text>
+          <text x="200" y="160" fill={RED} fontSize="14" fontWeight="700" textAnchor="middle">1 user max</text>
 
           {/* Latency */}
           <rect x="140" y="180" width="120" height="24" rx="6" fill={GRAY} fillOpacity="0.08" stroke={GRAY} strokeWidth="0.8" />
-          <text x="200" y="196" fill={GRAY} fontSize="10" textAnchor="middle">High latency</text>
+          <text x="200" y="196" fill={GRAY} fontSize="11" textAnchor="middle">High latency</text>
 
           {/* Divider */}
           <line x1="400" y1="55" x2="400" y2="220" stroke={GRAY} strokeWidth="1" strokeDasharray="5 4" />
 
           {/* === RIGHT: After === */}
-          <text x="600" y="62" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">AFTER (TQ 4-bit)</text>
+          <rect x="500" y="50" width="200" height="24" rx="6" fill={GREEN} fillOpacity="0.12" stroke={GREEN} strokeWidth="1" />
+          <text x="600" y="67" fill={GREEN} fontSize="14" fontWeight="700" textAnchor="middle">AFTER (TQ 4-bit)</text>
 
           {/* GPU memory bar */}
           <rect x="460" y="76" width="280" height="50" rx="8" fill={GRAY} fillOpacity="0.1" stroke={GRAY} strokeWidth="1" />
-          <text x="600" y="70" fill={GRAY} fontSize="9" textAnchor="middle">H100 — 80 GB Total</text>
+          <text x="600" y="70" fill={GRAY} fontSize="11" textAnchor="middle">H100 — 80 GB Total</text>
 
           {/* Compressed KV cache = ~10 GB */}
           <rect x="462" y="78" width={10/80 * 276} height="46" rx="6" fill="url(#tq-kv-green)" />
-          <text x={462 + 10/80 * 276 / 2} y="106" fill={FG} fontSize="10" fontWeight="700" textAnchor="middle">10GB</text>
+          <text x={462 + 10/80 * 276 / 2} y="106" fill={FG} fontSize="11" fontWeight="700" textAnchor="middle">10GB</text>
 
           {/* Model weights */}
           <rect x={462 + 10/80 * 276 + 2} y="78" width={35/80 * 276} height="46" rx="6" fill={BLUE} fillOpacity="0.3" />
-          <text x={462 + 10/80 * 276 + 2 + 35/80 * 276 / 2} y="106" fill={BLUE} fontSize="10" textAnchor="middle">Weights 35GB</text>
+          <text x={462 + 10/80 * 276 + 2 + 35/80 * 276 / 2} y="106" fill={BLUE} fontSize="11" textAnchor="middle">Weights 35GB</text>
 
           {/* Free space */}
           <rect x={462 + 10/80 * 276 + 35/80 * 276 + 4} y="78" width={34/80 * 276} height="46" rx="6" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="0.8" strokeDasharray="3 3" />
-          <text x={462 + 10/80 * 276 + 35/80 * 276 + 4 + 34/80 * 276 / 2} y="106" fill={GREEN} fontSize="10" textAnchor="middle">Free 35GB</text>
+          <text x={462 + 10/80 * 276 + 35/80 * 276 + 4 + 34/80 * 276 / 2} y="106" fill={GREEN} fontSize="11" textAnchor="middle">Free 35GB</text>
 
           {/* 4 users */}
           <rect x="500" y="140" width="200" height="30" rx="8" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.2" />
-          <text x="600" y="160" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">4 users simultaneously</text>
+          <text x="600" y="160" fill={GREEN} fontSize="14" fontWeight="700" textAnchor="middle">4 users simultaneously</text>
 
           {/* Latency improvement */}
           <rect x="530" y="180" width="140" height="24" rx="6" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="0.8" />
-          <text x="600" y="196" fill={GREEN} fontSize="10" textAnchor="middle">Lower latency</text>
+          <text x="600" y="196" fill={GREEN} fontSize="11" textAnchor="middle">Lower latency</text>
 
           {/* Bottom summary */}
           <rect x="100" y="230" width="600" height="40" rx="10" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="1" />
-          <text x="400" y="248" fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">4× memory reduction → 4× more concurrent users on same hardware</text>
-          <text x="400" y="264" fill={GRAY} fontSize="10" textAnchor="middle">PPL impact: only +0.02 (2.86 → 2.88) — virtually lossless</text>
+          <text x="400" y="258" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">{"4× memory reduction → 4× more concurrent users"}</text>
+
+          {/* Perplexity badge */}
+          <rect x="210" y="278" width="380" height="30" rx="8" fill={GREEN} fillOpacity="0.1" stroke={GREEN} strokeWidth="1" />
+          <text x="400" y="298" fill={GREEN} fontSize="13" fontWeight="700" textAnchor="middle">{"Perplexity: 2.86 → 2.88 (virtually lossless)"}</text>
         </svg>
       </Diagram>
 
@@ -2201,8 +2427,8 @@ export default function TurboQuantPaper() {
 
       {/* SVG 12: Nearest Neighbor Search — Quality Comparison */}
       <Diagram caption="Recall@10 comparison at 4 bits per dimension: TurboQuant variants consistently outperform traditional quantization methods">
-        <svg viewBox="0 0 800 280" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
-          <rect width="800" height="280" rx="12" fill={BG} />
+        <svg viewBox="0 0 800 350" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
+          <rect width="800" height="350" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="22" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">Recall@10 at 4 Bits — GloVe-100 Benchmark</text>
@@ -2212,7 +2438,7 @@ export default function TurboQuantPaper() {
           {[80, 85, 90, 95].map((v, i) => (
             <g key={i}>
               <line x1="120" y1={240 - (v - 78) * 10} x2="700" y2={240 - (v - 78) * 10} stroke={GRAY} strokeWidth="0.3" strokeDasharray="3 4" opacity="0.4" />
-              <text x="112" y={244 - (v - 78) * 10} fill={GRAY} fontSize="9" textAnchor="end" fontFamily="'JetBrains Mono', monospace">{v}%</text>
+              <text x="112" y={244 - (v - 78) * 10} fill={GRAY} fontSize="11" textAnchor="end" fontFamily="'JetBrains Mono', monospace">{v}%</text>
             </g>
           ))}
 
@@ -2221,27 +2447,27 @@ export default function TurboQuantPaper() {
 
           {/* Bar 1: PQ */}
           <rect x="155" y={240 - (82 - 78) * 10} width="100" height={(82 - 78) * 10} rx="6" fill={GRAY} fillOpacity="0.4" stroke={GRAY} strokeWidth="1" />
-          <text x="205" y={240 - (82 - 78) * 10 - 8} fill={GRAY} fontSize="13" fontWeight="700" textAnchor="middle">82%</text>
+          <text x="205" y={240 - (82 - 78) * 10 - 8} fill={GRAY} fontSize="15" fontWeight="700" textAnchor="middle">82%</text>
           <text x="205" y="258" fill={FG} fontSize="11" textAnchor="middle">PQ</text>
-          <text x="205" y="271" fill={GRAY} fontSize="9" textAnchor="middle">Learned codebook</text>
+          <text x="205" y="271" fill={GRAY} fontSize="11" textAnchor="middle">Learned codebook</text>
 
           {/* Bar 2: OPQ */}
           <rect x="285" y={240 - (87 - 78) * 10} width="100" height={(87 - 78) * 10} rx="6" fill={GRAY} fillOpacity="0.5" stroke={GRAY} strokeWidth="1" />
-          <text x="335" y={240 - (87 - 78) * 10 - 8} fill={GRAY} fontSize="13" fontWeight="700" textAnchor="middle">87%</text>
+          <text x="335" y={240 - (87 - 78) * 10 - 8} fill={GRAY} fontSize="15" fontWeight="700" textAnchor="middle">87%</text>
           <text x="335" y="258" fill={FG} fontSize="11" textAnchor="middle">OPQ</text>
-          <text x="335" y="271" fill={GRAY} fontSize="9" textAnchor="middle">+ learned rotation</text>
+          <text x="335" y="271" fill={GRAY} fontSize="11" textAnchor="middle">+ learned rotation</text>
 
           {/* Bar 3: TurboQuant_mse */}
-          <rect x="415" y={240 - (91 - 78) * 10} width="100" height={(91 - 78) * 10} rx="6" fill={A} fillOpacity="0.6" stroke={A} strokeWidth="1.2" />
-          <text x="465" y={240 - (91 - 78) * 10 - 8} fill={A3} fontSize="13" fontWeight="700" textAnchor="middle">91%</text>
+          <rect x="415" y={240 - (91 - 78) * 10} width="100" height={(91 - 78) * 10} rx="6" fill={A} fillOpacity="0.6" stroke={A} strokeWidth="2" />
+          <text x="465" y={240 - (91 - 78) * 10 - 8} fill={A3} fontSize="15" fontWeight="700" textAnchor="middle">91%</text>
           <text x="465" y="258" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle">TQ_mse</text>
-          <text x="465" y="271" fill={GRAY} fontSize="9" textAnchor="middle">Random rotation</text>
+          <text x="465" y="271" fill={GRAY} fontSize="11" textAnchor="middle">Random rotation</text>
 
           {/* Bar 4: TurboQuant_prod */}
           <rect x="545" y={240 - (94 - 78) * 10} width="100" height={(94 - 78) * 10} rx="6" fill={A} fillOpacity="0.8" stroke={A} strokeWidth="1.5" />
-          <text x="595" y={240 - (94 - 78) * 10 - 8} fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">94%</text>
+          <text x="595" y={240 - (94 - 78) * 10 - 8} fill={A3} fontSize="16" fontWeight="700" textAnchor="middle">94%</text>
           <text x="595" y="258" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">TQ_prod</text>
-          <text x="595" y="271" fill={GRAY} fontSize="9" textAnchor="middle">+ QJL correction</text>
+          <text x="595" y="271" fill={GRAY} fontSize="11" textAnchor="middle">+ QJL correction</text>
 
           {/* Star on winner */}
           <text x="595" y={240 - (94 - 78) * 10 - 22} fill={A3} fontSize="14" textAnchor="middle">{'\u2605'}</text>
@@ -2249,7 +2475,12 @@ export default function TurboQuantPaper() {
           {/* Gap annotation */}
           <line x1="205" y1={240 - (82 - 78) * 10 - 2} x2="595" y2={240 - (82 - 78) * 10 - 2} stroke={GREEN} strokeWidth="0.8" strokeDasharray="3 2" />
           <rect x="360" y={240 - (82 - 78) * 10 - 20} width="70" height="16" rx="4" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="0.8" />
-          <text x="395" y={240 - (82 - 78) * 10 - 8} fill={GREEN} fontSize="10" fontWeight="700" textAnchor="middle">+12% gap</text>
+          <text x="395" y={240 - (82 - 78) * 10 - 8} fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">+12% gap</text>
+
+          {/* Bottom metric */}
+          <rect x="140" y="290" width="520" height="36" rx="8" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="0.8" />
+          <text x="400" y="308" fill={FG} fontSize="12" fontWeight="600" textAnchor="middle">TurboQuant_prod: 94% Recall@10 with ZERO training (no codebook needed)</text>
+          <text x="400" y="322" fill={GRAY} fontSize="11" textAnchor="middle">PQ requires offline k-means training on representative data</text>
         </svg>
       </Diagram>
 
@@ -2302,8 +2533,8 @@ export default function TurboQuantPaper() {
       />
 
       <Diagram caption={<><strong>KV Cache Memory Savings</strong> — Llama-3-70B at 128K context length: full precision vs TurboQuant compression</>}>
-        <svg viewBox="0 0 800 440" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
-          <rect width="800" height="440" rx="12" fill="#0a0f1a" />
+        <svg viewBox="0 0 800 500" style={{ width: '100%', height: 'auto', fontFamily: 'system-ui, sans-serif' }}>
+          <rect width="800" height="500" rx="12" fill="#0a0f1a" />
 
           {/* Title */}
           <text x="400" y="30" fill={A} fontSize="15" fontWeight="700" textAnchor="middle">
@@ -2315,26 +2546,26 @@ export default function TurboQuantPaper() {
 
           {/* Model info box */}
           <rect x="30" y="62" width="740" height="30" rx="6" fill={BLUE} fillOpacity="0.08" stroke={BLUE} strokeWidth="0.8" />
-          <text x="400" y="82" fill={GRAY} fontSize="10" textAnchor="middle">
+          <text x="400" y="82" fill={GRAY} fontSize="11" textAnchor="middle">
             80 layers × 8 KV heads × 128 head_dim × 128K tokens × 2 (K+V) = ~20.97B elements per user
           </text>
 
           {/* Bar chart */}
           {/* 32-bit (FP32) */}
           <text x="130" y="128" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">FP32 (32-bit)</text>
-          <text x="130" y="143" fill={GRAY} fontSize="10" textAnchor="end">Full precision</text>
+          <text x="130" y="143" fill={GRAY} fontSize="11" textAnchor="end">Full precision</text>
           <rect x="145" y="116" width="560" height="32" rx="6" fill={RED} fillOpacity="0.6" />
           <text x="715" y="137" fill={FG} fontSize="13" fontWeight="700" textAnchor="start">78.0 GB</text>
 
           {/* 16-bit (FP16/BF16) - typical baseline */}
           <text x="130" y="178" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">FP16 (16-bit)</text>
-          <text x="130" y="193" fill={GRAY} fontSize="10" textAnchor="end">Standard inference</text>
+          <text x="130" y="193" fill={GRAY} fontSize="11" textAnchor="end">Standard inference</text>
           <rect x="145" y="166" width="280" height="32" rx="6" fill="#f97316" fillOpacity="0.6" />
           <text x="435" y="187" fill={FG} fontSize="13" fontWeight="700" textAnchor="start">39.0 GB</text>
 
           {/* TurboQuant 4-bit */}
           <text x="130" y="228" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">TQ 4-bit</text>
-          <text x="130" y="243" fill={GRAY} fontSize="10" textAnchor="end">PPL: 2.88 (↑0.02)</text>
+          <text x="130" y="243" fill={GRAY} fontSize="11" textAnchor="end">PPL: 2.88 (↑0.02)</text>
           <rect x="145" y="216" width="70" height="32" rx="6" fill={A} fillOpacity="0.7" />
           <text x="225" y="237" fill={A3} fontSize="13" fontWeight="700" textAnchor="start">9.75 GB</text>
           {/* Savings badge */}
@@ -2343,7 +2574,7 @@ export default function TurboQuantPaper() {
 
           {/* TurboQuant 3-bit */}
           <text x="130" y="278" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">TQ 3-bit</text>
-          <text x="130" y="293" fill={GRAY} fontSize="10" textAnchor="end">PPL: 2.94 (↑0.08)</text>
+          <text x="130" y="293" fill={GRAY} fontSize="11" textAnchor="end">PPL: 2.94 (↑0.08)</text>
           <rect x="145" y="266" width="53" height="32" rx="6" fill={A} fillOpacity="0.8" />
           <text x="208" y="287" fill={A3} fontSize="13" fontWeight="700" textAnchor="start">7.3 GB</text>
           {/* Savings badge */}
@@ -2352,7 +2583,7 @@ export default function TurboQuantPaper() {
 
           {/* TurboQuant 2-bit */}
           <text x="130" y="328" fill={FG} fontSize="13" fontWeight="600" textAnchor="end">TQ 2-bit</text>
-          <text x="130" y="343" fill={GRAY} fontSize="10" textAnchor="end">NIAH: 0.91</text>
+          <text x="130" y="343" fill={GRAY} fontSize="11" textAnchor="end">NIAH: 0.91</text>
           <rect x="145" y="316" width="35" height="32" rx="6" fill={A2} fillOpacity="0.8" />
           <text x="190" y="337" fill={A3} fontSize="13" fontWeight="700" textAnchor="start">4.9 GB</text>
           {/* Savings badge */}
@@ -2361,20 +2592,20 @@ export default function TurboQuantPaper() {
 
           {/* GPU capacity line */}
           <line x1="717" y1="110" x2="717" y2="355" stroke={RED} strokeWidth="1.5" strokeDasharray="6 4" />
-          <text x="717" y="365" fill={RED} fontSize="10" fontWeight="600" textAnchor="middle">H100</text>
-          <text x="717" y="377" fill={RED} fontSize="10" textAnchor="middle">80 GB</text>
+          <text x="717" y="365" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle">H100</text>
+          <text x="717" y="377" fill={RED} fontSize="11" textAnchor="middle">80 GB</text>
 
           {/* A100 capacity line */}
           <line x1={145 + (40 / 78) * 560} y1="110" x2={145 + (40 / 78) * 560} y2="355" stroke="#f97316" strokeWidth="1.5" strokeDasharray="6 4" />
-          <text x={145 + (40 / 78) * 560} y="365" fill="#f97316" fontSize="10" fontWeight="600" textAnchor="middle">A100</text>
-          <text x={145 + (40 / 78) * 560} y="377" fill="#f97316" fontSize="10" textAnchor="middle">40 GB</text>
+          <text x={145 + (40 / 78) * 560} y="365" fill="#f97316" fontSize="11" fontWeight="600" textAnchor="middle">A100</text>
+          <text x={145 + (40 / 78) * 560} y="377" fill="#f97316" fontSize="11" textAnchor="middle">40 GB</text>
 
           {/* Insight boxes */}
           <rect x="40" y="392" width="350" height="38" rx="8" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="1" />
           <text x="215" y="408" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">
             At 3-bit: fits on a single A100 (40 GB)
           </text>
-          <text x="215" y="422" fill={GRAY} fontSize="10" textAnchor="middle">
+          <text x="215" y="422" fill={GRAY} fontSize="11" textAnchor="middle">
             FP16 requires 2× A100s or 1× H100 just for KV cache
           </text>
 
@@ -2382,7 +2613,7 @@ export default function TurboQuantPaper() {
           <text x="590" y="408" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">
             At 4-bit: serve 4× more concurrent users
           </text>
-          <text x="590" y="422" fill={GRAY} fontSize="10" textAnchor="middle">
+          <text x="590" y="422" fill={GRAY} fontSize="11" textAnchor="middle">
             Or extend context to 512K on the same hardware
           </text>
         </svg>
@@ -2425,13 +2656,13 @@ export default function TurboQuantPaper() {
 
       {/* SVG 13: End-to-End: From Raw Vector to Compact Code */}
       <Diagram caption="The complete TurboQuant pipeline: from a 512-byte float32 vector to a 68-byte compact code in five steps">
-        <svg viewBox="0 0 800 250" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <svg viewBox="0 0 800 320" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
           <defs>
             <marker id="tq-e2e-arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="7" markerHeight="5" orient="auto-start-reverse">
               <polygon points="0 0, 10 3.5, 0 7" fill={A} />
             </marker>
           </defs>
-          <rect width="800" height="250" rx="12" fill={BG} />
+          <rect width="800" height="320" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="20" fill={FG} fontSize="13" fontWeight="700" textAnchor="middle">End-to-End: Raw Vector → Compact Code</text>
@@ -2441,8 +2672,8 @@ export default function TurboQuantPaper() {
           <text x="32" y="75" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle">1</text>
           <rect x="14" y="88" width="96" height="52" rx="8" fill={RED} fillOpacity="0.1" stroke={RED} strokeWidth="1" />
           <text x="62" y="106" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Raw Vector</text>
-          <text x="62" y="120" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128-d float32</text>
-          <text x="62" y="134" fill={RED} fontSize="10" fontWeight="700" textAnchor="middle">512 bytes</text>
+          <text x="62" y="120" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128-d float32</text>
+          <text x="62" y="134" fill={RED} fontSize="11" fontWeight="700" textAnchor="middle">512 bytes</text>
 
           {/* Arrow */}
           <line x1="114" y1="114" x2="136" y2="114" stroke={A} strokeWidth="1.3" markerEnd="url(#tq-e2e-arr)" />
@@ -2452,8 +2683,8 @@ export default function TurboQuantPaper() {
           <text x="155" y="75" fill={BLUE} fontSize="11" fontWeight="700" textAnchor="middle">2</text>
           <rect x="137" y="88" width="96" height="52" rx="8" fill={BLUE} fillOpacity="0.1" stroke={BLUE} strokeWidth="1" />
           <text x="185" y="106" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Extract Norm</text>
-          <text x="185" y="120" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">store ||x||</text>
-          <text x="185" y="134" fill={BLUE} fontSize="10" fontWeight="700" textAnchor="middle">4 bytes</text>
+          <text x="185" y="120" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">store ||x||</text>
+          <text x="185" y="134" fill={BLUE} fontSize="11" fontWeight="700" textAnchor="middle">4 bytes</text>
 
           {/* Arrow */}
           <line x1="237" y1="114" x2="259" y2="114" stroke={A} strokeWidth="1.3" markerEnd="url(#tq-e2e-arr)" />
@@ -2463,8 +2694,8 @@ export default function TurboQuantPaper() {
           <text x="278" y="75" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">3</text>
           <rect x="260" y="88" width="115" height="52" rx="8" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1.5" />
           <text x="317" y="106" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">Hadamard Rotate</text>
-          <text x="317" y="120" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">O(d log d)</text>
-          <text x="317" y="134" fill={GRAY} fontSize="9" textAnchor="middle">spreads energy</text>
+          <text x="317" y="120" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">O(d log d)</text>
+          <text x="317" y="134" fill={GRAY} fontSize="11" textAnchor="middle">spreads energy</text>
 
           {/* Arrow */}
           <line x1="379" y1="114" x2="401" y2="114" stroke={A} strokeWidth="1.3" markerEnd="url(#tq-e2e-arr)" />
@@ -2474,8 +2705,8 @@ export default function TurboQuantPaper() {
           <text x="420" y="75" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">4</text>
           <rect x="402" y="88" width="130" height="52" rx="8" fill={A} fillOpacity="0.15" stroke={A} strokeWidth="1.5" />
           <text x="467" y="106" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">Beta-Optimal Quant</text>
-          <text x="467" y="120" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">4-bit Lloyd-Max</text>
-          <text x="467" y="134" fill={GRAY} fontSize="9" textAnchor="middle">per coordinate</text>
+          <text x="467" y="120" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">4-bit Lloyd-Max</text>
+          <text x="467" y="134" fill={GRAY} fontSize="11" textAnchor="middle">per coordinate</text>
 
           {/* Arrow */}
           <line x1="536" y1="114" x2="558" y2="114" stroke={A} strokeWidth="1.3" markerEnd="url(#tq-e2e-arr)" />
@@ -2485,40 +2716,40 @@ export default function TurboQuantPaper() {
           <text x="577" y="75" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">5</text>
           <rect x="559" y="88" width="110" height="52" rx="8" fill={GREEN} fillOpacity="0.15" stroke={GREEN} strokeWidth="1.5" />
           <text x="614" y="106" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">Compact Code</text>
-          <text x="614" y="120" fill={GRAY} fontSize="9" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128×4 = 512 bits</text>
-          <text x="614" y="134" fill={GREEN} fontSize="10" fontWeight="700" textAnchor="middle">64 + 4 = 68 bytes</text>
+          <text x="614" y="120" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">128×4 = 512 bits</text>
+          <text x="614" y="134" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">64 + 4 = 68 bytes</text>
 
           {/* Final result box */}
-          <rect x="690" y="82" width="95" height="64" rx="10" fill={A} fillOpacity="0.12" stroke={A} strokeWidth="1.5" />
-          <text x="737" y="102" fill={A3} fontSize="18" fontWeight="700" textAnchor="middle">7.5×</text>
+          <rect x="686" y="78" width="104" height="70" rx="10" fill={A} fillOpacity="0.15" stroke={A3} strokeWidth="2" />
+          <text x="737" y="102" fill={A3} fontSize="22" fontWeight="700" textAnchor="middle">{"7.5×"}</text>
           <text x="737" y="118" fill={FG} fontSize="11" textAnchor="middle">compression</text>
-          <text x="737" y="134" fill={GRAY} fontSize="9" textAnchor="middle">512B → 68B</text>
+          <text x="737" y="134" fill={GRAY} fontSize="11" textAnchor="middle">512B → 68B</text>
 
           {/* Bottom: Size flow */}
           <rect x="40" y="165" width="720" height="32" rx="8" fill={A} fillOpacity="0.06" stroke={A} strokeWidth="0.8" />
           <text x="62" y="186" fill={RED} fontSize="11" fontWeight="700">512B</text>
           <text x="100" y="186" fill={GRAY} fontSize="11">→</text>
-          <text x="120" y="186" fill={FG} fontSize="10">normalize</text>
+          <text x="120" y="186" fill={FG} fontSize="11">normalize</text>
           <text x="185" y="186" fill={GRAY} fontSize="11">→</text>
-          <text x="210" y="186" fill={FG} fontSize="10">rotate (free)</text>
+          <text x="210" y="186" fill={FG} fontSize="11">rotate (free)</text>
           <text x="300" y="186" fill={GRAY} fontSize="11">→</text>
-          <text x="330" y="186" fill={FG} fontSize="10">quantize each coord to 4 bits</text>
+          <text x="330" y="186" fill={FG} fontSize="11">quantize each coord to 4 bits</text>
           <text x="540" y="186" fill={GRAY} fontSize="11">→</text>
           <text x="570" y="186" fill={A3} fontSize="11" fontWeight="700">64B indices</text>
-          <text x="640" y="186" fill={GRAY} fontSize="10">+</text>
+          <text x="640" y="186" fill={GRAY} fontSize="11">+</text>
           <text x="660" y="186" fill={BLUE} fontSize="11" fontWeight="700">4B norm</text>
-          <text x="710" y="186" fill={GRAY} fontSize="10">=</text>
+          <text x="710" y="186" fill={GRAY} fontSize="11">=</text>
           <text x="738" y="186" fill={GREEN} fontSize="12" fontWeight="700">68B</text>
 
           {/* Properties row */}
           <rect x="100" y="208" width="140" height="22" rx="6" fill={GREEN} fillOpacity="0.08" stroke={GREEN} strokeWidth="0.6" />
-          <text x="170" y="223" fill={GREEN} fontSize="10" fontWeight="600" textAnchor="middle">Zero training</text>
+          <text x="170" y="223" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">Zero training</text>
           <rect x="260" y="208" width="140" height="22" rx="6" fill={BLUE} fillOpacity="0.08" stroke={BLUE} strokeWidth="0.6" />
-          <text x="330" y="223" fill={BLUE} fontSize="10" fontWeight="600" textAnchor="middle">O(d log d) per vec</text>
+          <text x="330" y="223" fill={BLUE} fontSize="11" fontWeight="600" textAnchor="middle">O(d log d) per vec</text>
           <rect x="420" y="208" width="165" height="22" rx="6" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="0.6" />
-          <text x="502" y="223" fill={A} fontSize="10" fontWeight="600" textAnchor="middle">{'≤2.7× Shannon bound'}</text>
+          <text x="502" y="223" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">{'≤2.7× Shannon bound'}</text>
           <rect x="605" y="208" width="140" height="22" rx="6" fill={PURPLE} fillOpacity="0.08" stroke={PURPLE} strokeWidth="0.6" />
-          <text x="675" y="223" fill={PURPLE} fontSize="10" fontWeight="600" textAnchor="middle">Streaming/online</text>
+          <text x="675" y="223" fill={PURPLE} fontSize="11" fontWeight="600" textAnchor="middle">Streaming/online</text>
         </svg>
       </Diagram>
 
@@ -2560,101 +2791,109 @@ export default function TurboQuantPaper() {
 
       {/* SVG 14: TurboQuant vs The World */}
       <Diagram caption="TurboQuant vs The World: a final comparison of four quantization paradigms across accuracy, speed, and training requirements">
-        <svg viewBox="0 0 800 350" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
-          <rect width="800" height="350" rx="12" fill={BG} />
+        <svg viewBox="0 0 800 450" style={{ width: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif" }}>
+          <rect width="800" height="450" rx="12" fill={BG} />
 
           {/* Title */}
           <text x="400" y="22" fill={FG} fontSize="14" fontWeight="700" textAnchor="middle">TurboQuant vs The World</text>
           <text x="400" y="38" fill={GRAY} fontSize="11" textAnchor="middle">Four quantization paradigms compared across key dimensions</text>
 
           {/* Column 1: Naive Scalar */}
-          <rect x="20" y="52" width="175" height="250" rx="10" fill={RED} fillOpacity="0.06" stroke={RED} strokeWidth="1" />
+          <rect x="20" y="52" width="175" height="280" rx="10" fill={RED} fillOpacity="0.06" stroke={RED} strokeWidth="1" />
           <text x="107" y="72" fill={RED} fontSize="12" fontWeight="700" textAnchor="middle">Naive Scalar</text>
-          <text x="107" y="86" fill={GRAY} fontSize="9" textAnchor="middle">No rotation, direct quant</text>
+          <text x="107" y="86" fill={GRAY} fontSize="11" textAnchor="middle">No rotation, direct quant</text>
 
-          <text x="107" y="112" fill={GRAY} fontSize="10" textAnchor="middle">Rotation</text>
+          <text x="107" y="112" fill={GRAY} fontSize="11" textAnchor="middle">Rotation</text>
           <text x="107" y="126" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle">None</text>
-          <text x="107" y="148" fill={GRAY} fontSize="10" textAnchor="middle">MSE</text>
+          <text x="107" y="148" fill={GRAY} fontSize="11" textAnchor="middle">MSE</text>
           <text x="107" y="162" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle">High (data-dep.)</text>
-          <text x="107" y="184" fill={GRAY} fontSize="10" textAnchor="middle">Training</text>
+          <text x="107" y="184" fill={GRAY} fontSize="11" textAnchor="middle">Training</text>
           <text x="107" y="198" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">None</text>
-          <text x="107" y="220" fill={GRAY} fontSize="10" textAnchor="middle">Speed</text>
+          <text x="107" y="220" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
           <text x="107" y="234" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">Fast</text>
 
           {/* Stars */}
           <text x="107" y="262" fill={RED} fontSize="14" textAnchor="middle">{'\u2605\u2606\u2606\u2606\u2606'}</text>
-          <text x="107" y="280" fill={GRAY} fontSize="9" textAnchor="middle">Accuracy</text>
+          <text x="107" y="280" fill={GRAY} fontSize="11" textAnchor="middle">Accuracy</text>
           <text x="107" y="296" fill={GREEN} fontSize="14" textAnchor="middle">{'\u2605\u2605\u2605\u2605\u2606'}</text>
 
           {/* Column 2: Product Quantization */}
-          <rect x="205" y="52" width="175" height="250" rx="10" fill={GRAY} fillOpacity="0.06" stroke={GRAY} strokeWidth="1" />
+          <rect x="205" y="52" width="175" height="280" rx="10" fill={GRAY} fillOpacity="0.06" stroke={GRAY} strokeWidth="1" />
           <text x="292" y="72" fill={FG} fontSize="12" fontWeight="700" textAnchor="middle">Product Quant (PQ)</text>
-          <text x="292" y="86" fill={GRAY} fontSize="9" textAnchor="middle">Learned codebooks</text>
+          <text x="292" y="86" fill={GRAY} fontSize="11" textAnchor="middle">Learned codebooks</text>
 
-          <text x="292" y="112" fill={GRAY} fontSize="10" textAnchor="middle">Rotation</text>
+          <text x="292" y="112" fill={GRAY} fontSize="11" textAnchor="middle">Rotation</text>
           <text x="292" y="126" fill={FG} fontSize="11" fontWeight="600" textAnchor="middle">Learned (OPQ)</text>
-          <text x="292" y="148" fill={GRAY} fontSize="10" textAnchor="middle">MSE</text>
+          <text x="292" y="148" fill={GRAY} fontSize="11" textAnchor="middle">MSE</text>
           <text x="292" y="162" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">Moderate</text>
-          <text x="292" y="184" fill={GRAY} fontSize="10" textAnchor="middle">Training</text>
+          <text x="292" y="184" fill={GRAY} fontSize="11" textAnchor="middle">Training</text>
           <text x="292" y="198" fill={RED} fontSize="11" fontWeight="600" textAnchor="middle">k-means (slow)</text>
-          <text x="292" y="220" fill={GRAY} fontSize="10" textAnchor="middle">Speed</text>
+          <text x="292" y="220" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
           <text x="292" y="234" fill={A} fontSize="11" fontWeight="600" textAnchor="middle">Medium</text>
 
           {/* Stars */}
           <text x="292" y="262" fill={A} fontSize="14" textAnchor="middle">{'\u2605\u2605\u2605\u2606\u2606'}</text>
-          <text x="292" y="280" fill={GRAY} fontSize="9" textAnchor="middle">Accuracy</text>
+          <text x="292" y="280" fill={GRAY} fontSize="11" textAnchor="middle">Accuracy</text>
           <text x="292" y="296" fill={A} fontSize="14" textAnchor="middle">{'\u2605\u2605\u2606\u2606\u2606'}</text>
 
           {/* Column 3: TurboQuant_mse */}
-          <rect x="390" y="52" width="175" height="250" rx="10" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="1.2" />
+          <rect x="390" y="52" width="175" height="280" rx="10" fill={A} fillOpacity="0.08" stroke={A} strokeWidth="1.2" />
           <text x="477" y="72" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle">TurboQuant_mse</text>
-          <text x="477" y="86" fill={GRAY} fontSize="9" textAnchor="middle">Random rotation + Lloyd-Max</text>
+          <text x="477" y="86" fill={GRAY} fontSize="11" textAnchor="middle">Random rotation + Lloyd-Max</text>
 
-          <text x="477" y="112" fill={GRAY} fontSize="10" textAnchor="middle">Rotation</text>
+          <text x="477" y="112" fill={GRAY} fontSize="11" textAnchor="middle">Rotation</text>
           <text x="477" y="126" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle">Random (free)</text>
-          <text x="477" y="148" fill={GRAY} fontSize="10" textAnchor="middle">MSE</text>
+          <text x="477" y="148" fill={GRAY} fontSize="11" textAnchor="middle">MSE</text>
           <text x="477" y="162" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">Low (≤2.7× opt)</text>
-          <text x="477" y="184" fill={GRAY} fontSize="10" textAnchor="middle">Training</text>
+          <text x="477" y="184" fill={GRAY} fontSize="11" textAnchor="middle">Training</text>
           <text x="477" y="198" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">Zero</text>
-          <text x="477" y="220" fill={GRAY} fontSize="10" textAnchor="middle">Speed</text>
+          <text x="477" y="220" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
           <text x="477" y="234" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">Fast (O(d log d))</text>
 
           {/* Stars */}
           <text x="477" y="262" fill={A3} fontSize="14" textAnchor="middle">{'\u2605\u2605\u2605\u2605\u2606'}</text>
-          <text x="477" y="280" fill={GRAY} fontSize="9" textAnchor="middle">Accuracy</text>
+          <text x="477" y="280" fill={GRAY} fontSize="11" textAnchor="middle">Accuracy</text>
           <text x="477" y="296" fill={GREEN} fontSize="14" textAnchor="middle">{'\u2605\u2605\u2605\u2605\u2605'}</text>
 
           {/* Column 4: TurboQuant_prod */}
-          <rect x="575" y="52" width="205" height="250" rx="10" fill={A} fillOpacity="0.12" stroke={A3} strokeWidth="2" />
+          <rect x="575" y="52" width="205" height="280" rx="10" fill={A} fillOpacity="0.12" stroke={A3} strokeWidth="2" />
           <text x="677" y="72" fill={A3} fontSize="12" fontWeight="700" textAnchor="middle">TurboQuant_prod</text>
-          <text x="677" y="86" fill={GRAY} fontSize="9" textAnchor="middle">+ QJL residual correction</text>
+          <text x="677" y="86" fill={GRAY} fontSize="11" textAnchor="middle">+ QJL residual correction</text>
 
-          <text x="677" y="112" fill={GRAY} fontSize="10" textAnchor="middle">Rotation</text>
+          <text x="677" y="112" fill={GRAY} fontSize="11" textAnchor="middle">Rotation</text>
           <text x="677" y="126" fill={A3} fontSize="11" fontWeight="600" textAnchor="middle">Random (free)</text>
-          <text x="677" y="148" fill={GRAY} fontSize="10" textAnchor="middle">Inner Product</text>
+          <text x="677" y="148" fill={GRAY} fontSize="11" textAnchor="middle">Inner Product</text>
           <text x="677" y="162" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">UNBIASED</text>
-          <text x="677" y="184" fill={GRAY} fontSize="10" textAnchor="middle">Training</text>
+          <text x="677" y="184" fill={GRAY} fontSize="11" textAnchor="middle">Training</text>
           <text x="677" y="198" fill={GREEN} fontSize="11" fontWeight="700" textAnchor="middle">Zero</text>
-          <text x="677" y="220" fill={GRAY} fontSize="10" textAnchor="middle">Speed</text>
+          <text x="677" y="220" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
           <text x="677" y="234" fill={GREEN} fontSize="11" fontWeight="600" textAnchor="middle">Fast (O(d log d))</text>
 
           {/* Stars */}
           <text x="677" y="262" fill={A3} fontSize="14" textAnchor="middle">{'\u2605\u2605\u2605\u2605\u2605'}</text>
-          <text x="677" y="280" fill={GRAY} fontSize="9" textAnchor="middle">Accuracy</text>
+          <text x="677" y="280" fill={GRAY} fontSize="11" textAnchor="middle">Accuracy</text>
           <text x="677" y="296" fill={GREEN} fontSize="14" textAnchor="middle">{'\u2605\u2605\u2605\u2605\u2605'}</text>
 
           {/* Crown on winner */}
           <text x="677" y="46" fill={A3} fontSize="16" textAnchor="middle">{'\u{1F451}'}</text>
 
           {/* Bottom row labels */}
-          <text x="107" y="296" fill={GRAY} fontSize="9" textAnchor="middle">Speed</text>
-          <text x="292" y="296" fill={GRAY} fontSize="9" textAnchor="middle">Speed</text>
-          <text x="477" y="296" fill={GRAY} fontSize="9" textAnchor="middle">Speed</text>
-          <text x="677" y="296" fill={GRAY} fontSize="9" textAnchor="middle">Speed</text>
+          <text x="107" y="296" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
+          <text x="292" y="296" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
+          <text x="477" y="296" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
+          <text x="677" y="296" fill={GRAY} fontSize="11" textAnchor="middle">Speed</text>
 
           {/* Bottom insight */}
-          <rect x="120" y="318" width="560" height="26" rx="8" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1" />
-          <text x="400" y="336" fill={A3} fontSize="11" fontWeight="700" textAnchor="middle">TurboQuant_prod: best accuracy + zero training + unbiased inner products</text>
+          <rect x="80" y="350" width="640" height="50" rx="10" fill={A} fillOpacity="0.1" stroke={A} strokeWidth="1.2" />
+          <text x="400" y="372" fill={A3} fontSize="14" fontWeight="700" textAnchor="middle">TurboQuant_prod: best accuracy + zero training + unbiased inner products</text>
+          <text x="400" y="392" fill={GRAY} fontSize="11" textAnchor="middle">The only method with provable guarantees AND practical performance</text>
+
+          {/* Visual verdict row */}
+          <rect x="40" y="416" width="720" height="26" rx="6" fill={A} fillOpacity="0.04" />
+          <text x="107" y="434" fill={RED} fontSize="12" textAnchor="middle">{"✗ No guarantee"}</text>
+          <text x="292" y="434" fill={GRAY} fontSize="12" textAnchor="middle">{"✗ Needs training"}</text>
+          <text x="477" y="434" fill={GREEN} fontSize="12" textAnchor="middle">{"✓ 2.7× optimal"}</text>
+          <text x="677" y="434" fill={GREEN} fontSize="12" fontWeight="700" textAnchor="middle">{"✓ Unbiased + optimal"}</text>
         </svg>
       </Diagram>
 
