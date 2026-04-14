@@ -106,24 +106,21 @@ export default function TurboQuantPaper() {
           <text x="610" y="76" fill={GREEN} fontSize="11" fontWeight="500" textAnchor="middle">Quantized (4-bit = 16 levels)</text>
           <rect x="465" y="86" width="290" height="138" rx="8" fill={GREEN} fillOpacity="0.05" stroke={GREEN} strokeWidth="0.8" strokeOpacity="0.3" />
 
-          {/* AFTER grid: 128 cells but ONLY 16 colors — clearly grouped */}
-          {/* Each cell maps to one of 16 quantization levels — visible repetition */}
+          {/* AFTER grid: 128 cells, ONLY 16 colors — sorted in color bands so it's visually OBVIOUS */}
+          {/* Row 1: all red shades (level 0). Row 2: orange→yellow. Row 3: greens. etc. CLEAR BANDING. */}
           {(() => {
             const q16 = ['#dc2626','#ea580c','#d97706','#ca8a04','#65a30d','#16a34a','#0d9488','#0891b2',
                          '#2563eb','#4f46e5','#7c3aed','#9333ea','#c026d3','#db2777','#e11d48','#71717a'];
-            /* Deterministic assignment: each of 128 values snaps to nearest of 16 levels */
-            const assignments = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
-                                 2,5,8,11,14,1,4,7,10,13,0,3,6,9,12,15,
-                                 7,7,3,3,11,11,0,0,5,5,14,14,9,9,2,2,
-                                 12,6,1,8,15,4,10,3,13,7,0,5,11,2,9,14,
-                                 0,0,3,3,6,6,9,9,12,12,15,15,2,2,5,5,
-                                 8,8,11,11,14,14,1,1,4,4,7,7,10,10,13,13,
-                                 5,10,0,15,3,8,13,2,7,12,1,6,11,4,9,14,
-                                 6,6,6,9,9,9,12,12,12,3,3,3,0,0,0,15];
-            return assignments.map((lvl, i) => {
+            /* 128 cells, each assigned to one of 16 levels — sorted so same colors cluster together */
+            /* 8 cells per level on average (128/16=8). Lay them out so each color appears in a visible block */
+            const sorted = [];
+            for (let lvl = 0; lvl < 16; lvl++) {
+              for (let k = 0; k < 8; k++) sorted.push(lvl);
+            }
+            return sorted.map((lvl, i) => {
               const col = i % 16;
               const row = Math.floor(i / 16);
-              return <rect key={`q-${i}`} x={471 + col * 17.5} y={92 + row * 16} width="15" height="13" rx="2" fill={q16[lvl]} opacity={0.85} />;
+              return <rect key={`q-${i}`} x={471 + col * 17.5} y={92 + row * 16} width="15" height="13" rx="2" fill={q16[lvl]} opacity={0.9} />;
             });
           })()}
           <text x="610" y="240" fill={GRAY} fontSize="11" textAnchor="middle" fontFamily="'JetBrains Mono', monospace">Only 16 distinct levels</text>
