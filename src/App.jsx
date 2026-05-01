@@ -19,6 +19,7 @@ import DeepSeekV3Paper from './papers/deepseek-v3/DeepSeekV3Paper';
 import RLForLLMsPaper from './papers/rl-for-llms/RLForLLMsPaper';
 import RLVRPaper from './papers/rlvr/RLVRPaper';
 import AgenticSystemsPaper from './papers/agentic-systems/AgenticSystemsPaper';
+import ProjectSupportAgentPaper from './papers/project-support-agent/ProjectSupportAgentPaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
@@ -33,8 +34,9 @@ import dsv3Config from './papers/deepseek-v3/config';
 import rlConfig from './papers/rl-for-llms/config';
 import rlvrConfig from './papers/rlvr/config';
 import agenticConfig from './papers/agentic-systems/config';
+import projectSupportConfig from './papers/project-support-agent/config';
 
-const PAPERS = [agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
+const PAPERS = [projectSupportConfig, agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
@@ -51,6 +53,7 @@ const PAPER_COMPONENTS = {
   kan: KANPaper,
   'deepseek-v3': DeepSeekV3Paper,
   'agentic-systems': AgenticSystemsPaper,
+  'project-support-agent': ProjectSupportAgentPaper,
 };
 
 const PAPER_SECTIONS = {
@@ -68,6 +71,7 @@ const PAPER_SECTIONS = {
   'deepseek-v3': ['Why V3?', 'MoE Architecture', 'Multi-Head Latent Attention', 'Multi-Token Prediction', 'FP8 Training', 'Results', 'Mental Models'],
   'free-transformer': ['The Idea', 'Latent Variable Z', 'ELBO Training', 'Reasoning Gains', 'Structured Generation', 'Results', 'Mental Models'],
   'agentic-systems': ['The Agentic Era', 'Anatomy of an Agent', 'Tool Use & MCP', 'Memory Architectures', 'Planning & Reasoning', 'Multi-Agent Patterns', 'Framework Landscape', 'Production Stack', 'Cost & Latency', 'Security & Guardrails', 'Project: Customer Support Agent', 'Project: AI Software Engineer', 'Project: Data Analyst Agent', 'Failure Modes & Anti-patterns', 'Mental Models & Resources'],
+  'project-support-agent': ['Problem & Scope', 'Functional Requirements', 'Non-Functional Requirements (NFRs)', 'Capacity Estimation', 'High-Level Architecture', 'Sequence: One Ticket', 'API Design', 'Data Model', 'Triage Subsystem', 'Specialist Agents', 'Knowledge Base / RAG', 'Memory Architecture', 'Tool Layer (MCP)', 'Deployment Topology', 'Security & Compliance', 'Observability & Eval', 'Failure Modes', 'Cost Analysis', 'Trade-offs', 'Mental Models & Resources'],
 };
 
 export default function App() {
