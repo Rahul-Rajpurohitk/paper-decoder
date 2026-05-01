@@ -20,6 +20,8 @@ import RLForLLMsPaper from './papers/rl-for-llms/RLForLLMsPaper';
 import RLVRPaper from './papers/rlvr/RLVRPaper';
 import AgenticSystemsPaper from './papers/agentic-systems/AgenticSystemsPaper';
 import ProjectSupportAgentPaper from './papers/project-support-agent/ProjectSupportAgentPaper';
+import ProjectSWEAgentPaper from './papers/project-swe-agent/ProjectSWEAgentPaper';
+import ProjectDataAnalystPaper from './papers/project-data-analyst/ProjectDataAnalystPaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
@@ -35,8 +37,10 @@ import rlConfig from './papers/rl-for-llms/config';
 import rlvrConfig from './papers/rlvr/config';
 import agenticConfig from './papers/agentic-systems/config';
 import projectSupportConfig from './papers/project-support-agent/config';
+import projectSWEConfig from './papers/project-swe-agent/config';
+import projectAnalystConfig from './papers/project-data-analyst/config';
 
-const PAPERS = [projectSupportConfig, agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
+const PAPERS = [projectSupportConfig, projectSWEConfig, projectAnalystConfig, agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
@@ -54,6 +58,8 @@ const PAPER_COMPONENTS = {
   'deepseek-v3': DeepSeekV3Paper,
   'agentic-systems': AgenticSystemsPaper,
   'project-support-agent': ProjectSupportAgentPaper,
+  'project-swe-agent': ProjectSWEAgentPaper,
+  'project-data-analyst': ProjectDataAnalystPaper,
 };
 
 const PAPER_SECTIONS = {
@@ -72,6 +78,8 @@ const PAPER_SECTIONS = {
   'free-transformer': ['The Idea', 'Latent Variable Z', 'ELBO Training', 'Reasoning Gains', 'Structured Generation', 'Results', 'Mental Models'],
   'agentic-systems': ['The Agentic Era', 'Anatomy of an Agent', 'Tool Use & MCP', 'Memory Architectures', 'Planning & Reasoning', 'Multi-Agent Patterns', 'Framework Landscape', 'Production Stack', 'Cost & Latency', 'Security & Guardrails', 'Project: Customer Support Agent', 'Project: AI Software Engineer', 'Project: Data Analyst Agent', 'Failure Modes & Anti-patterns', 'Mental Models & Resources'],
   'project-support-agent': ['Problem & Scope', 'Functional Requirements', 'Non-Functional Requirements (NFRs)', 'Capacity Estimation', 'High-Level Architecture', 'Sequence: One Ticket', 'API Design', 'Data Model', 'Triage Subsystem', 'Specialist Agents', 'Knowledge Base / RAG', 'Memory Architecture', 'Tool Layer (MCP)', 'Deployment Topology', 'Security & Compliance', 'Observability & Eval', 'Failure Modes', 'Cost Analysis', 'Trade-offs', 'Mental Models & Resources'],
+  'project-swe-agent': ['Problem & Scope', 'Functional Requirements', 'Capacity Estimation', 'Architecture', 'Sandbox Internals', 'Agent Loop Deep Dive', 'Tool Shell', 'Eval & SWE-bench', 'Cost Analysis', 'Failure Modes', 'Security', 'Trade-offs', 'Mental Models', 'Resources'],
+  'project-data-analyst': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Sequence: One Question', 'Semantic Layer Deep Dive', 'SQL Safety Pipeline', 'Schema Retrieval (RAG)', 'Eval & Observability', 'Governance & PII', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
 };
 
 export default function App() {
