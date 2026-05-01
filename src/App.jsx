@@ -18,6 +18,7 @@ import KANPaper from './papers/kan/KANPaper';
 import DeepSeekV3Paper from './papers/deepseek-v3/DeepSeekV3Paper';
 import RLForLLMsPaper from './papers/rl-for-llms/RLForLLMsPaper';
 import RLVRPaper from './papers/rlvr/RLVRPaper';
+import AgenticSystemsPaper from './papers/agentic-systems/AgenticSystemsPaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
@@ -31,8 +32,9 @@ import kanConfig from './papers/kan/config';
 import dsv3Config from './papers/deepseek-v3/config';
 import rlConfig from './papers/rl-for-llms/config';
 import rlvrConfig from './papers/rlvr/config';
+import agenticConfig from './papers/agentic-systems/config';
 
-const PAPERS = [msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
+const PAPERS = [agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
@@ -48,6 +50,7 @@ const PAPER_COMPONENTS = {
   mamba2: Mamba2Paper,
   kan: KANPaper,
   'deepseek-v3': DeepSeekV3Paper,
+  'agentic-systems': AgenticSystemsPaper,
 };
 
 const PAPER_SECTIONS = {
@@ -64,6 +67,7 @@ const PAPER_SECTIONS = {
   kan: ['Why KAN?', 'Kolmogorov-Arnold Theorem', 'Learnable Activations', 'B-Splines', 'Training & Pruning', 'Results', 'Mental Models'],
   'deepseek-v3': ['Why V3?', 'MoE Architecture', 'Multi-Head Latent Attention', 'Multi-Token Prediction', 'FP8 Training', 'Results', 'Mental Models'],
   'free-transformer': ['The Idea', 'Latent Variable Z', 'ELBO Training', 'Reasoning Gains', 'Structured Generation', 'Results', 'Mental Models'],
+  'agentic-systems': ['The Agentic Era', 'Anatomy of an Agent', 'Tool Use & MCP', 'Memory Architectures', 'Planning & Reasoning', 'Multi-Agent Patterns', 'Framework Landscape', 'Production Stack', 'Cost & Latency', 'Security & Guardrails', 'Project: Customer Support Agent', 'Project: AI Software Engineer', 'Project: Data Analyst Agent', 'Failure Modes & Anti-patterns', 'Mental Models & Resources'],
 };
 
 export default function App() {
