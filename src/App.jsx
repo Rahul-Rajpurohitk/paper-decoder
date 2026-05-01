@@ -24,6 +24,8 @@ import ProjectSWEAgentPaper from './papers/project-swe-agent/ProjectSWEAgentPape
 import ProjectDataAnalystPaper from './papers/project-data-analyst/ProjectDataAnalystPaper';
 import ProjectVoiceAgentPaper from './papers/project-voice-agent/ProjectVoiceAgentPaper';
 import ProjectSalesAgentPaper from './papers/project-sales-agent/ProjectSalesAgentPaper';
+import ProjectDevOpsAgentPaper from './papers/project-devops-agent/ProjectDevOpsAgentPaper';
+import ProjectLegalAgentPaper from './papers/project-legal-agent/ProjectLegalAgentPaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
@@ -43,8 +45,10 @@ import projectSWEConfig from './papers/project-swe-agent/config';
 import projectAnalystConfig from './papers/project-data-analyst/config';
 import projectVoiceConfig from './papers/project-voice-agent/config';
 import projectSalesConfig from './papers/project-sales-agent/config';
+import projectDevOpsConfig from './papers/project-devops-agent/config';
+import projectLegalConfig from './papers/project-legal-agent/config';
 
-const PAPERS = [projectSupportConfig, projectSWEConfig, projectAnalystConfig, projectVoiceConfig, projectSalesConfig, agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
+const PAPERS = [projectSupportConfig, projectSWEConfig, projectAnalystConfig, projectVoiceConfig, projectSalesConfig, projectDevOpsConfig, projectLegalConfig, agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
@@ -66,6 +70,8 @@ const PAPER_COMPONENTS = {
   'project-data-analyst': ProjectDataAnalystPaper,
   'project-voice-agent': ProjectVoiceAgentPaper,
   'project-sales-agent': ProjectSalesAgentPaper,
+  'project-devops-agent': ProjectDevOpsAgentPaper,
+  'project-legal-agent': ProjectLegalAgentPaper,
 };
 
 const PAPER_SECTIONS = {
@@ -88,6 +94,8 @@ const PAPER_SECTIONS = {
   'project-data-analyst': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Sequence: One Question', 'API & Data Model', 'Semantic Layer Deep Dive', 'SQL Safety Pipeline', 'Schema Retrieval (RAG)', 'Eval & Observability', 'Governance & PII', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
   'project-voice-agent': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Latency Budget', 'Barge-in Handling', 'Sequence: One Call', 'API & Data Model', 'Eval & Containment', 'Compliance & PCI', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
   'project-sales-agent': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'ICP Scoring', 'Multi-touch Sequence', 'Deliverability Infra', 'Reply Handler', 'API & Data Model', 'Eval & Funnel Metrics', 'Compliance', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
+  'project-devops-agent': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Mitigation Tiers', 'Investigation Engine', 'Topology Correlation', 'Sequence: One Incident', 'Runbook Library', 'Postmortem Drafter', 'Compliance & Audit', 'API & Data Model', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
+  'project-legal-agent': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Clause Taxonomy', 'Playbook Matching', 'Citation Engine', 'Knowledge Bases', 'API & Data Model', 'Compliance & Privilege', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
 };
 
 export default function App() {
