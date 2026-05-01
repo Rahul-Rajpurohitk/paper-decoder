@@ -21,6 +21,9 @@ const BLUE    = '#3b82f6';
 const CYAN    = '#06b6d4';
 const PINK    = '#ec4899';
 const EMERALD = '#10b981';
+const GREEN   = '#22c55e';
+const ORANGE  = '#fb923c';
+const TEAL    = '#14b8a6';
 
 /* ─── 01. Functional Requirements ─────────────────────────────────────── */
 function FunctionalReqs() {
@@ -163,15 +166,24 @@ function CapacityChart() {
 /* ─── High-level architecture ──────────────────────────────────────── */
 function HighLevelArch() {
   return (
-    <svg viewBox="0 0 880 540" style={{ width: '100%', maxWidth: 880, display: 'block', margin: '24px auto' }} role="img" aria-label="High level system architecture">
-      <rect width={880} height={540} rx={12} fill={BG} />
+    <svg viewBox="0 0 880 580" style={{ width: '100%', maxWidth: 880, display: 'block', margin: '24px auto' }} role="img" aria-label="High level system architecture">
+      <defs>
+        <marker id="hlArr" markerWidth={8} markerHeight={6} refX={7} refY={3} orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill={FG} />
+        </marker>
+        <linearGradient id="hlBg" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="#0d1f1a" />
+          <stop offset="100%" stopColor="#091611" />
+        </linearGradient>
+      </defs>
+      <rect width={880} height={580} rx={12} fill="url(#hlBg)" />
       <text x={440} y={26} textAnchor="middle" fill={GRAY} fontSize={11} fontWeight={700} letterSpacing={2} fontFamily="monospace">
-        HIGH-LEVEL ARCHITECTURE
+        HIGH-LEVEL ARCHITECTURE — CHANNELS → TRIAGE → SPECIALISTS → TOOLS
       </text>
 
       {/* Channels at top */}
-      <rect x={40} y={60} width={800} height={50} rx={8} fill="rgba(168,85,247,0.06)" stroke={PURPLE} strokeWidth={1.2} />
-      <text x={60} y={82} fill={PURPLE} fontSize={11} fontWeight={700} fontFamily="monospace">CHANNELS</text>
+      <rect x={40} y={50} width={800} height={56} rx={8} fill="rgba(168,85,247,0.06)" stroke={PURPLE} strokeWidth={1.2} />
+      <text x={60} y={70} fill={PURPLE} fontSize={10} fontWeight={700} fontFamily="monospace">CHANNELS</text>
       {[
         { x: 200, label: 'Web Chat'  },
         { x: 320, label: 'Email'     },
@@ -181,32 +193,42 @@ function HighLevelArch() {
         { x: 780, label: 'Slack'     },
       ].map((ch, i) => (
         <g key={i}>
-          <rect x={ch.x - 30} y={70} width={70} height={30} rx={3} fill={SURFACE} stroke={PURPLE} strokeWidth={0.6} />
-          <text x={ch.x + 5} y={90} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">{ch.label}</text>
+          <rect x={ch.x - 33} y={66} width={76} height={32} rx={4} fill={SURFACE} stroke={PURPLE} strokeWidth={0.7} />
+          <text x={ch.x + 5} y={86} textAnchor="middle" fill={FG} fontSize={10} fontFamily="monospace">{ch.label}</text>
         </g>
       ))}
+      <line x1={440} y1={106} x2={440} y2={120} stroke={FG} strokeWidth={1.4} markerEnd="url(#hlArr)" />
 
       {/* API Gateway */}
-      <rect x={40} y={130} width={800} height={40} rx={6} fill="rgba(59,130,246,0.06)" stroke={BLUE} strokeWidth={1.2} />
-      <text x={440} y={155} textAnchor="middle" fill={BLUE} fontSize={11} fontWeight={700} fontFamily="monospace">
-        API GATEWAY · auth · rate limit · regional routing · TLS termination
+      <rect x={40} y={120} width={800} height={42} rx={6} fill="rgba(59,130,246,0.07)" stroke={BLUE} strokeWidth={1.3} />
+      <text x={440} y={146} textAnchor="middle" fill={BLUE} fontSize={11} fontWeight={700} fontFamily="monospace">
+        API GATEWAY · auth · rate limit · regional routing · TLS termination · idempotency keys
       </text>
+      <line x1={165} y1={162} x2={165} y2={184} stroke={FG} strokeWidth={1.4} markerEnd="url(#hlArr)" />
+      <line x1={435} y1={162} x2={435} y2={184} stroke={FG} strokeWidth={1.4} markerEnd="url(#hlArr)" />
+      <line x1={710} y1={162} x2={710} y2={184} stroke={FG} strokeWidth={1.4} markerEnd="url(#hlArr)" />
 
-      {/* Triage */}
-      <rect x={40} y={190} width={250} height={60} rx={8} fill="rgba(245,158,11,0.06)" stroke={AMBER} strokeWidth={1.4} />
-      <text x={165} y={212} textAnchor="middle" fill={AMBER} fontSize={11} fontWeight={700} fontFamily="monospace">TRIAGE / ROUTER</text>
-      <text x={165} y={230} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">Haiku 4.5 + classifier</text>
-      <text x={165} y={244} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">intent + sentiment</text>
+      {/* Triage / Session / Handoff */}
+      <rect x={40} y={186} width={250} height={70} rx={9} fill="rgba(245,158,11,0.07)" stroke={AMBER} strokeWidth={1.5} />
+      <text x={165} y={208} textAnchor="middle" fill={AMBER} fontSize={11} fontWeight={700} fontFamily="monospace">TRIAGE / ROUTER</text>
+      <text x={165} y={228} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">Haiku 4.5 · intent + sentiment</text>
+      <text x={165} y={244} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">Confidence routing · escalation flag</text>
 
-      <rect x={310} y={190} width={250} height={60} rx={8} fill="rgba(168,85,247,0.06)" stroke={PURPLE} strokeWidth={1.4} />
-      <text x={435} y={212} textAnchor="middle" fill={PURPLE} fontSize={11} fontWeight={700} fontFamily="monospace">SESSION SERVICE</text>
-      <text x={435} y={230} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">conversation state · checkpointing</text>
+      <rect x={310} y={186} width={250} height={70} rx={9} fill="rgba(168,85,247,0.07)" stroke={PURPLE} strokeWidth={1.5} />
+      <text x={435} y={208} textAnchor="middle" fill={PURPLE} fontSize={11} fontWeight={700} fontFamily="monospace">SESSION SERVICE</text>
+      <text x={435} y={228} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">conversation state · checkpoint</text>
       <text x={435} y={244} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">Redis + LangGraph state store</text>
 
-      <rect x={580} y={190} width={260} height={60} rx={8} fill="rgba(236,72,153,0.06)" stroke={PINK} strokeWidth={1.4} />
-      <text x={710} y={212} textAnchor="middle" fill={PINK} fontSize={11} fontWeight={700} fontFamily="monospace">HUMAN HANDOFF SVC</text>
-      <text x={710} y={230} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">Zendesk / Freshdesk integration</text>
-      <text x={710} y={244} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">queue · agent assignment</text>
+      <rect x={580} y={186} width={260} height={70} rx={9} fill="rgba(236,72,153,0.07)" stroke={PINK} strokeWidth={1.5} />
+      <text x={710} y={208} textAnchor="middle" fill={PINK} fontSize={11} fontWeight={700} fontFamily="monospace">HUMAN HANDOFF SVC</text>
+      <text x={710} y={228} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">Zendesk / Freshdesk · queue mgmt</text>
+      <text x={710} y={244} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">SLA-aware · agent skill match</text>
+
+      {/* Triage → specialists arrows */}
+      <line x1={165} y1={256} x2={140} y2={290} stroke={AMBER} strokeWidth={1.2} markerEnd="url(#hlArr)" />
+      <line x1={165} y1={256} x2={340} y2={290} stroke={AMBER} strokeWidth={1.2} markerEnd="url(#hlArr)" />
+      <line x1={165} y1={256} x2={540} y2={290} stroke={AMBER} strokeWidth={1.2} markerEnd="url(#hlArr)" />
+      <line x1={165} y1={256} x2={740} y2={290} stroke={AMBER} strokeWidth={1.2} markerEnd="url(#hlArr)" />
 
       {/* Specialists */}
       {[
@@ -216,26 +238,39 @@ function HighLevelArch() {
         { x: 640, label: 'ESCALATION',      color: RED,     tools: 'human handoff · Slack' },
       ].map((s, i) => (
         <g key={i}>
-          <rect x={s.x} y={290} width={200} height={70} rx={8} fill={SURFACE} stroke={s.color} strokeWidth={1.2} />
+          <rect x={s.x} y={290} width={200} height={76} rx={9} fill={SURFACE} stroke={s.color} strokeWidth={1.4} />
           <text x={s.x + 100} y={312} textAnchor="middle" fill={s.color} fontSize={11} fontWeight={700} fontFamily="monospace">{s.label}</text>
-          <text x={s.x + 100} y={330} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">Sonnet 4.6</text>
-          <text x={s.x + 100} y={348} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">{s.tools}</text>
+          <text x={s.x + 100} y={332} textAnchor="middle" fill={FG} fontSize={9} fontFamily="monospace">Sonnet 4.6 · ReAct loop</text>
+          <text x={s.x + 100} y={350} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">{s.tools}</text>
         </g>
       ))}
 
-      {/* Tool layer */}
-      <rect x={40} y={400} width={400} height={50} rx={8} fill="rgba(34,197,94,0.06)" stroke={C} strokeWidth={1.2} />
-      <text x={240} y={420} textAnchor="middle" fill={C} fontSize={11} fontWeight={700} fontFamily="monospace">MCP TOOL LAYER</text>
-      <text x={240} y={438} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">Stripe · Auth · KB · Sentry · Zendesk · Slack</text>
+      {/* Specialists → MCP/Memory arrows */}
+      <line x1={140} y1={366} x2={140} y2={406} stroke={FG} strokeWidth={1.2} markerEnd="url(#hlArr)" />
+      <line x1={340} y1={366} x2={340} y2={406} stroke={FG} strokeWidth={1.2} markerEnd="url(#hlArr)" />
+      <line x1={540} y1={366} x2={540} y2={406} stroke={FG} strokeWidth={1.2} markerEnd="url(#hlArr)" />
+      <line x1={740} y1={366} x2={740} y2={406} stroke={FG} strokeWidth={1.2} markerEnd="url(#hlArr)" />
 
-      <rect x={460} y={400} width={380} height={50} rx={8} fill="rgba(6,182,212,0.06)" stroke={CYAN} strokeWidth={1.2} />
-      <text x={650} y={420} textAnchor="middle" fill={CYAN} fontSize={11} fontWeight={700} fontFamily="monospace">MEMORY</text>
-      <text x={650} y={438} textAnchor="middle" fill={GRAY} fontSize={9} fontFamily="monospace">Redis · Postgres+pgvector · Mem0</text>
+      {/* Tool layer */}
+      <rect x={40} y={406} width={400} height={56} rx={9} fill="rgba(34,197,94,0.07)" stroke={C} strokeWidth={1.3} />
+      <text x={60} y={426} fill={C} fontSize={11} fontWeight={700} fontFamily="monospace">MCP TOOL LAYER</text>
+      <text x={60} y={444} fill={FG} fontSize={9} fontFamily="monospace">Stripe · Auth · KB-RAG · Sentry · Zendesk · Slack · Linear</text>
+      <text x={60} y={458} fill={GRAY} fontSize={9} fontFamily="monospace">JSON-RPC 2.0 · per-tool allowlist · per-call audit</text>
+
+      <rect x={460} y={406} width={380} height={56} rx={9} fill="rgba(6,182,212,0.07)" stroke={CYAN} strokeWidth={1.3} />
+      <text x={480} y={426} fill={CYAN} fontSize={11} fontWeight={700} fontFamily="monospace">MEMORY</text>
+      <text x={480} y={444} fill={FG} fontSize={9} fontFamily="monospace">Redis (working) · Postgres+pgvector (long-term)</text>
+      <text x={480} y={458} fill={GRAY} fontSize={9} fontFamily="monospace">Mem0 · Letta · per-user + per-org isolation</text>
+
+      {/* KB / RAG band */}
+      <rect x={40} y={476} width={800} height={42} rx={8} fill="rgba(20,184,166,0.07)" stroke={EMERALD} strokeWidth={1} />
+      <text x={60} y={496} fill={EMERALD} fontSize={11} fontWeight={700} fontFamily="monospace">KNOWLEDGE BASE / RAG</text>
+      <text x={60} y={512} fill={FG} fontSize={9} fontFamily="monospace">help-articles · runbooks · past tickets · hybrid (BM25 + dense) · cohere-rerank · TTL on freshness</text>
 
       {/* Bottom: obs + foundation */}
-      <rect x={40} y={470} width={800} height={50} rx={8} fill="rgba(245,158,11,0.04)" stroke={AMBER} strokeWidth={1.2} strokeDasharray="3 3" />
-      <text x={440} y={492} textAnchor="middle" fill={AMBER} fontSize={11} fontWeight={700} fontFamily="monospace">EVAL &amp; OBSERVABILITY</text>
-      <text x={440} y={510} textAnchor="middle" fill={FG} fontSize={10} fontFamily="monospace">LangSmith · Datadog LLM · LLM-as-judge · human review</text>
+      <rect x={40} y={528} width={800} height={42} rx={8} fill="rgba(245,158,11,0.05)" stroke={AMBER} strokeWidth={1} strokeDasharray="3 3" />
+      <text x={60} y={548} fill={AMBER} fontSize={11} fontWeight={700} fontFamily="monospace">EVAL &amp; OBSERVABILITY</text>
+      <text x={60} y={563} fill={FG} fontSize={9} fontFamily="monospace">LangSmith · Datadog LLM · LLM-as-judge · human review · CSAT correlation · cost per resolved ticket</text>
     </svg>
   );
 }

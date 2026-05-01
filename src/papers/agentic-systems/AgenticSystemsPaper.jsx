@@ -27,40 +27,74 @@ const EMERALD = '#10b981';
 /* ─── SVG: Agentic era timeline ─────────────────────────────────────────── */
 function EraTimeline() {
   const events = [
-    { year: '2022', label: 'ReAct paper', desc: 'reason+act loop',     color: GRAY },
-    { year: '2023', label: 'AutoGPT / BabyAGI', desc: 'first autonomy hype', color: GRAY },
-    { year: 'Late 2023', label: 'Tool use APIs', desc: 'OpenAI function calling', color: BLUE },
-    { year: 'Q1 2024', label: 'LangGraph 1.0', desc: 'state-machine agents', color: BLUE },
-    { year: 'Nov 2024', label: 'MCP launches', desc: 'open tool spec',     color: PINK },
-    { year: 'Q2 2025', label: 'Computer Use', desc: 'Claude takes screenshots', color: C },
-    { year: 'Q3 2025', label: 'OpenAI Agents SDK', desc: 'handoffs, sessions', color: GREEN },
-    { year: 'Q4 2025', label: 'Devin GA', desc: 'autonomous SWE',         color: EMERALD },
-    { year: 'May 2026', label: 'production scale', desc: 'enterprise default', color: AMBER },
+    { year: '2022', label: 'ReAct paper', desc: 'reason+act loop',     color: GRAY,    era: 'research' },
+    { year: '2023', label: 'AutoGPT / BabyAGI', desc: 'first autonomy hype', color: GRAY, era: 'research' },
+    { year: 'Late 2023', label: 'Tool use APIs', desc: 'OpenAI function calling', color: BLUE, era: 'tools' },
+    { year: 'Q1 2024', label: 'LangGraph 1.0', desc: 'state-machine agents', color: BLUE, era: 'tools' },
+    { year: 'Nov 2024', label: 'MCP launches', desc: 'open tool spec',     color: PINK, era: 'protocol' },
+    { year: 'Q2 2025', label: 'Computer Use', desc: 'Claude takes screenshots', color: C, era: 'autonomy' },
+    { year: 'Q3 2025', label: 'OpenAI Agents SDK', desc: 'handoffs, sessions', color: GREEN, era: 'autonomy' },
+    { year: 'Q4 2025', label: 'Devin GA', desc: 'autonomous SWE',         color: EMERALD, era: 'autonomy' },
+    { year: 'May 2026', label: 'production scale', desc: 'enterprise default', color: AMBER, era: 'production' },
   ];
 
   return (
-    <svg viewBox="0 0 880 280" style={{ width: '100%', maxWidth: 880, display: 'block', margin: '24px auto' }} role="img" aria-label="Agentic AI timeline">
-      <rect width={880} height={280} rx={12} fill={BG} />
+    <svg viewBox="0 0 880 320" style={{ width: '100%', maxWidth: 880, display: 'block', margin: '24px auto' }} role="img" aria-label="Agentic AI timeline">
+      <defs>
+        <linearGradient id="eraGrad" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%"  stopColor="#94a3b8" stopOpacity="0.4" />
+          <stop offset="30%" stopColor="#3b82f6" stopOpacity="0.5" />
+          <stop offset="55%" stopColor="#ec4899" stopOpacity="0.6" />
+          <stop offset="80%" stopColor="#a855f7" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.9" />
+        </linearGradient>
+        <linearGradient id="eraBg" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="#150d22" />
+          <stop offset="100%" stopColor="#0c0716" />
+        </linearGradient>
+      </defs>
+      <rect width={880} height={320} rx={12} fill="url(#eraBg)" />
       <text x={440} y={26} textAnchor="middle" fill={GRAY} fontSize={11} fontWeight={700} letterSpacing={2} fontFamily="monospace">
-        AGENTIC AI — FOUR-YEAR TIMELINE TO PRODUCTION
+        AGENTIC AI — FOUR-YEAR TIMELINE TO PRODUCTION  ·  YOU ARE HERE → MAY 2026
       </text>
-      <line x1={50} y1={150} x2={830} y2={150} stroke={DIM} strokeWidth={2} />
+
+      {/* Era band */}
+      <rect x={50} y={140} width={780} height={20} rx={4} fill="url(#eraGrad)" />
+      {[
+        { x: 65,  label: 'RESEARCH',   color: GRAY },
+        { x: 240, label: 'TOOLS',      color: BLUE },
+        { x: 410, label: 'PROTOCOL',   color: PINK },
+        { x: 565, label: 'AUTONOMY',   color: C },
+        { x: 760, label: 'PRODUCTION', color: AMBER },
+      ].map((e, i) => (
+        <text key={i} x={e.x} y={154} fill={e.color} fontSize={9} fontWeight={700} fontFamily="monospace" textAnchor="middle">{e.label}</text>
+      ))}
+
+      <line x1={50} y1={170} x2={830} y2={170} stroke={DIM} strokeWidth={2} />
       {events.map((e, i) => {
         const x = 50 + i * (780 / (events.length - 1));
         const flipped = i % 2 === 0;
-        const labelY = flipped ? 80 : 220;
-        const tickY1 = flipped ? 110 : 150;
-        const tickY2 = flipped ? 150 : 190;
+        const labelY = flipped ? 100 : 240;
+        const tickY1 = flipped ? 130 : 170;
+        const tickY2 = flipped ? 170 : 210;
+        const isCurrent = i === events.length - 1;
         return (
           <g key={i}>
             <line x1={x} y1={tickY1} x2={x} y2={tickY2} stroke={e.color} strokeWidth={1.4} />
-            <circle cx={x} cy={150} r={6} fill={e.color} />
-            <text x={x} y={flipped ? 64 : 240} textAnchor="middle" fill={e.color} fontSize={10} fontWeight={700} fontFamily="monospace">{e.year}</text>
+            {isCurrent && <circle cx={x} cy={170} r={11} fill="none" stroke={e.color} strokeWidth={1.4} strokeDasharray="3 2" opacity={0.6} />}
+            <circle cx={x} cy={170} r={isCurrent ? 8 : 6} fill={e.color} />
+            <text x={x} y={flipped ? 84 : 260} textAnchor="middle" fill={e.color} fontSize={10} fontWeight={700} fontFamily="monospace">{e.year}</text>
             <text x={x} y={labelY} textAnchor="middle" fill={FG} fontSize={9} fontWeight={700} fontFamily="monospace">{e.label}</text>
             <text x={x} y={labelY + 14} textAnchor="middle" fill={GRAY} fontSize={8} fontFamily="monospace">{e.desc}</text>
           </g>
         );
       })}
+
+      {/* Footer note */}
+      <rect x={50} y={282} width={780} height={26} rx={4} fill="rgba(245,158,11,0.06)" stroke={AMBER} strokeWidth={0.6} strokeDasharray="3 3" />
+      <text x={440} y={300} textAnchor="middle" fill={AMBER} fontSize={10} fontWeight={700} fontFamily="monospace">
+        2022 paper → 2026 default — agentic AI is now what &quot;web app&quot; was in 2010: the medium, not the novelty.
+      </text>
     </svg>
   );
 }
