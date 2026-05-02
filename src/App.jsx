@@ -26,6 +26,10 @@ import ProjectVoiceAgentPaper from './papers/project-voice-agent/ProjectVoiceAge
 import ProjectSalesAgentPaper from './papers/project-sales-agent/ProjectSalesAgentPaper';
 import ProjectDevOpsAgentPaper from './papers/project-devops-agent/ProjectDevOpsAgentPaper';
 import ProjectLegalAgentPaper from './papers/project-legal-agent/ProjectLegalAgentPaper';
+import ProjectEnterpriseRAGPaper from './papers/project-enterprise-rag/ProjectEnterpriseRAGPaper';
+import ProjectDocIntelPaper from './papers/project-doc-intel/ProjectDocIntelPaper';
+import ProjectRecsysPaper from './papers/project-recsys/ProjectRecsysPaper';
+import ProjectHealthcareScribePaper from './papers/project-healthcare-scribe/ProjectHealthcareScribePaper';
 import msaConfig from './papers/msa/config';
 import tqConfig from './papers/turboquant/config';
 import dinov3Config from './papers/dinov3/config';
@@ -47,8 +51,12 @@ import projectVoiceConfig from './papers/project-voice-agent/config';
 import projectSalesConfig from './papers/project-sales-agent/config';
 import projectDevOpsConfig from './papers/project-devops-agent/config';
 import projectLegalConfig from './papers/project-legal-agent/config';
+import projectRAGConfig from './papers/project-enterprise-rag/config';
+import projectDocIntelConfig from './papers/project-doc-intel/config';
+import projectRecsysConfig from './papers/project-recsys/config';
+import projectHealthcareConfig from './papers/project-healthcare-scribe/config';
 
-const PAPERS = [projectSupportConfig, projectSWEConfig, projectAnalystConfig, projectVoiceConfig, projectSalesConfig, projectDevOpsConfig, projectLegalConfig, agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
+const PAPERS = [projectSupportConfig, projectSWEConfig, projectAnalystConfig, projectVoiceConfig, projectSalesConfig, projectDevOpsConfig, projectLegalConfig, projectRAGConfig, projectDocIntelConfig, projectRecsysConfig, projectHealthcareConfig, agenticConfig, msaConfig, tqConfig, dinov3Config, attnresConfig, mhcConfig, r1Config, llama4Config, ftConfig, rlConfig, rlvrConfig, mamba2Config, kanConfig, dsv3Config];
 
 const PAPER_COMPONENTS = {
   msa: MSAPaper,
@@ -72,6 +80,10 @@ const PAPER_COMPONENTS = {
   'project-sales-agent': ProjectSalesAgentPaper,
   'project-devops-agent': ProjectDevOpsAgentPaper,
   'project-legal-agent': ProjectLegalAgentPaper,
+  'project-enterprise-rag': ProjectEnterpriseRAGPaper,
+  'project-doc-intel': ProjectDocIntelPaper,
+  'project-recsys': ProjectRecsysPaper,
+  'project-healthcare-scribe': ProjectHealthcareScribePaper,
 };
 
 const PAPER_SECTIONS = {
@@ -96,6 +108,10 @@ const PAPER_SECTIONS = {
   'project-sales-agent': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'ICP Scoring', 'Multi-touch Sequence', 'Deliverability Infra', 'Reply Handler', 'API & Data Model', 'Eval & Funnel Metrics', 'Compliance', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
   'project-devops-agent': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Mitigation Tiers', 'Investigation Engine', 'Topology Correlation', 'Sequence: One Incident', 'Runbook Library', 'Postmortem Drafter', 'Compliance & Audit', 'API & Data Model', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
   'project-legal-agent': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Clause Taxonomy', 'Playbook Matching', 'Citation Engine', 'Knowledge Bases', 'API & Data Model', 'Compliance & Privilege', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
+  'project-enterprise-rag': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Permission Model', 'Hybrid Retrieval', 'Connector Framework', 'Knowledge Graph', 'Sequence: One Query', 'API & Data Model', 'Quality & Faithfulness', 'Compliance', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
+  'project-doc-intel': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Specialized Extractors', 'Schema-Driven Extraction', 'Sequence: One Doc', 'API & Data Model', 'Quality & HITL', 'Compliance', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
+  'project-recsys': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'Candidate Generation', 'Multi-Objective Ranking', 'LLM Reranker', 'Sequence: One Serve', 'API & Data Model', 'Cold Start', 'Bandit & Exploration', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
+  'project-healthcare-scribe': ['Problem & Scope', 'Functional & NFRs', 'Capacity Estimation', 'Architecture', 'PHI Boundary', 'Sequence: One Visit', 'SOAP Generation', 'Medical Coding', 'EHR Integration', 'Compliance', 'Deployment Topology', 'Cost Analysis', 'Failure Modes', 'Trade-offs', 'Mental Models', 'Resources'],
 };
 
 export default function App() {
