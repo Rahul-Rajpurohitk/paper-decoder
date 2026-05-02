@@ -6,6 +6,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 /* ─── colour tokens ─── */
 const C       = '#a855f7'; // primary purple (agentic)
@@ -931,6 +932,45 @@ export default function AgenticSystemsPaper({ activeSection }) {
           <p>
             What follows is a complete-picture view: how a single agent works, how multiple agents coordinate, which framework to pick, how to put it into production, what breaks, and three end-to-end enterprise project case studies that show all of this stitched together.
           </p>
+
+          <StackCard
+            accent={C}
+            title="Agentic AI · The May-2026 Production Stack"
+            subtitle="Foundational primer · 16 web sources · grounds 7 enterprise project modules."
+            slos={[
+              { label: 'PRODUCTION', value: '2026',     note: 'mainstream' },
+              { label: 'AGENT FRAMEWORKS', value: '15+',  note: 'category mature' },
+              { label: 'MCP SERVERS', value: '500+',     note: 'open ecosystem' },
+              { label: 'PROJECT MODULES', value: '7',     note: 'in this library' },
+            ]}
+            stack={[
+              { layer: 'Frontier models',  choice: 'Opus 4.7 / Sonnet 4.6 / Haiku 4.5', why: 'Per-task cost-quality routing' },
+              { layer: 'Orchestration',     choice: 'LangGraph + OpenAI Agents SDK',     why: 'State machine + handoffs' },
+              { layer: 'Tool standard',     choice: 'MCP (Anthropic, Nov 2024)',          why: 'Universal tool contract' },
+              { layer: 'Memory',            choice: 'Redis + pgvector + Mem0',             why: 'Working + long-term + episodic' },
+              { layer: 'Sandbox',           choice: 'E2B / Modal / Daytona',                why: 'Code-exec isolation' },
+              { layer: 'Observability',     choice: 'LangSmith / Braintrust / Phoenix',     why: 'Trace · eval · drift' },
+              { layer: 'Guards',            choice: 'Lakera / NeMo / Promptfoo',           why: 'Pre + post LLM filters' },
+            ]}
+            scale={[
+              { label: 'Era',              value: '2022 → 2026' },
+              { label: 'Multi-agent',       value: '6 patterns' },
+              { label: 'Memory tiers',      value: '4 types' },
+              { label: 'Reasoning patterns',value: 'CoT/ToT/ReAct/Reflect' },
+            ]}
+            cost={{
+              perUnit: 'varies',
+              unitLabel: 'per project class',
+              perPeriod: 'see specifics',
+              periodLabel: 'in each module',
+            }}
+            moats={[
+              'Tools + memory + frameworks all matured in same 18-month window',
+              'MCP makes ecosystem additive — every new server is shared infra',
+              'Eval moats compound · public benchmarks + private replay',
+              'Project modules in this library show all of this stitched together',
+            ]}
+          />
         </section>
       )}
 
