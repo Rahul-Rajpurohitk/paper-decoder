@@ -573,7 +573,7 @@ export default function ProjectDocIntelPaper({ activeSection }) {
               ['Field-level conf',     'Per-field score in output (0-1)'],
               ['Source citation',      'Page+bbox per field for verification'],
               ['Multi-document',       'Schema applies across pages of same logical doc'],
-              ['Versioned',            'Schema_v2 doesn&apos;t break v1 jobs in flight'],
+              ['Versioned',            "Schema_v2 doesn't break v1 jobs in flight"],
             ]}
           />
         </section>
@@ -592,7 +592,7 @@ export default function ProjectDocIntelPaper({ activeSection }) {
           <ComparisonTable
             headers={['Method', 'Endpoint', 'Purpose']}
             rows={[
-              ['POST', '/v1/extract',                'sync extract for &lt;5 pages'],
+              ['POST', '/v1/extract',                'sync extract for under 5 pages'],
               ['POST', '/v1/extract/async',          'async job for any size · webhook callback'],
               ['POST', '/v1/extract/batch',          'bulk · S3 manifest · webhook on done'],
               ['GET',  '/v1/jobs/:id',               'job status + progress'],

@@ -660,7 +660,7 @@ export default function ProjectVoiceAgentPaper({ activeSection }) {
             ]}
             stack={[
               { layer: 'Telephony',  choice: 'Twilio + SIP BYOC',           why: 'Carrier price flex' },
-              { layer: 'ASR',        choice: 'Deepgram Nova-3',              why: 'Streaming · partials &lt;150ms' },
+              { layer: 'ASR',        choice: 'Deepgram Nova-3',              why: 'Streaming · partials <150ms' },
               { layer: 'Brain',      choice: 'Haiku 4.5 (streamed)',         why: 'Latency dominates UX' },
               { layer: 'TTS',        choice: 'Cartesia Sonic',                why: 'Sub-150ms first byte' },
               { layer: 'VAD',        choice: 'Silero · 200ms endpoint',        why: 'Tunable per persona' },

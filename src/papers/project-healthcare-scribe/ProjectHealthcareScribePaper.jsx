@@ -471,7 +471,7 @@ export default function ProjectHealthcareScribePaper({ activeSection }) {
             ]}
             stack={[
               { layer: 'Capture',     choice: 'Mobile app (primary)',                why: 'Adoption · ergonomics' },
-              { layer: 'ASR',         choice: 'Deepgram Medical (BAA)',              why: 'Streaming · WER &lt; 4%' },
+              { layer: 'ASR',         choice: 'Deepgram Medical (BAA)',              why: 'Streaming · WER under 4%' },
               { layer: 'Diarization', choice: 'pyannote + clustering',                why: 'Doc/patient/others' },
               { layer: 'De-id',       choice: 'HIPAA Safe Harbor (18 cats)',          why: 'LLM gets Limited Data Set' },
               { layer: 'SOAP gen',    choice: 'Sonnet 4.6 (de-id input · BAA)',      why: 'Structured output' },

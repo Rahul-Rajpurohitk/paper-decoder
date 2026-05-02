@@ -210,7 +210,7 @@ function SemanticLayerDeep() {
         { y: 250, label: 'CUBES',     desc: 'orders · revenue · customers · subscriptions' },
         { y: 270, label: 'METRICS',   desc: 'MRR, churn rate, gross margin, NPS — defined ONCE' },
         { y: 290, label: 'DIMENSIONS',desc: 'plan tier, country, signup channel, cohort_month' },
-        { y: 310, label: 'JOINS',     desc: 'pre-defined; agent doesn&apos;t guess' },
+        { y: 310, label: 'JOINS',     desc: "pre-defined; agent doesn't guess" },
       ].map((r, i) => (
         <g key={i}>
           <text x={60} y={r.y} fill={C} fontSize={9} fontWeight={700} fontFamily="monospace">{r.label}</text>
@@ -276,7 +276,7 @@ function SQLSafetyPipeline() {
         '✓ Explicit row LIMIT clause (default 10K)',
         '✓ Date filter required on fact tables',
         '✓ Use semantic-layer cubes / metrics not raw tables',
-        '✓ All time ranges bounded (no &apos;all time&apos; without explicit OK)',
+        "✓ All time ranges bounded (no 'all time' without explicit OK)",
       ].map((r, i) => (
         <text key={i} x={70} y={386 + i * 14} fill={GREEN} fontSize={9} fontFamily="monospace">{r}</text>
       ))}

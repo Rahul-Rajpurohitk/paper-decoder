@@ -800,7 +800,7 @@ function TradeOffMatrix() {
         ['Specialist model',     'Sonnet 4.6',                      'Opus 4.7',                 'Cost/quality balance'],
         ['Memory store',         'Postgres + pgvector + Mem0',      'Pinecone-only',            'Cost + colocate w/ db'],
         ['Vector index',         'pgvector HNSW',                   'Pinecone',                 'Lower ops, in-VPC'],
-        ['Frontend',             'Embed in existing helpdesk',      'Custom UI',                'Don&apos;t fight CX team'],
+        ['Frontend',             'Embed in existing helpdesk',      'Custom UI',                "Don't fight CX team"],
         ['Eval cadence',         'Every PR',                        'Weekly batch',             'Catches regressions early'],
         ['Multi-region',         'Active-active 3 regions',         'Single region',            'EU GDPR · APAC latency'],
         ['Auto-merge refunds',   'No · always confirm',             'Yes · trust agent',        'Risk + audit'],

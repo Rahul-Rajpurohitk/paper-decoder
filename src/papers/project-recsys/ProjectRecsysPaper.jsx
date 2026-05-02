@@ -297,7 +297,7 @@ function RecSequence() {
         { from: 200, to: 70,  y: 450, label: '13. response - hydrate items',          color: GREEN, reverse: true },
         { from: 70,  to: 200, y: 478, label: '14. impressions logged async',          color: BLUE },
         { from: 200, to: 460, y: 506, label: '15. (later) clicks/dwell to Kafka',     color: BLUE },
-        { from: 460, to: 600, y: 534, label: '16. features re-aggregated &lt;60s',      color: TEAL },
+        { from: 460, to: 600, y: 534, label: '16. features re-aggregated <60s',      color: TEAL },
       ].map((m, i) => (
         <g key={i}>
           {m.self ? (

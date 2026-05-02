@@ -477,7 +477,7 @@ function SalesTradeOffs() {
         ['Voice channel',   'Tier-A only',                 'All tiers',                   'Cost-per-meeting math'],
         ['CRM integration', 'Bidirectional event-driven',  'Nightly batch',               'Reps see live updates'],
         ['A/B framework',   'MAB allocation',              'Fixed split',                 'Faster winner detection'],
-        ['Reply autoreply', 'Auto-send in &lt; 5 min',         'Queue for human',             'Responsiveness drives conv'],
+        ['Reply autoreply', 'Auto-send in under 5 min',      'Queue for human',             'Responsiveness drives conv'],
         ['Compliance',      'Per-region consent matrix',   'One-size-fits-all',           'GDPR ≠ CAN-SPAM ≠ TCPA'],
       ].map((r, i) => {
         const y = 100 + i * 32;
