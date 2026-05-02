@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#fb923c';
 const C2      = '#ea580c';
@@ -647,6 +648,44 @@ export default function ProjectVoiceAgentPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: legal disputes, payments &gt; $1K, escalated complaints (auto-route to human). Knowing what NOT to handle is half the design.
           </Callout>
+          <StackCard
+            accent={C}
+            title="AI Voice Agent · Sierra/Decagon-class"
+            subtitle="Telephony → ASR → brain → TTS → back. ~600ms turn, $0.74/call."
+            slos={[
+              { label: 'p50 TURN',     value: '< 600 ms', note: 'feels conversational' },
+              { label: 'CONTAINMENT', value: '≥ 70%',     note: 'no human' },
+              { label: 'WER',          value: '< 4%',      note: 'medical / domain' },
+              { label: 'PCI L1',       value: 'compliant', note: 'DTMF only' },
+            ]}
+            stack={[
+              { layer: 'Telephony',  choice: 'Twilio + SIP BYOC',           why: 'Carrier price flex' },
+              { layer: 'ASR',        choice: 'Deepgram Nova-3',              why: 'Streaming · partials &lt;150ms' },
+              { layer: 'Brain',      choice: 'Haiku 4.5 (streamed)',         why: 'Latency dominates UX' },
+              { layer: 'TTS',        choice: 'Cartesia Sonic',                why: 'Sub-150ms first byte' },
+              { layer: 'VAD',        choice: 'Silero · 200ms endpoint',        why: 'Tunable per persona' },
+              { layer: 'Tools',      choice: 'CRM · Stripe (DTMF) · KB',      why: 'PCI scope tiny' },
+              { layer: 'Compliance', choice: 'PCI L1 · BAA · 2-party consent', why: 'Card flow segregated' },
+            ]}
+            scale={[
+              { label: 'Calls / day',     value: '50 K' },
+              { label: 'Concurrent peak', value: '~600' },
+              { label: 'Avg call',         value: '4 min' },
+              { label: 'Turns / call',    value: '~10' },
+            ]}
+            cost={{
+              perUnit: '$0.74',
+              unitLabel: 'per call',
+              perPeriod: '~$1.1 M',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Latency budget is the product · sub-600ms feels human',
+              'Barge-in FSM patches LLM context with [interrupted: <partial>]',
+              'PCI boundary kept at DTMF · brain never sees card digits',
+              'vs human BPO ~$7/call — ~10× cheaper, 24/7 availability',
+            ]}
+          />
         </section>
       )}
 

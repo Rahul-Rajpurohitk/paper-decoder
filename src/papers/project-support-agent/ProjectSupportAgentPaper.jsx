@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 /* palette */
 const C       = '#22c55e';
@@ -846,6 +847,45 @@ export default function ProjectSupportAgentPaper({ activeSection }) {
           <Callout type="key">
             Senior interview tip: the first 5 minutes of any system-design conversation is establishing scope, scale, and SLOs. Get those wrong and the rest of the design is fiction.
           </Callout>
+
+          <StackCard
+            accent={C}
+            title="Customer Support Agent · Klarna/Intercom-class"
+            subtitle="Triage → specialists → tools → human handoff. 70%+ deflection, sub-$0.30/ticket."
+            slos={[
+              { label: 'DEFLECTION', value: '≥ 70%', note: 'auto-resolved' },
+              { label: 'p50 LATENCY', value: '< 8 s', note: 'first response' },
+              { label: 'CSAT',        value: '≥ 4.4/5', note: 'post-resolve' },
+              { label: 'AVAILABILITY',value: '99.95%',  note: 'multi-region' },
+            ]}
+            stack={[
+              { layer: 'Triage',      choice: 'Haiku 4.5 + classifier head',  why: 'Fast intent + sentiment' },
+              { layer: 'Specialists', choice: 'Sonnet 4.6 (LangGraph)',         why: 'Quality dominates CSAT' },
+              { layer: 'Memory',      choice: 'Redis + Postgres + pgvector',     why: 'Working + long-term + episodic' },
+              { layer: 'Tools',       choice: 'MCP layer (Stripe/Auth/KB)',       why: 'Standard JSON-RPC contract' },
+              { layer: 'KB / RAG',    choice: 'Hybrid (BM25 + dense + rerank)', why: 'Recall@10 ≥ 0.92' },
+              { layer: 'Handoff',     choice: 'Zendesk warm-transfer',           why: 'Skill-match + summary' },
+              { layer: 'Eval',        choice: 'LangSmith + LLM-as-judge',         why: 'CSAT correlation tested' },
+            ]}
+            scale={[
+              { label: 'Tickets / day',  value: '500 K' },
+              { label: 'Concurrent',      value: '~25 K' },
+              { label: 'Languages',       value: '35+' },
+              { label: 'Specialist agents',value: '4 + esc' },
+            ]}
+            cost={{
+              perUnit: '$0.28',
+              unitLabel: 'per resolved ticket',
+              perPeriod: '~$140K',
+              periodLabel: 'per day at peak',
+            }}
+            moats={[
+              'Triage classifier compounds — corrections fed back as labels',
+              'KB hit-rate per intent (ops dashboard)',
+              'Permission-aware retrieval keeps multi-tenant safe',
+              'Cost guardrails per intent — caps escalation budget',
+            ]}
+          />
         </section>
       )}
 

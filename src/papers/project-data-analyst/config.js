@@ -8,6 +8,7 @@ export default {
   difficulty: 'Senior',
   tags: ['system-design', 'text2SQL', 'semantic-layer', 'agentic-AI', 'enterprise'],
   accent: '#06b6d4',
+  category: 'Agent Systems',
   status: 'ready',
   description:
     'End-to-end senior-level system design for a Hex/Mode/Snowflake-class data analyst agent. text2SQL with semantic layer mediation, schema-grounded retrieval, governance + PII redaction + cost guards, viz pipeline, eval, observability. Senior interview-grade.',

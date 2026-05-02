@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#3b82f6';
 const C2      = '#1d4ed8';
@@ -752,6 +753,44 @@ export default function ProjectSWEAgentPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: greenfield architecture, security-sensitive changes (auth/billing logic), changes touching {'>'}10 files. These go to humans. Knowing what NOT to take on is half the design.
           </Callout>
+          <StackCard
+            accent={C}
+            title="AI Software Engineer · Devin/Cursor-class"
+            subtitle="Ticket → plan → sandbox → loop → verify → PR. ~14 min p50, $2.40/PR."
+            slos={[
+              { label: 'SWE-BENCH',     value: '≥ 45%',  note: 'Verified subset' },
+              { label: 'p50 CYCLE',     value: '< 15 m', note: 'ticket → PR' },
+              { label: 'MERGE RATE',    value: '≥ 65%',  note: 'after review' },
+              { label: 'CONCURRENT',    value: '~500',    note: 'sandboxes' },
+            ]}
+            stack={[
+              { layer: 'Planner',      choice: 'Opus 4.7',                       why: 'Plan quality dominates' },
+              { layer: 'Edit/Test',    choice: 'Sonnet 4.6 + LangGraph',         why: 'Cost vs quality balance' },
+              { layer: 'Sandbox',      choice: 'E2B / Modal / Daytona',          why: 'Firecracker microVM · ~10s spawn' },
+              { layer: 'Tools',        choice: 'shell · git · editor · tests',   why: 'Per-task allowlist · audited' },
+              { layer: 'Self-review',  choice: 'Opus 4.7 (separate prompt)',     why: 'Independent eyes' },
+              { layer: 'Eval',         choice: 'SWE-bench replay (nightly)',     why: 'CI-blocks regressions' },
+              { layer: 'Memory',       choice: 'Per-repo + per-developer',       why: 'Privacy + relevance' },
+            ]}
+            scale={[
+              { label: 'Tickets / week',  value: '120 / team' },
+              { label: 'PRs / day',        value: '~17 / team' },
+              { label: 'Sandbox spawns',  value: '~100 / day' },
+              { label: 'Token spend',     value: '$288 / week' },
+            ]}
+            cost={{
+              perUnit: '$2.40',
+              unitLabel: 'per merged PR',
+              perPeriod: '~$5 K',
+              periodLabel: 'org / week',
+            }}
+            moats={[
+              'Sandbox is the product — isolation budget pays back daily',
+              'Internal regression set + SWE-bench Verified compounds',
+              'State machine beats free-form ReAct at 30+ turns',
+              '~250× cheaper than 4-hr senior dev on equivalent ticket',
+            ]}
+          />
         </section>
       )}
 

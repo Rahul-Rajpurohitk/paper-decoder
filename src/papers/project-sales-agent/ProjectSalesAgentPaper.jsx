@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#22d3ee';
 const C2      = '#0e7490';
@@ -560,6 +561,44 @@ export default function ProjectSalesAgentPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: AE work (closing, demos, contract negotiation), brand/marketing content, ABM strategy. The agent runs the prospecting funnel up to first meeting.
           </Callout>
+          <StackCard
+            accent={C}
+            title="AI Sales / SDR Agent · Outreach/11x/Apollo-class"
+            subtitle="Lead → ICP → research → 7-touch sequence → reply → meeting. $32/meeting."
+            slos={[
+              { label: 'DELIVERABILITY', value: '> 95%',   note: 'inbox rate' },
+              { label: 'REPLY RATE',     value: '≥ 3%',    note: 'industry +200%' },
+              { label: 'BOOKED RATE',    value: '≥ 0.5%',  note: 'meeting / lead' },
+              { label: 'SPAM RATE',      value: '< 0.1%',   note: 'kill switch' },
+            ]}
+            stack={[
+              { layer: 'ICP Scoring',     choice: 'XGBoost + LLM rationale',         why: '100µs vs LLM 800ms' },
+              { layer: 'Research',        choice: 'Sonnet 4.6 + browser tool',       why: 'Persona + account context' },
+              { layer: 'Drafter',         choice: 'Sonnet 4.6 (3 variants)',          why: 'Quality drives reply rate' },
+              { layer: 'Email infra',     choice: 'SES + Smartlead warm-up',          why: 'Domain reputation moat' },
+              { layer: 'Reply handler',   choice: 'Haiku 4.5 (5-bucket)',             why: '5-min response SLA' },
+              { layer: 'Voice cold',      choice: 'AI voice agent (Tier-A only)',     why: 'Cost vs lift trade' },
+              { layer: 'CRM sync',        choice: 'Kafka Connect → SF/HubSpot',       why: 'Live updates · idempotent' },
+            ]}
+            scale={[
+              { label: 'Outbound / day',    value: '50 K' },
+              { label: 'Replies / day',      value: '~1 500' },
+              { label: 'Meetings / day',    value: '~250' },
+              { label: 'Domain pool',        value: '3-5 cold' },
+            ]}
+            cost={{
+              perUnit: '$32',
+              unitLabel: 'per meeting booked',
+              perPeriod: '~$240 K',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Domain reputation isolation · bad mailbox kills 1, not 1000',
+              'MAB across variants · weekly winner promoted · compounds',
+              'Held-meeting (not booked) is the metric that pays',
+              'vs human SDR ~$250-500/meeting — ~10× leverage',
+            ]}
+          />
         </section>
       )}
 

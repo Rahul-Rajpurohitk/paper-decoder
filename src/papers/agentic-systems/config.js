@@ -8,6 +8,7 @@ export default {
   difficulty: 'Master',
   tags: ['agentic-ai', 'multi-agent', 'MCP', 'LangGraph', 'OpenAI Agents SDK', 'production'],
   accent: '#a855f7',
+  category: 'Foundational',
   status: 'ready',
   description:
     'Frameworks, patterns, three enterprise projects, and the trade-offs that decide whether your agent ships. Built on May 2026 research grounded in 16 web sources stored under vault/research/agentic-ai-2026/.',

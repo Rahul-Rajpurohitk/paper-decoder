@@ -8,6 +8,7 @@ export default {
   difficulty: 'Senior',
   tags: ['system-design', 'sales-AI', 'outbound', 'CRM', 'enterprise', 'productization'],
   accent: '#22d3ee',
+  category: 'Agent Systems',
   status: 'ready',
   description:
     'End-to-end senior-level system design for an Outreach AI / 11x / Apollo-class autonomous SDR agent. Lead intake → ICP scoring → research → multi-touch sequence (email + LinkedIn + voice) → reply handling → meeting booked → CRM sync. Deliverability infra, GDPR/CAN-SPAM, eval. Senior interview-grade.',

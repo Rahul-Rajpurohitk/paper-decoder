@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#f43f5e';
 const C2      = '#be123c';
@@ -496,6 +497,44 @@ export default function ProjectRecsysPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: content moderation, ad targeting, full personalization (user settings, profile mgmt). The system picks; humans (and other systems) decide what&apos;s eligible.
           </Callout>
+          <StackCard
+            accent={C}
+            title="AI Recommendation System · Netflix/TikTok-class"
+            subtitle="Event → feature → candidate → rank → LLM rerank → diversify → serve. p99 < 100ms."
+            slos={[
+              { label: 'p99 SERVE',    value: '< 100 ms', note: 'sub-second feel' },
+              { label: 'QPS PEAK',      value: '~50 K',    note: 'prime time' },
+              { label: 'CLICK LIFT',   value: '+8-15%',   note: 'vs baseline' },
+              { label: 'FEATURE FRESH',value: '< 60 s',    note: 'real-time' },
+            ]}
+            stack={[
+              { layer: 'Events',       choice: 'Kafka (1B/day) + schema reg',         why: 'Sessionize · dedupe' },
+              { layer: 'Feature store',choice: 'Tecton (online + offline)',           why: 'Skew-free serving' },
+              { layer: 'Candidates',   choice: '4 towers (collab/content/sem/pop)',    why: 'Coverage + cold-start' },
+              { layer: 'Ranker',       choice: 'DLRM (CPU) · multi-obj loss',         why: 'Latency budget' },
+              { layer: 'LLM rerank',   choice: 'Haiku 4.5 · cached per (u × cluster)', why: '+5-10% on natural Q' },
+              { layer: 'Diversify',    choice: 'MMR + Thompson sampling (5%)',          why: 'No filter bubble' },
+              { layer: 'Eval',         choice: 'A/B harness + offline replay',          why: 'Stat-sig gates' },
+            ]}
+            scale={[
+              { label: 'DAU',              value: '50 M' },
+              { label: 'Events / day',      value: '~1 B' },
+              { label: 'Serves / day',      value: '~500 M' },
+              { label: 'Annual infra',      value: '$5-7 M' },
+            ]}
+            cost={{
+              perUnit: '$0.40',
+              unitLabel: 'per 1K serves',
+              perPeriod: '~$50 K',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Multi-objective beats CTR-only · prevents clickbait spiral',
+              'LLM rerank LAYERS on classical · doesn\'t replace',
+              'Tecton point-in-time joins kill train-serve skew',
+              'NDCG@10 ≥ 0.65 cold-start floor · product gate',
+            ]}
+          />
         </section>
       )}
 

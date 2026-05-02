@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#84cc16';
 const C2      = '#65a30d';
@@ -504,6 +505,44 @@ export default function ProjectLegalAgentPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: court filings, legal research from scratch (separate research agent), client communications. The agent is a contract review co-pilot, not a lawyer.
           </Callout>
+          <StackCard
+            accent={C}
+            title="AI Legal Doc Review · Harvey/Hebbia-class"
+            subtitle="Contract → OCR → clauses → playbook → risk → redline → cite. 60s / 50pg, $4.20."
+            slos={[
+              { label: 'CLAUSE F1',   value: '≥ 0.93', note: '40+ types' },
+              { label: 'CITATION',    value: '> 99%',  note: 'span-level' },
+              { label: 'TIME / 50pg', value: '< 60 s', note: 'wall' },
+              { label: 'HALLUC',      value: '< 0.5%', note: 'fail-closed' },
+            ]}
+            stack={[
+              { layer: 'OCR',          choice: 'Mistral OCR',                       why: 'Layout + multilingual' },
+              { layer: 'Segmenter',    choice: 'Heading-aware splitter',             why: 'Section · clause · footnote' },
+              { layer: 'Extractor',    choice: 'Sonnet 4.6 + Pydantic schema',       why: '40+ typed clauses' },
+              { layer: 'Playbook',     choice: 'Per-tenant · 4-gate flow',            why: 'Firm positions enforced' },
+              { layer: 'Risk',         choice: 'Per-practice classifier head',        why: 'Domain accuracy' },
+              { layer: 'Drafter',      choice: 'Opus 4.7 (3 alternatives)',           why: 'Quality dominates legal' },
+              { layer: 'Citation',     choice: 'Span engine + 2nd-LLM verify',        why: 'Bar-rule grade evidence' },
+            ]}
+            scale={[
+              { label: 'Contracts / day',  value: '~200' },
+              { label: 'Clauses / contract',value: '~120' },
+              { label: 'Pages / contract',  value: '~50' },
+              { label: 'Time saved',         value: '~300 hr / day' },
+            ]}
+            cost={{
+              perUnit: '$4.20',
+              unitLabel: 'per contract',
+              perPeriod: '~$25 K',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Citations = trust layer · bar-rule grade or no enterprise sale',
+              'Per-tenant VPC + DB + embeddings · privilege isolation moat',
+              'Playbook is firm-versioned · attorneys own it',
+              'vs junior associate $300-600/contract — 70× cheaper at scale',
+            ]}
+          />
         </section>
       )}
 

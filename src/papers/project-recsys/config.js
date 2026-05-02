@@ -8,6 +8,7 @@ export default {
   difficulty: 'Senior',
   tags: ['system-design', 'recsys', 'ML-serving', 'real-time', 'enterprise', 'productization'],
   accent: '#f43f5e',
+  category: 'ML Serving',
   status: 'ready',
   description:
     'End-to-end senior-level system design for a Netflix / Spotify / TikTok-class recommendation system with LLM augmentation. Real-time event pipeline, feature store, multi-tower candidate generation, multi-objective ranker, LLM reranker, diversity layer, sub-100ms serving, contextual bandits. Senior interview-grade.',

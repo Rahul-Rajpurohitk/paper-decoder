@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#10b981';
 const C2      = '#047857';
@@ -458,6 +459,44 @@ export default function ProjectHealthcareScribePaper({ activeSection }) {
           <Callout type="key">
             Out of scope: clinical decision support (separate Glass Health / OpenEvidence layer), patient-facing chat, scheduling. The scribe documents; it doesn&apos;t prescribe.
           </Callout>
+          <StackCard
+            accent={C}
+            title="AI Healthcare Scribe · Abridge/Suki-class"
+            subtitle="Visit → ASR → de-id → SOAP → codes → EHR. 90+ min/day saved, $1.20/encounter."
+            slos={[
+              { label: 'TIME SAVED',     value: '≥ 90 min', note: '/clinician/day' },
+              { label: 'NOTE ACCEPT',    value: '≥ 85%',    note: 'specialty-tuned' },
+              { label: 'MEDICAL WER',    value: '< 4%',     note: 'terminology-aware' },
+              { label: 'CODING F1',       value: '≥ 0.92',   note: 'specialized model' },
+            ]}
+            stack={[
+              { layer: 'Capture',     choice: 'Mobile app (primary)',                why: 'Adoption · ergonomics' },
+              { layer: 'ASR',         choice: 'Deepgram Medical (BAA)',              why: 'Streaming · WER &lt; 4%' },
+              { layer: 'Diarization', choice: 'pyannote + clustering',                why: 'Doc/patient/others' },
+              { layer: 'De-id',       choice: 'HIPAA Safe Harbor (18 cats)',          why: 'LLM gets Limited Data Set' },
+              { layer: 'SOAP gen',    choice: 'Sonnet 4.6 (de-id input · BAA)',      why: 'Structured output' },
+              { layer: 'Coder',       choice: 'Specialized fine-tune',               why: 'F1 0.92 vs 0.78 generic' },
+              { layer: 'EHR',          choice: 'FHIR R4 (Epic / Cerner)',              why: '70%+ US coverage' },
+            ]}
+            scale={[
+              { label: 'Clinicians',       value: '1 500' },
+              { label: 'Visits / day',      value: '33 K' },
+              { label: 'Audio / day',       value: '~8 K hrs' },
+              { label: 'Specialties',       value: '15' },
+            ]}
+            cost={{
+              perUnit: '$1.20',
+              unitLabel: 'per encounter',
+              perPeriod: '~$1.2 M',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'PHI never reaches LLM raw · de-id boundary is structural',
+              'Denial-feedback loop on coding · accuracy compounds',
+              'Specialty-aware fine-tunes lift acceptance 70% → 88%',
+              '+5% billing capture is bigger ROI than time saved',
+            ]}
+          />
         </section>
       )}
 

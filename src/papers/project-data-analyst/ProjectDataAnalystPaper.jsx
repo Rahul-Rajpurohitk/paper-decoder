@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#06b6d4';
 const C2      = '#0891b2';
@@ -774,6 +775,44 @@ export default function ProjectDataAnalystPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: ML model training, ETL authoring, data quality monitoring, ad-hoc Python notebooks (stays in Hex). The agent answers analytical questions over modelled data.
           </Callout>
+          <StackCard
+            accent={C}
+            title="Data Analyst Agent · Hex/Mode/Snowflake-class"
+            subtitle="Question → semantic layer → safe SQL → analyse → viz. ~8s p50, $0.18/Q."
+            slos={[
+              { label: 'SQL ACCURACY', value: '≥ 90%',  note: 'exec correctness' },
+              { label: 'p50 LATENCY',  value: '< 10 s', note: 'warehouse-bound' },
+              { label: 'PII LEAK',      value: '0',       note: 'output filter' },
+              { label: 'COST GUARD',   value: '< 0.1%',  note: 'kill rate' },
+            ]}
+            stack={[
+              { layer: 'Planner',         choice: 'Sonnet 4.6 (decompose)',         why: 'Multi-step Qs need structure' },
+              { layer: 'Schema RAG',      choice: 'BM25 + dense + rerank',          why: 'Synonym + exact-term coverage' },
+              { layer: 'SQL gen',         choice: 'Sonnet 4.6 + structured output',  why: 'Grammar-constrained safe SQL' },
+              { layer: 'Semantic layer',  choice: 'dbt + Cube.dev',                 why: 'Canonical metrics · governed' },
+              { layer: 'Validator',       choice: '5 gates (parse → cost cap)',      why: 'Determinism over LLM review' },
+              { layer: 'Executor',        choice: 'Snowflake / BQ / Postgres MCP',   why: 'Routes by region + perms' },
+              { layer: 'Analyst',         choice: 'Modal Python sandbox',           why: 'Isolated · cost-capped' },
+            ]}
+            scale={[
+              { label: 'Questions / day', value: '3 K' },
+              { label: 'Cubes / metrics', value: '200' },
+              { label: 'Warehouses',       value: '5' },
+              { label: 'Token spend',      value: '~$540 / day' },
+            ]}
+            cost={{
+              perUnit: '$0.18',
+              unitLabel: 'per question',
+              perPeriod: '~$16 K',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Semantic layer = the wall · raw warehouse never exposed',
+              'Citations on every answer (rows used in summary)',
+              'Adversarial set catches PII probes · cost bombs · injection',
+              'Vs analyst FTE ~$15K/month — agent runs at parity, scales infinitely',
+            ]}
+          />
         </section>
       )}
 

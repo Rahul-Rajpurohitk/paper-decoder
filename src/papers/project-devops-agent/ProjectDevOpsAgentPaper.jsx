@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#ef4444';
 const C2      = '#b91c1c';
@@ -563,6 +564,44 @@ export default function ProjectDevOpsAgentPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: capacity planning, perf optimization, migrations, security incidents (separate SOC agent). The agent handles operational reliability incidents only.
           </Callout>
+          <StackCard
+            accent={C}
+            title="AI DevOps / SRE Agent · Resolve/PD Copilot-class"
+            subtitle="Alert → triage → investigate → runbook → mitigate → postmortem. ~6 min to resolve."
+            slos={[
+              { label: 'TRIAGE p50',    value: '< 30 s', note: 'alert → severity' },
+              { label: 'AUTO-MITIGATED', value: '≥ 40%',  note: 'T1 actions' },
+              { label: 'POSTMORTEM',    value: '< 5 min',note: 'after resolve' },
+              { label: 'OWN UPTIME',    value: '99.99%', note: 'cannot fail' },
+            ]}
+            stack={[
+              { layer: 'Alert ingest',  choice: 'CloudEvents (DD/PD/Sentry/CW)',     why: 'Standard envelope · dedup' },
+              { layer: 'Triage',        choice: 'Sonnet 4.6 + classifier',          why: 'Severity wrong = costly' },
+              { layer: 'Investigation', choice: 'Parallel logs/metrics/traces',     why: 'Latency budget' },
+              { layer: 'Topology',      choice: 'Service mesh (60s refresh)',         why: 'Root vs cascade' },
+              { layer: 'Runbooks',      choice: 'Declarative YAML · executable',      why: 'Reproducible · auditable' },
+              { layer: 'Mitigation',    choice: 'Tiered (T1 auto / T2 ack / T3 ok)',  why: 'Blast radius gating' },
+              { layer: 'Postmortem',    choice: 'Opus 4.7 → GitHub PR',                why: 'Quality matters · low volume' },
+            ]}
+            scale={[
+              { label: 'Alerts / day',     value: '5 K' },
+              { label: 'Incidents / day',  value: '~50' },
+              { label: 'Auto-mitigated',   value: '~20 / day' },
+              { label: 'SRE hr saved',      value: '~250 / wk' },
+            ]}
+            cost={{
+              perUnit: '$2.10',
+              unitLabel: 'per incident',
+              perPeriod: '~$3.2 K',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Tier classification is the safety system · not aspiration',
+              'Topology graph kills cascade diagnosis errors',
+              'Audit trail signed + hash-chained · CAB-reviewable',
+              'Active-active multi-region · the agent must outlive the incident',
+            ]}
+          />
         </section>
       )}
 

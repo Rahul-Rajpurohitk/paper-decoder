@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#d946ef';
 const C2      = '#a21caf';
@@ -463,6 +464,44 @@ export default function ProjectDocIntelPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: domain reasoning (legal advice, medical diagnosis), summarization, generation. The platform extracts; it doesn&apos;t opine.
           </Callout>
+          <StackCard
+            accent={C}
+            title="Document Intelligence · Reducto/Unstructured-class"
+            subtitle="Any doc → OCR → layout → typed JSON. 30s / 50pg, $0.012/pg."
+            slos={[
+              { label: 'PAGE ACCURACY', value: '≥ 0.97',  note: 'baseline' },
+              { label: 'TABLE F1',       value: '≥ 0.92',  note: 'cell-level' },
+              { label: 'p50 / 50pg',     value: '< 30 s',   note: 'wall' },
+              { label: 'COST / pg',      value: '< 1.2 ¢',  note: 'baked in' },
+            ]}
+            stack={[
+              { layer: 'Format router',  choice: 'PDF / DOCX / scan / email',          why: 'Fast path · skip OCR' },
+              { layer: 'OCR',            choice: 'Mistral OCR',                         why: 'Layout · multilingual' },
+              { layer: 'Layout',          choice: 'DocLayout-YOLO + LayoutLMv4',        why: 'Reading order · regions' },
+              { layer: 'Tables',          choice: 'TableMaster (specialized)',          why: '0.92 vs 0.78 vision-LLM' },
+              { layer: 'Schema',          choice: 'Sonnet 4.6 + Pydantic (typed)',       why: 'Customer pipeline-ready' },
+              { layer: 'Confidence',      choice: '3-tier (HIGH/MED/LOW HITL)',         why: 'Cost vs accuracy knob' },
+              { layer: 'Compliance',      choice: 'SOC 2 + HIPAA + ZDR',                 why: 'Healthcare/finance TAM' },
+            ]}
+            scale={[
+              { label: 'Pages / day',     value: '5 M' },
+              { label: 'Peak pages/sec',  value: '~230' },
+              { label: 'GPU need',         value: '~30 A100s' },
+              { label: 'Storage',          value: '~6 TB / day' },
+            ]}
+            cost={{
+              perUnit: '$0.012',
+              unitLabel: 'per page',
+              perPeriod: '~$1.8 M',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Specialized table extractor beats vision-LLM by 14pts F1',
+              'JSON Schema interface = customers drop-in compatible',
+              'Corrections feed labels · accuracy compounds quarterly',
+              'vs human BPO ~$1.50/page — ~125× cheaper at scale',
+            ]}
+          />
         </section>
       )}
 

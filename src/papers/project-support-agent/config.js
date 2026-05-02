@@ -8,6 +8,7 @@ export default {
   difficulty: 'Senior',
   tags: ['system-design', 'customer-support', 'agentic-AI', 'enterprise', 'production'],
   accent: '#22c55e',
+  category: 'Agent Systems',
   status: 'ready',
   description:
     'End-to-end senior-level system design for a Klarna/Intercom-class enterprise support agent. Functional + non-functional requirements, capacity estimation, API + data model, component deep-dives, scaling, observability, failure modes, cost analysis. Senior interview-grade depth.',

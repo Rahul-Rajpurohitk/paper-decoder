@@ -5,6 +5,7 @@ import ComparisonTable from '../../components/ComparisonTable';
 import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
+import StackCard from '../../components/StackCard';
 
 const C       = '#6366f1';
 const C2      = '#4338ca';
@@ -514,6 +515,44 @@ export default function ProjectEnterpriseRAGPaper({ activeSection }) {
           <Callout type="key">
             Out of scope: agentic actions (creating tickets, posting to Slack, etc.) &mdash; separate agent layer. The platform retrieves and synthesizes; doesn&apos;t act.
           </Callout>
+          <StackCard
+            accent={C}
+            title="Enterprise RAG / Knowledge · Glean-class"
+            subtitle="50 sources → unified index → permission-aware query → cited synth. ~720ms p50."
+            slos={[
+              { label: 'p50 LATENCY',  value: '< 800 ms', note: '50K daily' },
+              { label: 'RECALL@10',    value: '≥ 0.92',   note: 'hybrid + KG' },
+              { label: 'FAITHFULNESS', value: '≥ 0.95',   note: 'cite-or-refuse' },
+              { label: 'PERM LEAK',    value: '0',         note: 'fail-closed' },
+            ]}
+            stack={[
+              { layer: 'Connectors',     choice: '50+ OAuth (webhook + cursor + CDC)', why: 'Freshness budget' },
+              { layer: 'Permission',     choice: 'Zanzibar-like (SpiceDB)',            why: 'Post-retrieval filter' },
+              { layer: 'Vector',          choice: 'Vespa / pgvector + HNSW',            why: 'Co-located w BM25' },
+              { layer: 'Knowledge graph', choice: 'Postgres adjacency',                  why: 'Entity-centric Qs' },
+              { layer: 'Reranker',        choice: 'cohere-rerank-3.5',                   why: 'Top-10 quality' },
+              { layer: 'Synth',           choice: 'Sonnet 4.6 (streamed)',                why: 'Cost · latency balance' },
+              { layer: 'Federation',      choice: 'Web + Slack + Chrome ext',             why: 'Meet user where they are' },
+            ]}
+            scale={[
+              { label: 'Org size',          value: '10 K employees' },
+              { label: 'Total docs',         value: '50 M' },
+              { label: 'Daily churn',        value: '~100 K' },
+              { label: 'QPS peak',           value: '~100' },
+            ]}
+            cost={{
+              perUnit: '$0.03',
+              unitLabel: 'per query',
+              perPeriod: '~$260 K',
+              periodLabel: 'per month',
+            }}
+            moats={[
+              'Permission-correct search across 50 sources is 40% of eng',
+              'Webhook-first sync · 5min freshness across the stack',
+              'Hybrid retrieval (BM25 + dense + KG) lifts to 0.92 recall',
+              'Glean prices $40-100/seat/yr · 70-90% gross margin at scale',
+            ]}
+          />
         </section>
       )}
 
