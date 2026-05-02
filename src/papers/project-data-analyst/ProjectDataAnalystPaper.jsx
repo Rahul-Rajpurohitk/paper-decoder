@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#06b6d4';
 const C2      = '#0891b2';
@@ -974,6 +975,19 @@ export default function ProjectDataAnalystPaper({ activeSection }) {
         <section>
           <SectionHeader num="14" title="Failure Modes" subtitle="The four we&apos;ve actually seen in prod" color={C} />
           <AnalystFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'Cost cap killed legitimate queries',
+                body: 'Initial threshold killed 2% of long-tail analyses (cohort retention over 5 years). Tuned per-cube + per-user-role; false-kill rate now under 0.05%.' },
+              { type: 'key', tag: 'Schema RAG cache hit ratio swung quality',
+                body: 'Cold-start queries (rare cubes) hit 0.78 accuracy; warm hit 0.94. Pre-warmed top-50 cubes at deploy + nightly re-embed.' },
+              { type: 'warning', tag: 'Confident-wrong was the worst class of error',
+                body: 'Agent generated valid SQL using deprecated tables, returned numbers ~30% off truth. Added cube-version pin + 2nd-LLM verify against canonical answers for top intents.' },
+              { type: 'key', tag: 'Adoption depended on one workflow, not the model',
+                body: 'Slack channel deploy moved adoption from 14% to 62% in 3 weeks. The model didn\'t change; the surface did.' },
+            ]}
+          />
         </section>
       )}
 

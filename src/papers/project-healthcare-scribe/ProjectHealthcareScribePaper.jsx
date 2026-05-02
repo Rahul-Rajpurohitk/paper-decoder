@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#10b981';
 const C2      = '#047857';
@@ -651,6 +652,19 @@ export default function ProjectHealthcareScribePaper({ activeSection }) {
         <section>
           <SectionHeader num="13" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <HCFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'Pediatric WER doubled adult WER',
+                body: 'Adult primary-care WER at 3.8%; peds at 8.1% on the same ASR. Children speak softer + interrupt more. Trained a peds-specific acoustic model; gap closed to 1.2pts.' },
+              { type: 'warning', tag: 'EHR write-back idempotency was broken for 2 hours',
+                body: 'Retry on transient FHIR error created duplicate notes. Idempotency key was based on timestamp not encounter_id. Switched to encounter_id+content_hash; zero duplicates since.' },
+              { type: 'key', tag: 'BAA chain audit failed in year 2',
+                body: 'Our LLM provider sub-changed without notifying. Year-2 SOC 2 audit caught it. Now: BAA freshness monitor pings every vendor monthly; auto-page on cert expiry or sub-change.' },
+              { type: 'key', tag: 'Specialty-aware fine-tunes lifted acceptance from 70% to 88%',
+                body: 'Generic SOAP draft worked on primary care but missed cardio/ortho conventions. Per-specialty prompts + few-shot example pools shipped behind flag; rolled to all specialties in 6 weeks.' },
+            ]}
+          />
         </section>
       )}
 

@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#f43f5e';
 const C2      = '#be123c';
@@ -686,6 +687,19 @@ export default function ProjectRecsysPaper({ activeSection }) {
         <section>
           <SectionHeader num="14" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <RecFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: '5% explore was too low during catalog churn',
+                body: 'Quarterly catalog refresh added 8% new items; bandit explore at 5% never got to half of them. Bumped to 12% during onboarding windows; engagement on new content lifted 22%.' },
+              { type: 'warning', tag: 'Feature drift dashboard fired 24 hours late',
+                body: 'Drift detector aggregated nightly, so a deploy-broken feature ran wild for a day. Switched to streaming z-score with 1-hour windows; alerts fire within ~90 min of regression.' },
+              { type: 'key', tag: 'A/B harness counted bots in early metrics',
+                body: 'Variant A "won" by 1.5% but actual user CTR was flat — bots loved one variant. Now: bot-filter at log-time, not analysis-time; deltas trustable.' },
+              { type: 'key', tag: 'LLM rerank cache hit ratio drove cost predictability',
+                body: 'Hit rate at 87% kept costs flat; spike to 78% on global event blew budget by 60% in 4 hours. Added cache-eviction backpressure + soft cost cap with throttle.' },
+            ]}
+          />
         </section>
       )}
 

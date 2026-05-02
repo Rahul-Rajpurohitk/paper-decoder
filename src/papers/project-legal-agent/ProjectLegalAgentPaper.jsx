@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#84cc16';
 const C2      = '#65a30d';
@@ -696,6 +697,19 @@ export default function ProjectLegalAgentPaper({ activeSection }) {
         <section>
           <SectionHeader num="13" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <LegalFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'OCR confidence didn\'t match accuracy',
+                body: 'Mistral OCR returned 0.95 confidence on rotated pages that were 60% wrong. Confidence is per-token, not per-document. Added page-rotation detector + re-OCR pass before extraction.' },
+              { type: 'key', tag: 'Citation engine "uncited" flag was a false-positive churn',
+                body: 'Valid claims sometimes flagged as uncited because span-hash drifted across OCR re-runs. Pinned span-hash to OCR version; false-positive rate dropped from 0.5% to under 0.05%.' },
+              { type: 'warning', tag: 'Playbook updates broke in-flight reviews',
+                body: 'Playbook v3 deploy broke 200 contracts mid-review. Now: in-flight reviews pin playbook version at start; new reviews use latest. No retroactive flips.' },
+              { type: 'key', tag: 'Per-tenant isolation eliminated 3 procurement objections',
+                body: 'When we moved to one VPC per top-tier customer, three blocked deals closed inside a quarter. The isolation cost paid for itself in commercial velocity.' },
+            ]}
+          />
         </section>
       )}
 

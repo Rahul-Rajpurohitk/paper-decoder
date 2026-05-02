@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#d946ef';
 const C2      = '#a21caf';
@@ -659,6 +660,19 @@ export default function ProjectDocIntelPaper({ activeSection }) {
         <section>
           <SectionHeader num="13" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <DIFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'Tables with merged cells silently failed for 2 weeks',
+                body: 'Specialized table extractor returned valid-but-misaligned cells; downstream customer never saw an error, just bad numbers. Added cell-count parity checks (header columns vs body) as a structural sanity gate.' },
+              { type: 'warning', tag: 'Customer schema rename broke every in-flight job',
+                body: 'Field name change in v3 schema cascaded into 12K running jobs. Now: schemas are immutable; "edits" create v4 and v3 keeps running. In-flight pinned to schema_version_id.' },
+              { type: 'key', tag: 'GPU autoscale was too slow for EOQ rush',
+                body: 'Quarterly close created 4× usual volume in 3 hours; HPA + Karpenter took 8 minutes to scale L40S pool, jobs queued. Now: pre-scale on calendar (forecast windows + 1.5×).' },
+              { type: 'key', tag: 'HITL corrections compound — within 90 days, accuracy lifted 3-5pts per customer',
+                body: 'Corrections from week 1 became labeled examples by week 6. Customer-specific accuracy curve now in our standard QBR deck.' },
+            ]}
+          />
         </section>
       )}
 

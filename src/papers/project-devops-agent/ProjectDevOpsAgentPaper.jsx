@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#ef4444';
 const C2      = '#b91c1c';
@@ -790,6 +791,19 @@ export default function ProjectDevOpsAgentPaper({ activeSection }) {
         <section>
           <SectionHeader num="15" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <DevOpsFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'T2 ack timeout fired during a real ack',
+                body: 'On-call typed /ack at 58s; system auto-mitigated at 60s. Two actions raced. Now: ack window is 90s + 10s grace; mitigation only runs if no ack receipt in window.' },
+              { type: 'key', tag: 'Topology-aware correlation collapsed alert volume by 4×',
+                body: 'Before: 5 services alerting independently for one upstream issue. After: one incident with 5 affected services. Page count dropped from 80/day to ~20/day.' },
+              { type: 'warning', tag: 'Postmortem drafter missed dedup\'d alerts in timeline',
+                body: 'Original alerts were merged before postmortem read; timeline missed 12 minutes of pre-mitigation context. Now: postmortem reads from raw alert log + correlation graph.' },
+              { type: 'key', tag: 'The agent caught a real exfil attempt in week 3',
+                body: 'Egress alert showed a service contacting a novel domain post-deploy. Auto-quarantined + paged SecOps. Saved a six-figure incident.' },
+            ]}
+          />
         </section>
       )}
 

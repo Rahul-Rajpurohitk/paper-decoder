@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#fb923c';
 const C2      = '#ea580c';
@@ -815,6 +816,19 @@ export default function ProjectVoiceAgentPaper({ activeSection }) {
         <section>
           <SectionHeader num="13" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <VoiceFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'Talk-over rate spiked when we shipped faster TTS',
+                body: 'Cartesia upgrade dropped first-byte from 250ms to 150ms. Sounded great, but the agent stopped pausing before responses — users felt bulldozed. Added 100ms pre-response silence as policy.' },
+              { type: 'key', tag: 'Filler tokens annoyed users on fast tool calls',
+                body: 'Saying "let me check that" before a 50ms cache hit felt fake. Now: only emit filler if tool-call ETA > 400ms.' },
+              { type: 'warning', tag: 'DTMF detection differed by carrier',
+                body: 'Twilio reported DTMF events 30-50ms earlier than Vonage on the same physical line. Built carrier-agnostic timing layer; PCI flow now hits both consistently.' },
+              { type: 'key', tag: 'The post-call summary was the killer feature for hand-offs',
+                body: 'Human agents accept hand-off 4× faster when the summary precedes them. Spent more on synth than we expected; ROI clear.' },
+            ]}
+          />
         </section>
       )}
 

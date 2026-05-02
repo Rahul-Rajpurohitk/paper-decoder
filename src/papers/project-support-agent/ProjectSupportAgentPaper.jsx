@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 /* palette */
 const C       = '#22c55e';
@@ -1235,6 +1236,19 @@ export default function ProjectSupportAgentPaper({ activeSection }) {
             <li><strong>PII leak alert</strong>: SEV-1, immediately disable affected response path, full audit, customer notification within 24h.</li>
             <li><strong>Refund anomaly</strong>: SEV-1 if &gt;$10K aggregate; pause refund tool; finance triage.</li>
           </ul>
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'Triage flipped 12 deflection points overnight on a prompt update',
+                body: 'A "minor" classifier prompt change inverted billing-vs-account routing for 2 hours of peak. Roll-forward fixes have a real cost — now: every classifier change runs against 5K replay set + 1% canary before fleet.' },
+              { type: 'warning', tag: 'Memory was tenant-leaky for 3 days',
+                body: 'Cache key omitted tenant_id; one tenant\'s thread context surfaced for another. Caught by an internal red-team prompt. Now: tenant_id is in every cache key + automated tenancy fuzz tests.' },
+              { type: 'key', tag: 'Handoff queue flooded the day a senior agent took vacation',
+                body: 'CSAT dropped because escalations queued past SLA. Now: handoff routing checks live agent capacity + auto-skill-matches across teams when primary group is overloaded.' },
+              { type: 'key', tag: 'Tool-timeout cascade DDoS\'d Stripe API',
+                body: 'A surge of long-running refund queries hit Stripe rate limits; agent retried, queue grew, more retries hit 429s. Now: per-tool rate budget + circuit breaker + DLQ with explicit retry policy.' },
+            ]}
+          />
         </section>
       )}
 

@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#3b82f6';
 const C2      = '#1d4ed8';
@@ -934,6 +935,19 @@ export default function ProjectSWEAgentPaper({ activeSection }) {
         <section>
           <SectionHeader num="13" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <SWEFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'Sandbox spawn was the latency bottleneck',
+                body: 'Before pre-warming, p50 had a long tail at 30-45s. We started keeping a pool of 50 warm sandboxes; spawn dropped to ~4s p50. Pool size = expected concurrency × 1.2.' },
+              { type: 'warning', tag: 'Flaky tests masked real regressions',
+                body: 'Agent retried failing tests 5 times before declaring failure — masked 12% real regressions. Built a flake-detector that quarantines unstable tests separately. Real failures now visible in 1 try.' },
+              { type: 'key', tag: 'The first time prompt-cache hit 80% was the day costs flipped',
+                body: 'Per-repo + per-system-prompt cache push hit rate to 80% after 2 weeks. PR cost dropped from $4.20 to $2.40. Cache invalidation rules need a runbook — they bite next quarter.' },
+              { type: 'warning', tag: 'LLM rate-limits cascaded',
+                body: 'Anthropic temporarily 429d during a model rollout. Our orchestrator retried, queue backed up, sandboxes idled at $$/min. Now: per-vendor circuit breaker + DLQ + max-in-flight per tenant.' },
+            ]}
+          />
         </section>
       )}
 

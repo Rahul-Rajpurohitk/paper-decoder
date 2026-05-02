@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#22d3ee';
 const C2      = '#0e7490';
@@ -755,6 +756,19 @@ export default function ProjectSalesAgentPaper({ activeSection }) {
         <section>
           <SectionHeader num="14" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <SalesFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'One bad mailbox blacklisted a domain',
+                body: 'Aggressive sequence on a fresh mailbox triggered a domain-level blacklist; 40% outbound paused for 3 days. Per-mailbox throttle now hard-capped at 40 cold sends/day during ramp.' },
+              { type: 'warning', tag: 'Reply classifier confused OOO with not-interested',
+                body: 'For 2 weeks, OOO auto-replies routed to nurture instead of date-aware bump. Lost ~80 meetings. Added explicit "OOO" few-shot examples + fallback to human review on any unclassified reply.' },
+              { type: 'key', tag: 'Held-meeting rate, not booked rate, paid the bill',
+                body: 'Booked rate looked great but no-show was 35%. Same-day SMS confirmation + prep-brief lifted hold to 78%. Optimize for the metric that converts.' },
+              { type: 'warning', tag: 'LinkedIn ToS update broke automation overnight',
+                body: 'Carve-outs on accept-rate triggered our connect-bot. Switched to manual + AI-suggested copy paste; reduces volume but stays compliant.' },
+            ]}
+          />
         </section>
       )}
 

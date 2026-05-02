@@ -6,6 +6,7 @@ import MentalModel from '../../components/MentalModel';
 import H from '../../components/HoverTerm';
 import SimpleExplain from '../../components/SimpleExplain';
 import StackCard from '../../components/StackCard';
+import ProdReality from '../../components/ProdReality';
 
 const C       = '#6366f1';
 const C2      = '#4338ca';
@@ -737,6 +738,19 @@ export default function ProjectEnterpriseRAGPaper({ activeSection }) {
         <section>
           <SectionHeader num="15" title="Failure Modes" subtitle="What we&apos;ve actually seen break" color={C} />
           <RAGFailures />
+          <ProdReality
+            accent={C}
+            lessons={[
+              { type: 'warning', tag: 'Stale ACL cache leaked one document for 30 seconds',
+                body: 'ACL TTL was 60s for cache hits; an exec\'s board doc surfaced after permissions revoked but before refresh. Now: write-through invalidation on revoke events; cache only used for read-bursts.' },
+              { type: 'warning', tag: 'KG entity resolution merged two "Sarah"s',
+                body: 'Two different employees with same first name + same project tag merged into one node. Queries about "what did Sarah ship" returned mixed docs. Added email-domain + cohort to entity dedup key.' },
+              { type: 'key', tag: 'Connector contract tests caught Notion API drift in 12 hours',
+                body: 'Notion changed schema for "synced blocks" with no notice. Our daily contract test caught it before users saw stale answers. Saved a week of fire drill.' },
+              { type: 'warning', tag: 'Slack thread replies missed for a week',
+                body: 'Webhook payload for thread replies was different from top-level messages; our parser ignored them. Index was 8% incomplete on Slack alone. Now: contract test asserts thread coverage explicitly.' },
+            ]}
+          />
         </section>
       )}
 
